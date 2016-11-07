@@ -52,7 +52,7 @@ An Action is a workflow process, which can essentially be anything.  Synapse is 
 |ExecuteCase|A list of StatusType values to match the ExecuteResult of a parent Action.
 |Handler|Declares the library to support executing the Action.
 |Parameters|Delares the ParameterInfo block used when invoking the Action.
-|ActionGroup|A grouping mechanism for a child branch of Actions.
+|ActionGroup|A grouping mechanism for a child branch of Actions.  ActionGroup must complete before child Actions are executed; the ExecuteResult from ActionGroup will be used to filter child Actions.
 |Actions|The list of child Actions.
 |RunAs|The Action-level SecurityContext, overrides Plan-level declaration.
 |Result|Holds the post-execution result of the Action.  Rolls-up child execution results to the highest StatusType.  Includes runtime PId, Status, ExitData.

@@ -27,10 +27,10 @@ Action:
 Where, `ParameterInfo` is:
 ```css
     Name: {string, friendly name}
-    Type: {enum, Xml | Yaml | Json}
+    Type: {enum: xml | yaml | json}
     Uri: {http:// | file://}
     Values:
-      {Block of directly declared Xml|Yaml|Json as specified by Type}
+      {Block of directly declared xml|yaml|json as specified by Type}
     Dynamic:
     - Name: {friendly name}
       Path: {XPath or root:path0:path1}
@@ -40,6 +40,7 @@ Where, `ParameterInfo` is:
 ```
 And `SecurityContext` is:
 ```css
+    Domain: {AD Domain}
     Name: {string, friendly name}
     Password: {ecrypted string}
     Provider: {Active Directory | AWS | Azure}
