@@ -90,7 +90,7 @@ ParameterInfo blocks declare start-up configuration for Handlers modules, runtim
 |Uri|A file or http Uri from which to fetch values.
 |Values|Locally declared values.
 |Dynamic|List of Name/Path pairs used in value substitution.  Paths are declared in XPath for Xml serialization and colon-separated lists (root:node0:node1:...) for Yaml/Json.
-|ForEach|Calculates the cartesian product of the declared blocks of values and expands the action into a set of actions for each result item.  ActionGroup and child Actions relationships are maintained and will be executed per result item, as well.  Of note, as both Action.Handler.Config and Action.Parameter scan be declared with ForEach blocks, the total execution iterations for an Action is the carstesian product of the expanded Config and expanded Parameters.   
+|ForEach|Calculates the cartesian product of the declared blocks of values and expands the action into a set of actions for each result item.  ActionGroup and child Actions relationships are maintained and will be executed per result item, as well.  Of note, as both Action.Handler.Config and Action.Parameters can be declared with ForEach blocks, the total execution iterations for an Action is the carstesian product of the expanded Config and expanded Parameters.   
 
 ### Example YAML - YAML Values
 
