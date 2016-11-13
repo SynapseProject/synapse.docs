@@ -37,6 +37,10 @@ Where, `ParameterInfo` is:
       Options:
       - Key: {key}
         Value: {display value}
+    ForEach:
+    - Path: {XPath or root:path0:path1}
+      Values:
+      - {string list}
 ```
 And `SecurityContext` is:
 ```css
