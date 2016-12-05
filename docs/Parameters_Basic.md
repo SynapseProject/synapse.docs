@@ -4,7 +4,7 @@
 
 Consider the following Plan layout:
 ```css
-#hierarchical-node plan, with Inheritance to child Action node in Config & Parms
+#hierarchical-node plan, with Inheritance to child Action node in Config & Parms:
 Name: plan0
 Description: planDesc
 IsActive: true
