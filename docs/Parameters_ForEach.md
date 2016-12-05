@@ -4,6 +4,7 @@
 
 Consider the following Plan layout:
 ```css
+#single-node plan, with ForEach blocks in Config & Parms
 Name: plan0
 Description: planDesc
 IsActive: true
