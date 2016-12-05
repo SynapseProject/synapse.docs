@@ -1,5 +1,6 @@
-#Example YAML
+# Example YAML
 
+## Comprehensive, Multi-type Plan
 ```css
 Name: plan0
 Description: planDesc
