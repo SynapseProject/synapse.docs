@@ -3,7 +3,8 @@
 ## Parameters Example: URI, Static, Dynamic, and Inheritance
 
 Consider the following Plan layout:
-```css
+
+```yaml
 #hierarchical-node plan, with Inheritance to child Action node in Config & Parms:
 Name: plan0
 Description: planDesc
@@ -82,9 +83,11 @@ PNode2:
   PNode2_1: PValue2_1_file
   PNode2_2: PValue2_2_file
 ```
+
 ## action0 Parameter Results
 The resulting Config/Parms for action0, before any Dynamic data is applied, is:
-```css
+
+```yaml
 #Config:
 CNode0: CValue0_inline
 CNode1: CValue1_inline
@@ -105,8 +108,10 @@ PNode3:
   PNode3_1: PValue3_1_inline
   PNode3_2: PValue3_2_inline
 ```
+
 The resulting Config/Parms for action0, after Dynamic data is applied, is:
-```css
+
+```
 //Key/Value pairs, as collected from an external source:
 Dictionary<string, string> dynamicData = new Dictionary<string, string>();
 dynamicData.Add( "cnode0Dynamic", "CValue0_dynamic" );
@@ -115,7 +120,9 @@ dynamicData.Add( "cnode3_1Dynamic", "CValue3_1_dynamic" );
 dynamicData.Add( "pnode0Dynamic", "PValue0_dynamic" );
 dynamicData.Add( "pnode2_1Dynamic", "PValue2_1_dynamic" );
 dynamicData.Add( "pnode3_1Dynamic", "PValue3_1_dynamic" );
+```
 
+```yaml
 #Config:
 CNode0: CValue0_dynamic
 CNode1: CValue1_inline
@@ -139,7 +146,8 @@ PNode3:
 
 ## action1 Parameter Results
 The resulting Config/Parms for action1, which inherits from its config/parms from action0, is:
-```css
+
+```yaml
 #Config:
 CNode0: CValue0_inline_1
 CNode1: CValue1_inline

@@ -3,7 +3,8 @@
 ## Parameters Example: URI, Static, Dynamic, and ForEach
 
 Consider the following Plan layout:
-```css
+
+```yaml
 #single-node plan, with ForEach blocks in Config & Parms:
 Name: plan0
 Description: planDesc
@@ -80,9 +81,11 @@ PNode2:
   PNode2_1: PValue2_1_file
   PNode2_2: PValue2_2_file
 ```
+
 ## action0 Parameter Results
 The resulting Config/Parms for action0, before any ForEach processing is applied, is:
-```css
+
+```yaml
 #Config:
 CNode0: CValue0_inline
 CNode1: CValue1_inline
@@ -106,7 +109,8 @@ PNode3:
 
 ## action0 ForEach Parameter Results
 ForEach processing will take the number of options specified in Config times the number of options specified in Parameters and expand the matrix of all combinations, thus forming the cartesian product of Config and Parameters.  The resulting Config/Parms for action0, after ForEach processing is applied, is:
-```css
+
+```yaml
 #Set 0:
 #Config:
 CNode0: CValue0_dynamic
