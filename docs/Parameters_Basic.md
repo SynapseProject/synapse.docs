@@ -3,9 +3,9 @@
 ## Parameters Example: URI, Static, Dynamic, and Inheritance
 
 Consider the following Plan layout:
+#### Hierarchical-node plan, with Inheritance to child Action node in Config & Parms
 
 ```yaml
-#hierarchical-node plan, with Inheritance to child Action node in Config & Parms:
 Name: plan0
 Description: planDesc
 IsActive: true
@@ -67,16 +67,20 @@ Actions:
         PNode1: PValue1_inline_1
         PNode3:
           PNode3_2: PValue3_2_inline_1
+```
 
-#Where: Config/yaml_in.yaml and Parms/yaml_in.yaml contain:
-#Config:
+####Where: Config/yaml_in.yaml and Parms/yaml_in.yaml contain:
+#####Config:
+```yaml
 CNode0: CValue0_file
 CNode1: CValue1_file
 CNode2:
   CNode2_1: CValue2_1_file
   CNode2_2: CValue2_2_file
+```
 
-#Parms:
+#####Parms:
+```yaml
 PNode0: PValue0_file
 PNode1: PValue1_file
 PNode2:
@@ -84,11 +88,10 @@ PNode2:
   PNode2_2: PValue2_2_file
 ```
 
-## action0 Parameter Results
+### action0 Parameter Results
 The resulting Config/Parms for action0, before any Dynamic data is applied, is:
-
+#####Config:
 ```yaml
-#Config:
 CNode0: CValue0_inline
 CNode1: CValue1_inline
 CNode2:
@@ -97,8 +100,10 @@ CNode2:
 CNode3:
   CNode3_1: CValue3_1_inline
   CNode3_2: CValue3_2_inline
+```
 
-#Parms:
+#####Parms:
+```yaml
 PNode0: PValue0_inline
 PNode1: PValue1_inline
 PNode2:
@@ -111,7 +116,7 @@ PNode3:
 
 The resulting Config/Parms for action0, after Dynamic data is applied, is:
 
-```java
+```cs
 //Key/Value pairs, as collected from an external source:
 Dictionary<string, string> dynamicData = new Dictionary<string, string>();
 dynamicData.Add( "cnode0Dynamic", "CValue0_dynamic" );
@@ -122,8 +127,8 @@ dynamicData.Add( "pnode2_1Dynamic", "PValue2_1_dynamic" );
 dynamicData.Add( "pnode3_1Dynamic", "PValue3_1_dynamic" );
 ```
 
+#####Config:
 ```yaml
-#Config:
 CNode0: CValue0_dynamic
 CNode1: CValue1_inline
 CNode2:
@@ -132,8 +137,10 @@ CNode2:
 CNode3:
   CNode3_1: CValue3_1_dynamic
   CNode3_2: CValue3_2_inline
+```
 
-#Parms:
+#####Parms:
+```yaml
 PNode0: PValue0_dynamic
 PNode1: PValue1_inline
 PNode2:
@@ -147,8 +154,8 @@ PNode3:
 ## action1 Parameter Results
 The resulting Config/Parms for action1, which inherits from its config/parms from action0, is:
 
+#####Config:
 ```yaml
-#Config:
 CNode0: CValue0_inline_1
 CNode1: CValue1_inline
 CNode2:
@@ -157,8 +164,10 @@ CNode2:
 CNode3:
   CNode3_1: CValue3_1_inline_1
   CNode3_2: CValue3_2_inline
+```
 
-#Parms:
+#####Parms:
+```yaml
 PNode0: PValue0_inline
 PNode1: PValue1_inline_1
 PNode2:

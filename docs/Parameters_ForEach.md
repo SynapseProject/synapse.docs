@@ -3,9 +3,9 @@
 ## Parameters Example: URI, Static, Dynamic, and ForEach
 
 Consider the following Plan layout:
+#### Single-node plan, with ForEach blocks in Config & Parms
 
 ```yaml
-#single-node plan, with ForEach blocks in Config & Parms:
 Name: plan0
 Description: planDesc
 IsActive: true
@@ -65,16 +65,20 @@ Actions:
       Values:
       - PValue2_2_forach_0
       - PValue2_2_forach_1
+```
 
-#Where: Config/yaml_in.yaml and Parms/yaml_in.yaml contain:
-#Config:
+####Where: Config/yaml_in.yaml and Parms/yaml_in.yaml contain:
+####Config:
+```yaml
 CNode0: CValue0_file
 CNode1: CValue1_file
 CNode2:
   CNode2_1: CValue2_1_file
   CNode2_2: CValue2_2_file
+```
 
-#Parms:
+####Parms:
+```yaml
 PNode0: PValue0_file
 PNode1: PValue1_file
 PNode2:
@@ -82,11 +86,11 @@ PNode2:
   PNode2_2: PValue2_2_file
 ```
 
-## action0 Parameter Results
+### action0 Parameter Results
 The resulting Config/Parms for action0, before any ForEach processing is applied, is:
 
+####Config:
 ```yaml
-#Config:
 CNode0: CValue0_inline
 CNode1: CValue1_inline
 CNode2:
@@ -95,8 +99,10 @@ CNode2:
 CNode3:
   CNode3_1: CValue3_1_inline
   CNode3_2: CValue3_2_inline
+```
 
-#Parms:
+####Parms:
+```yaml
 PNode0: PValue0_inline
 PNode1: PValue1_inline
 PNode2:
@@ -107,10 +113,12 @@ PNode3:
   PNode3_2: PValue3_2_inline
 ```
 
-## action0 ForEach Parameter Results
+### action0 ForEach Parameter Results
 ForEach processing will take the number of options specified in Config times the number of options specified in Parameters and expand the matrix of all combinations, thus forming the cartesian product of Config and Parameters.  The resulting Config/Parms for action0, after ForEach processing is applied, is:
 
 ```yaml
+Yaml: Results as Config/Parms Set
+
 #Set 0:
 #Config:
 CNode0: CValue0_dynamic
