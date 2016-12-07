@@ -20,7 +20,7 @@ A Synapse Plan is a declarative workflow that is based on execution-result branc
 
 ### Example YAML
 
-```css
+```yaml
 Name: myPlan
 UniqueName: myPlan012
 Description: Runs important actions on nodes.
@@ -60,7 +60,7 @@ An Action is a workflow process, which can essentially be anything.  Synapse is 
 
 ### Example YAML
 
-```css
+```yaml
 Name: Start Service
 Proxy: http://foo
 ExecuteCase: Success
@@ -94,7 +94,7 @@ ParameterInfo blocks declare start-up configuration for Handlers modules, runtim
 
 ### Example YAML - YAML Values
 
-```css
+```yaml
 Name: myYamlParms
 Type: Yaml
 Uri: http://foo
@@ -124,7 +124,7 @@ ForEach:
 
 ### Example YAML - XML Values
 
-```css
+```yaml
 Type: Xml
 Values: <xml attr="value1"><data>foo1</data></xml>
 Dynamic:
@@ -136,7 +136,7 @@ Dynamic:
 
 ### Example YAML - JSON Values
 
-```css
+```yaml
 Type: Json
 Uri: http://foo
 Values:

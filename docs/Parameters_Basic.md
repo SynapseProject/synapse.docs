@@ -111,7 +111,7 @@ PNode3:
 
 The resulting Config/Parms for action0, after Dynamic data is applied, is:
 
-```
+```java
 //Key/Value pairs, as collected from an external source:
 Dictionary<string, string> dynamicData = new Dictionary<string, string>();
 dynamicData.Add( "cnode0Dynamic", "CValue0_dynamic" );

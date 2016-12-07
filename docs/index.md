@@ -10,7 +10,7 @@ Synapse is a lightweight execution engine designed to take data from disparate, 
 
 A Synapse workflow, called a `Plan`, is comprised of a hierarhy of Actions.  An `Action` is essentially the definition of a local or remote process and the parameters required to initiate it.  Plans are declared in YAML, as follows:
 
-```css
+```yaml
 Action:
 - Name: {string, friendly name}
   Proxy: {uri, remote Synapse node}
@@ -25,7 +25,8 @@ Action:
   Result: {ExecuteResult}
 ```
 Where, `ParameterInfo` is:
-```css
+
+```yaml
     Name: {string, friendly name}
     Type: {enum: xml | yaml | json}
     Uri: {http:// | file://}
@@ -43,7 +44,8 @@ Where, `ParameterInfo` is:
       - {string list}
 ```
 And `SecurityContext` is:
-```css
+
+```yaml
     Domain: {AD Domain}
     Name: {string, friendly name}
     Password: {ecrypted string}

@@ -1,7 +1,7 @@
 # Example YAML
 
 ## Comprehensive, Multi-type Plan
-```css
+```yaml
 Name: plan0
 Description: planDesc
 IsActive: true

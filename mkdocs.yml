@@ -3,10 +3,10 @@ pages:
 - Synapse: index.md
 - Architecture: architecture.md
 - Plans: plan.md
-- Yaml: yaml.md
-- CommandLine: cli.md
-- Roadmap: roadmap.md
 - Parameters:
   - Basic: Parameters_Basic.md
   - ForEach: Parameters_ForEach.md
+- Yaml: yaml.md
+- CommandLine: cli.md
+- Roadmap: roadmap.md
 theme: readthedocs

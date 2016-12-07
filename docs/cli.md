@@ -4,7 +4,7 @@ Synapse.cli provides local process execution and is the semantic and functional 
 
 ## CommandLine Help:
 
-```css
+```dos
 synapse.cli.exe, Version: 1.0.0.0
 
 Syntax:
