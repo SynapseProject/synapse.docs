@@ -1,6 +1,9 @@
 # Example YAML
 
 ## Comprehensive, Multi-type Plan
+
+#### Hierarchical-node plan, with Inheritance to child Action node in Config & Parms
+
 ```yaml
 Name: plan0
 Description: planDesc

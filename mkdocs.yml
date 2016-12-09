@@ -2,11 +2,18 @@ site_name: Synapse
 pages:
 - Synapse: index.md
 - Architecture: architecture.md
-- Plans: plan.md
-- Parameters:
-  - Basic: Parameters_Basic.md
-  - ForEach: Parameters_ForEach.md
-- Yaml: yaml.md
+- Plans:
+  - Overview: plan.md
+  - Parameters (YAML):
+    - Basic: parms\yaml\basic.md
+    - ForEach: parms\yaml\foreach.md
+  - Parameters (JSON):
+    - Basic: parms\json\basic.md
+    - ForEach: parms\json\foreach.md
+  - Parameters (XML):
+    - Basic: parms\xml\basic.md
+    - ForEach: parms\xml\foreach.md
+  - Yaml: yaml.md
 - CommandLine: cli.md
 - Roadmap: roadmap.md
 theme: readthedocs
