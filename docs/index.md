@@ -10,6 +10,22 @@ Synapse is a lightweight execution engine designed to take data from disparate, 
 
 A Synapse workflow, called a `Plan`, is comprised of a hierarhy of Actions.  An `Action` is essentially the definition of a local or remote process and the parameters required to initiate it.  Plans are declared in YAML, as follows:
 
+`Plan` definition:
+```yaml
+Name: {string, friendly name}
+UniqueName: {string, globally unique name}
+Description: {string, friendly description}
+DefaultHandlerType: {string, used when omitting Handler.Type declaration}
+IsActive: {bool, for 'disabling' Plans}
+Actions:
+  {Actions}
+RunAs:
+  {SecurityContext}
+StartInfo:
+  RequestNumber: {string, contextual execution data}
+  RequestUser: {string, contextual execution data}
+```
+`Action` definition:
 ```yaml
 Action:
 - Name: {string, friendly name}
@@ -25,32 +41,30 @@ Action:
   Result: {ExecuteResult}
 ```
 Where, `ParameterInfo` is:
-
 ```yaml
-    Name: {string, friendly name}
-    Type: {enum: xml | yaml | json}
-    Uri: {http:// | file://}
-    Values:
-      {Block of directly declared xml|yaml|json as specified by Type}
-    Dynamic:
-    - Name: {friendly name}
-      Path: {XPath or root:path0:path1}
-      Options:
-      - Key: {key}
-        Value: {display value}
-    ForEach:
-    - Path: {XPath or root:path0:path1}
-      Values:
-      - {string list}
+Name: {string, friendly name}
+Type: {enum: xml | yaml | json}
+Uri: {http:// | file://}
+Values:
+  {Block of directly declared xml|yaml|json as specified by Type}
+Dynamic:
+- Name: {friendly name}
+  Path: {XPath or root:path0:path1}
+  Options:
+  - Key: {key}
+    Value: {display value}
+ForEach:
+- Path: {XPath or root:path0:path1}
+  Values:
+  - {string list}
 ```
 And `SecurityContext` is:
-
 ```yaml
-    Domain: {AD Domain}
-    Name: {string, friendly name}
-    Password: {ecrypted string}
-    Provider: {Active Directory | AWS | Azure}
-    Config: {ParameterInfo}
+Domain: {AD Domain}
+Name: {string, friendly name}
+Password: {ecrypted string}
+Provider: {Active Directory | AWS | Azure}
+Config: {ParameterInfo}
 ```
 
 Essentially, Synapse takes data from various federated sources, provides the data to an action, and executes the action under a given security context.
