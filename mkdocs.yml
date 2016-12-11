@@ -5,15 +5,15 @@ pages:
 - Plans:
   - Overview: plans.md
   - Parameters (YAML):
-    - Basic: plans\parms\yaml\basic.md
-    - ForEach: plans\parms\yaml\foreach.md
+    - Basic: plans/parms/yaml/basic.md
+    - ForEach: plans/parms/yaml/foreach.md
   - Parameters (JSON):
-    - Basic: plans\parms\json\basic.md
-    - ForEach: plans\parms\json\foreach.md
+    - Basic: plans/parms/json/basic.md
+    - ForEach: plans/parms/json/foreach.md
   - Parameters (XML):
-    - Basic: plans\parms\xml\basic.md
-    - ForEach: plans\parms\xml\foreach.md
-  - Handlers: plans\handlers.md
+    - Basic: plans/parms/xml/basic.md
+    - ForEach: plans/parms/xml/foreach.md
+  - Handlers: plans/handlers.md
   - Yaml: yaml.md
 - CommandLine: cli.md
 - Roadmap: roadmap.md
