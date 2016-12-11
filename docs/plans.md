@@ -11,6 +11,7 @@ A Synapse Plan is a declarative workflow that is based on execution-result branc
 |Name|The friendly name of the Plan, used when reporting status.
 |UniqueName|A globally unique name for the Plan to support database fetches.
 |Description|A friendly Plan description.
+|DefaultHandlerType|If declared, can be used to omit the Type setting under Handler, thus using the Plan DefaultHandlerType.
 |IsActive|The boolean enabled/disabled state of the Plan.
 |Actions|The list of child Actions.
 |RunAs|The overriding, Plan-level SecurityContext.
@@ -24,6 +25,7 @@ A Synapse Plan is a declarative workflow that is based on execution-result branc
 Name: myPlan
 UniqueName: myPlan012
 Description: Runs important actions on nodes.
+DefaultHandlerType: myLibrary.Utilities:myLibrary.Utilities.ServiceController
 IsActive: true
 Actions:
   {Actions}

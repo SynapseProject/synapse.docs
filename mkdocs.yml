@@ -3,16 +3,17 @@ pages:
 - Synapse: index.md
 - Architecture: architecture.md
 - Plans:
-  - Overview: plan.md
+  - Overview: plans.md
   - Parameters (YAML):
-    - Basic: parms\yaml\basic.md
-    - ForEach: parms\yaml\foreach.md
+    - Basic: plans\parms\yaml\basic.md
+    - ForEach: plans\parms\yaml\foreach.md
   - Parameters (JSON):
-    - Basic: parms\json\basic.md
-    - ForEach: parms\json\foreach.md
+    - Basic: plans\parms\json\basic.md
+    - ForEach: plans\parms\json\foreach.md
   - Parameters (XML):
-    - Basic: parms\xml\basic.md
-    - ForEach: parms\xml\foreach.md
+    - Basic: plans\parms\xml\basic.md
+    - ForEach: plans\parms\xml\foreach.md
+  - Handlers: plans\handlers.md
   - Yaml: yaml.md
 - CommandLine: cli.md
 - Roadmap: roadmap.md
