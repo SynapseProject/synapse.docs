@@ -7,9 +7,6 @@ ParameterInfo blocks are configuration information used to initialize Handler mo
 #### Name
 The friendly name of the current ParameterInfo block.  This name is recorded in a dictionary at runtime and is used when referenced by other ParameterInfo block's `InheritFrom` field.  A ParameterInfo block Name should be *unique within a Plan*, or successive blocks of the same name will *replace* the dictionary pointer.
 
-#### Description
-A friendly textual description for the current ParameterInfo block.  This value is not used by the runtime engine, but it is emitted to the ResultPlan.
-
 #### Type
 Dictates the serialization language of the Uri, Values, Dynamic, and ForEach fields.  Options are SerializationType: Yaml, Json, Xml.  If Type is omitted, the runtime engine defaults to Yaml.
 

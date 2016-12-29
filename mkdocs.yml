@@ -4,7 +4,8 @@ pages:
 - Architecture: architecture.md
 - Plans:
   - Overview: plans.md
-  - Parameters: plans/parms/params.md
+  - Actions: plans/actions/detail.md
+  - Parameters: plans/parms/detail.md
   - Parameter Examples:
     - YAML:
       - Basic: plans/parms/yaml/basic.md
