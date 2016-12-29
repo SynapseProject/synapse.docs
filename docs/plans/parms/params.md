@@ -118,13 +118,13 @@ Name/Path pairs which are provided dynamically at runtime, such as through CLI o
       PNode0: new PNode0 value
       PNode1: PValue1_inline
       PNode3:
-        PNode3_1: PValue3_1_inline
-        PNode3_2: new PNode3_1 value
+        PNode3_1: new PNode3_1 value
+        PNode3_2: PValue3_2_inline
 ```
 
 - **XML Example:**
     - A variable named `cnode0Dynamic` will replace the existing value for `CXmlDoc` --> `CNode0`
-    - A variable named `cnode3_1Dynamic` will replace the existing value for `CNode3` --> `CNode3_1` --> `@CAttr3_1`
+    - A variable named `cnode3_1Dynamic` will replace the existing value for `CXmlDoc` --> `CNode3` --> `CNode3_1` --> `@CAttr3_1`
     - *Note:* the indexes below are specified for clarity, but not strictly required in XPath syntax.
 
 ```xml
@@ -146,7 +146,7 @@ Name/Path pairs which are provided dynamically at runtime, such as through CLI o
         Path: /CXmlDoc[1]/CNode3[1]/CNode3_1[1]/@CAttr3_1
 ```
 
-- Assuming: `cnode0Dynamic = 'new CNode0 value'` and `cnode3_1Dynamic = 'new CNode3_1 value'`, the resulting Values will be:
+- Assuming: `cnode0Dynamic = 'new CNode0 value'` and `cnode3_1Dynamic = 'new CNode3_1 attr'`, the resulting Values will be:
 
 ```xml
       Values:
@@ -154,7 +154,7 @@ Name/Path pairs which are provided dynamically at runtime, such as through CLI o
             <CNode0>new CNode0 value</CNode0>
             <CNode1>CValue1_inline</CNode1>
             <CNode3>
-                <CNode3_1 CAttr3_1="CAValue3_1_inline">new CNode3_1 value</CNode3_1>
+                <CNode3_1 CAttr3_1="new CNode3_1 attr">CValue3_1_inline</CNode3_1>
                 <CNode3_2>CValue3_2_inline</CNode3_2>
             </CNode3>
         </CXmlDoc>
@@ -178,12 +178,12 @@ ForEach blocks calculate the cartesian product of the declared Path/Values and e
     ForEach:
     - Path: PNode1
       Values:
-      - PValue1_forach_0
-      - PValue1_forach_1
+      - PValue1_foreach_0
+      - PValue1_foreach_1
     - Path: PNode2:PNode2_1
       Values:
-      - PValue2_2_forach_0
-      - PValue2_2_forach_1
+      - PValue2_2_foreach_0
+      - PValue2_2_foreach_1
 ```
  - The block above is processed like a nested for loop (psuedocode):
 
@@ -197,9 +197,9 @@ foreach( string value0 in valueSet0 )
 ```yaml
     Values:
       PNode0: PValue0_file
-      PNode1: PValue1_forach_0
+      PNode1: PValue1_foreach_0
       PNode2:
-        PNode2_1: PValue2_2_forach_0
+        PNode2_1: PValue2_2_foreach_0
         PNode2_2: PValue2_2_file
       PNode3:
         PNode3_1: PValue3_1_inline
@@ -207,9 +207,9 @@ foreach( string value0 in valueSet0 )
 
     Values:
       PNode0: PValue0_file
-      PNode1: PValue1_forach_0
+      PNode1: PValue1_foreach_0
       PNode2:
-        PNode2_1: PValue2_2_forach_1
+        PNode2_1: PValue2_2_foreach_1
         PNode2_2: PValue2_2_file
       PNode3:
         PNode3_1: PValue3_1_inline
@@ -217,9 +217,9 @@ foreach( string value0 in valueSet0 )
 
     Values:
       PNode0: PValue0_file
-      PNode1: PValue1_forach_1
+      PNode1: PValue1_foreach_1
       PNode2:
-        PNode2_1: PValue2_2_forach_0
+        PNode2_1: PValue2_2_foreach_0
         PNode2_2: PValue2_2_file
       PNode3:
         PNode3_1: PValue3_1_inline
@@ -227,9 +227,9 @@ foreach( string value0 in valueSet0 )
 
     Values:
       PNode0: PValue0_file
-      PNode1: PValue1_forach_1
+      PNode1: PValue1_foreach_1
       PNode2:
-        PNode2_1: PValue2_2_forach_1
+        PNode2_1: PValue2_2_foreach_1
         PNode2_2: PValue2_2_file
       PNode3:
         PNode3_1: PValue3_1_inline
@@ -276,12 +276,12 @@ A complete example, showing Uri, Values, Dynamic, and ForEach processing follows
     ForEach:
     - Path: PNode1
       Values:
-      - PValue1_forach_0
-      - PValue1_forach_1
+      - PValue1_foreach_0
+      - PValue1_foreach_1
     - Path: PNode2:PNode2_1
       Values:
-      - PValue2_2_forach_0
-      - PValue2_2_forach_1
+      - PValue2_2_foreach_0
+      - PValue2_2_foreach_1
 ```
   - Assuming the contents of the `yaml_in.yaml` are:
 
@@ -338,9 +338,9 @@ synapse.cli.exe /plan:sample.yaml /dryRun:true /pnode0Dynamic:PValue0_dynamic
 ```yaml
     Values:
       PNode0: PValue0_dynamic
-      PNode1: PValue1_forach_0
+      PNode1: PValue1_foreach_0
       PNode2:
-        PNode2_1: PValue2_2_forach_0
+        PNode2_1: PValue2_2_foreach_0
         PNode2_2: PValue2_2_file
       PNode3:
         PNode3_1: PValue3_1_Dynamic
@@ -348,9 +348,9 @@ synapse.cli.exe /plan:sample.yaml /dryRun:true /pnode0Dynamic:PValue0_dynamic
 
     Values:
       PNode0: PValue0_dynamic
-      PNode1: PValue1_forach_0
+      PNode1: PValue1_foreach_0
       PNode2:
-        PNode2_1: PValue2_2_forach_1
+        PNode2_1: PValue2_2_foreach_1
         PNode2_2: PValue2_2_file
       PNode3:
         PNode3_1: PValue3_1_Dynamic
@@ -358,9 +358,9 @@ synapse.cli.exe /plan:sample.yaml /dryRun:true /pnode0Dynamic:PValue0_dynamic
 
     Values:
       PNode0: PValue0_dynamic
-      PNode1: PValue1_forach_1
+      PNode1: PValue1_foreach_1
       PNode2:
-        PNode2_1: PValue2_2_forach_0
+        PNode2_1: PValue2_2_foreach_0
         PNode2_2: PValue2_2_file
       PNode3:
         PNode3_1: PValue3_1_Dynamic
@@ -368,9 +368,9 @@ synapse.cli.exe /plan:sample.yaml /dryRun:true /pnode0Dynamic:PValue0_dynamic
 
     Values:
       PNode0: PValue0_dynamic
-      PNode1: PValue1_forach_1
+      PNode1: PValue1_foreach_1
       PNode2:
-        PNode2_1: PValue2_2_forach_1
+        PNode2_1: PValue2_2_foreach_1
         PNode2_2: PValue2_2_file
       PNode3:
         PNode3_1: PValue3_1_Dynamic
