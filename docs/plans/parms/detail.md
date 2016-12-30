@@ -1,4 +1,4 @@
-# ParameterInfo Blocks
+# Synapse Plans: ParameterInfo Blocks
 
 ParameterInfo blocks are configuration information used to initialize Handler modules and pass runtime invocation data to Handler methods.  Additionally, a ParameterInfo block declares the start-up configuration for SecurityContext modules.
 

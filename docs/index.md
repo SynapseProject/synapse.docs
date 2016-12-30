@@ -69,7 +69,7 @@ Config: {ParameterInfo}
 
 Essentially, Synapse takes data from various federated sources, provides the data to an action, and executes the action under a given security context.
 
-A detailed description of Synapse Plan YAML is [here](/plan/ "Plan YAML").
+A overview description of Synapse Plan YAML is [here](/plans/ "Plan YAML").
 
 ## Components
 
