@@ -101,7 +101,7 @@ Result:
 ```
 
 - In the diagram below, the Status (node status) is shown on the lower left of the Action nodes in orange.  The BranchStatus is shown on the upper right of the Action nodes in black or maroon.
-    - The orange status path shows which nodes are executed, based on parent node status.
+    - The orange status path shows which nodes are executed: blue nodes always execute, green nodes execute based on parent node status.
     - The black/maroon BranchStatus values are gained by upward propagation from child node execution.
     - Execution of Group0 completes first, propagating its status upward to MyRoot.  Execution of MyRoot_Child1 follows on the 'Complete' path.
     - The MyRoot BranchStatus value of 'Completed' is ultimately overriden by 'Cancelled', as 'Cancelled' has a higher value than 'Complete'.
