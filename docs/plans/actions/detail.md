@@ -1,6 +1,6 @@
 # Synapse Plans: Action Blocks
 
-An Action is a workflow process which is enabled runtime modules, called Handlers.  An Action is executed based on the StatusType of preceding Actions, or in the case of root Actions, 'Any' Status.  The Action Handler is executed at runtime with the Action Parameters, returning an ExecuteResult.  This result is used to determine if child ActionGroup/Actions are in turn executed down the tree.  Actions may be executed locally (on the receiving Synapse node), or remotely via the Proxy attribute.  Lastly, an Action is executed under a given SecurityContext, which is either specified directly or inherited from parent Actions.
+An Action is a workflow process which is enabled by runtime modules, called Handlers.  An Action is executed based on the Status of preceding Actions, or in the case of root Actions, 'Any' Status.  The Action Handler is executed at runtime with the Action Parameters, returning an ExecuteResult.  This result is used to determine if child ActionGroup/Actions are in turn executed down the tree.  Actions may be executed locally (on the receiving Synapse node), or remotely via the Proxy attribute.  Lastly, an Action is executed under a given SecurityContext, which is either specified directly or inherited from parent Actions.
 
 ## Detailed Field Description
 
@@ -73,7 +73,7 @@ Actions:
 Declares the library to support executing the Action.  Detailed information on Handlers can be found [here](/plans/handlers/ "Handlers").
 
 #### Parameters
-Delares the ParameterInfo block used when invoking the Action.  Detailed information on Handlers can be found [here](/plans/parms/detail/ "Parameters").
+Declares the ParameterInfo block used when invoking the Action.  Detailed information on Handlers can be found [here](/plans/parms/detail/ "Parameters").
 
 #### ActionGroup
 A grouping mechanism for a child branch of Actions. For a given parent Action, its ActionGroup must complete before child Actions are executed; the ExecuteResult from ActionGroup will be used to filter child Actions.  ActionGroups provide a mechanism for ensuring a subset of actions complete before continuing to further descendent Actions.  Any Action, including the ActionGroup itself, can host an ActionGroup.
@@ -95,7 +95,7 @@ Holds the post-execution result of the Action. Rolls-up child execution results 
 ```yaml
 Result:
   Status: New
-  ExitData: Data retrned from the Handler.
+  ExitData: Data returned from the Handler.
   BranchStatus: Failed
   PId: 1234
 ```
@@ -103,9 +103,9 @@ Result:
 - In the diagram below, the Status (node status) is shown on the lower left of the Action nodes in orange.  The BranchStatus is shown on the upper right of the Action nodes in black or maroon.
     - The orange status path shows which nodes are executed, based on parent node status.
     - The black/maroon BranchStatus values are gained by upward propagation from child node execution.
-    - Black status value upward propagation is terminated by MyRoot as 'CompletedWithErrors' is a higher value than 'Complete'. 
-    - The MyRoot BranchStatus value of 'CompletedWithErrors' is ultimately overriden by the maroon value as 'Cancelled' is a higher value than 'Complete'.
-    - Lastly, note tha the Propagation path of 'Cancelled' is from MyRoot_Child1 --> MyRoot (directly); the status would not traverse Group0_Child1 or Group0 as they are not on the ascending branch path.
+    - Execution of Group0 completes first, propagating its status upward to MyRoot.  Execution of MyRoot_Child1 follows on the 'Complete' path.
+    - The MyRoot BranchStatus value of 'Completed' is ultimately overriden by 'Cancelled', as 'Cancelled' has a higher value than 'Complete'.
+    - Lastly, note that the Propagation path of 'Cancelled' is directly from MyRoot_Child1 --> MyRoot; the status would not traverse Group0_Child1 or Group0 as they are not on the ascending branch path.
 
 <p align="left">
 <img alt="Synapse Action Result.Status Propagation" src="../../../img/action_ResultStatusPropagation.png" />
