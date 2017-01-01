@@ -20,5 +20,6 @@ pages:
         - ForEach: plans/parms/xml/foreach.md
     - Complete YAML: yaml.md
 - CommandLine: cli.md
+- Releases: releases.md
 - Roadmap: roadmap.md
 theme: readthedocs
