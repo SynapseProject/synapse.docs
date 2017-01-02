@@ -18,6 +18,9 @@ A Synapse Plan is a declarative workflow that is based on execution-result branc
 |Result|Holds the post-execution result all child Actiona.  Rolls-up child execution results to the highest StatusType. Includes runtime PId, Status, ExitData.
 |InstanceId|Local runtime identifier for a Plan.
 
+### ResultPlan
+
+The ResultPlan is the output of what Actions executed and their result.  The ResultPlan is useful for examining exact execution paths and validating Plan actions.  Any Actions *not* executed at runtime are omitted from the ResultPlan.  When testing Plans with Synapse.CLI, use the /resultPlan option to output the ResultPlan to a file.  Detailed information on Synapse.CLI can be found [here](/cli/ "Synapse.CLI").
 
 ### Example YAML
 
@@ -35,15 +38,15 @@ StartInfo:
   RequestNumber: 12345
   RequestUser: John Doe
 Result:
-  {runtime data}
-InstanceId: {runtime data}
+  {runtime data, emitted to ResultPlan}
+InstanceId: {runtime data, emitted to ResultPlan}
 ```
 
 ---
 
 ## Actions
 
-An Action is a workflow process, which can essentially be anything.  Synapse is extended by creating/invoking new, custom processes as required via runtime modules.
+An Action is a workflow process, which can essentially be anything.  Synapse is extended by creating/invoking new, custom processes as required via runtime modules.  Detailed information on Actions can be found [here](/plans/actions/detail/ "Actions").
 
 ### Fields
 
@@ -64,7 +67,7 @@ An Action is a workflow process, which can essentially be anything.  Synapse is 
 
 ```yaml
 Name: Start Service
-Proxy: http://foo
+Proxy: http://remoteSynapseNodeUri
 ExecuteCase: Success
 Handler:
   Type: myLibrary.Utilities:myLibrary.Utilities.ServiceController
@@ -74,15 +77,15 @@ RunAs: {SecurityContext}
 ActionGroup: {Single-node subtree of child Actions}
 Actions: {Multi-node subtree of child Actions}
 Result:
-  {runtime data}
-InstanceId: {runtime data}
+  {runtime data, emitted to ResultPlan}
+InstanceId: {runtime data, emitted to ResultPlan}
 ```
 
 ---
 
 ## ParameterInfo
 
-ParameterInfo blocks declare start-up configuration for Handler modules, runtime invocation data for Handler methods, and start-up configuration for SecurityContext modules. ParameterInfo blocks can be inherited throughout Plans, and individual ParameterInfo Value settings can be overridden locally.
+ParameterInfo blocks declare start-up configuration for Handler modules, runtime invocation data for Handler methods, and start-up configuration for SecurityContext modules. ParameterInfo blocks can be inherited throughout Plans, and individual ParameterInfo Value settings can be overridden locally.  Detailed information on Handlers can be found [here](/plans/parms/detail/ "Parameters").
 
 |Name|Description
 |-|-
@@ -101,23 +104,23 @@ Name: myYamlParms
 Type: Yaml
 Uri: http://foo
 Values:
-  Magical: Mystery1
-  Lucy: In the sky1
-  Kitten:
-    Cat: Liger
-    Color: Green
+  Custom: Data
+  DefinedBy: Requirements
+  Of:
+    Handler: Module
+    Expected: Input
 Dynamic:
 - Name: app
-  Path: Magical
+  Path: Custom
 - Name: type
-  Path: Kitten:Color
+  Path: Of:Handler
 ForEach:
-- Path: Lucy
+- Path: DefinedBy
   Values:
   - x0
   - x1
   - x2
-- Path: Kitten:Cat
+- Path: Of:Expected
   Values:
   - y0
   - y1
@@ -140,7 +143,7 @@ Dynamic:
 
 ```yaml
 Type: Json
-Uri: http://foo
+Uri: http://remoteSynapseNodeUri
 Values:
   {
     "ApplicationName": "fooApp",
@@ -156,9 +159,9 @@ Dynamic:
     Path: ApplicationName
     Options:
     - Key: 1
-      Value: TheOne
+      Value: barApp
     - Key: 2
-      Value: Shoe
+      Value: blahApp
 - Name: type
   Path: Tier:Type
 ```

@@ -8,11 +8,14 @@ Synapse.cli provides local process execution and is the semantic and functional 
 synapse.cli.exe, Version: 1.0.0.0
 
 Syntax:
-  synapse.cli.exe /plan:{filePath}|{encodedPlanString} [/dryRun:true|false]
+  synapse.cli.exe /plan:{filePath}|{encodedPlanString}
+    [/resultPlan:{filePath}|true] [/dryRun:true|false]
     [/taskModel:inProc|external] [/render:encode|decode] [dynamic parameters]
 
   /plan        - filePath: Valid path to plan file.
-               - encodedPlanString: Inline base64 encoded plan string.
+               - [or] encodedPlanString: Inline base64 encoded plan string.
+  /resultPlan  - filePath: Valid path to write ResultPlan output file.
+               - [or]: 'true' will write to same path as /plan as *.result.*
   /dryRun      Specifies whether to execute the plan as a DryRun only.
                  Default is false.
   /taskModel   Specifies whether to execute the plan on an internal
