@@ -85,7 +85,7 @@ InstanceId: {runtime data, emitted to ResultPlan}
 
 ## ParameterInfo
 
-ParameterInfo blocks declare start-up configuration for Handler modules, runtime invocation data for Handler methods, and start-up configuration for SecurityContext modules. ParameterInfo blocks can be inherited throughout Plans, and individual ParameterInfo Value settings can be overridden locally.  Detailed information on Handlers can be found [here](/plans/parms/detail/ "Parameters").
+ParameterInfo blocks declare start-up configuration for Handler modules, runtime invocation data for Handler methods, and start-up configuration for SecurityContext modules. ParameterInfo blocks can be inherited throughout Plans, and individual ParameterInfo Value settings can be overridden locally.  Detailed information on Parameters can be found [here](/plans/parms/detail/ "Parameters").
 
 |Name|Description
 |-|-
