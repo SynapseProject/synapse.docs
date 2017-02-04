@@ -6,26 +6,26 @@ Releases and source code are available from GitHub and NuGet.
 ## GitHub
 - - -
 ### Project Source Code
- - [https://github.com/SynapseProject](https://github.com/SynapseProject)
+ - <a href="https://github.com/SynapseProject" target="_blank">https://github.com/SynapseProject</a>
 
 ### Example Plans
- - [https://github.com/SynapseProject/synapse.examples](https://github.com/SynapseProject/synapse.examples)
- - [https://github.com/SynapseProject/synapse.examples/archive/master.zip](https://github.com/SynapseProject/synapse.examples/archive/master.zip) 
+ - <a href="https://github.com/SynapseProject/synapse.examples" target="_blank">https://github.com/SynapseProject/synapse.examples</a>
+ - <a href="https://github.com/SynapseProject/synapse.examples/archive/master.zip" target="_blank">https://github.com/SynapseProject/synapse.examples/archive/master.zip</a> 
 
 ### Synapse CLI
 Synapse.CLI as a stand-alone exe.  Use this to test plans locally.
  
- - [https://github.com/SynapseProject/synapse.core.net/releases](https://github.com/SynapseProject/synapse.core.net/releases)
+ - <a href="https://github.com/SynapseProject/synapse.node.net/releases" target="_blank">https://github.com/SynapseProject/synapse.node.net/releases</a>
 
 ### Synapse Controller
  Includes Synapse.Controller Service, CLI, and HttpClient, plus FileSystem and MongoDB DALs. Default configuration for FileSystemDal.
- 
- - [https://github.com/SynapseProject/synapse.controller.net/releases](https://github.com/SynapseProject/synapse.controller.net/releases)
+
+ - <a href="https://github.com/SynapseProject/synapse.controller.net/releases" target="_blank">https://github.com/SynapseProject/synapse.controller.net/releases</a>
 
 ### Synapse Node
  Includes Synapse.Node Service, CLI, and HttpClient.
  
- - [https://github.com/SynapseProject/synapse.node.net/releases](https://github.com/SynapseProject/synapse.node.net/releases)
+ - <a href="https://github.com/SynapseProject/synapse.node.net/releases" target="_blank">https://github.com/SynapseProject/synapse.node.net/releases</a>
 
 
 - - -
@@ -33,19 +33,19 @@ Synapse.CLI as a stand-alone exe.  Use this to test plans locally.
 - - -
 ### All Synapse Packages
  
- - [https://www.nuget.org/packages?q=synapse](https://www.nuget.org/packages?q=synapse)
+ - <a href="https://www.nuget.org/packages?q=synapse" target="_blank">https://www.nuget.org/packages?q=synapse</a>
 
 ### Core
 Runtime Workflow Engine, POCOs.
  
- - [https://www.nuget.org/packages/Synapse.Core.Signed](https://www.nuget.org/packages/Synapse.Core.Signed)
+ - <a href="https://www.nuget.org/packages/Synapse.Core.Signed" target="_blank">https://www.nuget.org/packages/Synapse.Core.Signed</a>
 
 ### Controller HttpClient
 For programmatic integration with the Controller REST interface.
  
- - [https://www.nuget.org/packages/Synapse.Controller.HttpClient](https://www.nuget.org/packages/Synapse.Controller.HttpClient)
+ - <a href="https://www.nuget.org/packages/Synapse.Controller.HttpClient" target="_blank">https://www.nuget.org/packages/Synapse.Controller.HttpClient</a>
 
 ### Node HttpClient
 For programmatic integration with the Node REST interface.
  
- - [https://www.nuget.org/packages/Synapse.Node.HttpClient](https://www.nuget.org/packages/Synapse.Node.HttpClient)
+ - <a href="https://www.nuget.org/packages/Synapse.Node.HttpClient" target="_blank">https://www.nuget.org/packages/Synapse.Node.HttpClient</a>

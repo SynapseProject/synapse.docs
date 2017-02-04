@@ -76,8 +76,11 @@ A overview description of Synapse Plan YAML is [here](/plans/ "Plan YAML").
 | Component | Description
 |--------|--------
 |Synapse.Core|Contains the workflow execution engine and is responsible for initiating calls to sub-processes.
-|Synapse.cli|A [command-line](/cli/ "Command-line") wrapper on Synapse.Core for local process execution.
-|Synapse.Server|A server daemon designed to act as remote Synapse.Core agent.
-|Synapse.Enterprise|An API interface to creating, storing, and executing Synapse Plans under an RBAC.  Manages execution log-capture and keeps detailed audit logs.
+|Synapse.cli|A [command-line](/cli/core/ "Command-line") wrapper on Synapse.Core for local process execution.  Use this to test Synapse Plans locally.
+|Synapse.Node|A server daemon designed to act as remote Synapse.Core agent.  Synapse.Node can execute local or remote processes.
+|Synapse.Node.cli|Provides a [command-line](/cli/node/ "Command-line") interface to the Synapse.Node REST interface.  Use this to install/uninstall/start/drainstop/stop the server daemon, or to run Synapse.Node as a command-line-hosted process with console logging. 
+|Synapse.Controller|An API for starting/cancelling Synapse Plan execution and recording status.  Manages execution log-capture and keeps detailed audit logs.
+|Synapse.Controller.cli|Provides a [command-line](/cli/controller/ "Command-line") interface to the Synapse.Controller REST interface.  Use this to install/uninstall/start/stop the server daemon, or to run Synapse.Controller as a command-line-hosted process with console logging. 
+|Synapse.Enterprise|An API for managing Synapse Plans under an RBAC.
 
 Detailed architectural descriptions and implementations patterns can be found [here](/architecture/ "Architecture").

@@ -19,7 +19,10 @@ pages:
         - Basic: plans/parms/xml/basic.md
         - ForEach: plans/parms/xml/foreach.md
     - Complete YAML: yaml.md
-- CommandLine: cli.md
+- CommandLines:
+  - Core: cli/core.md
+  - Controller: cli/controller.md
+  - Node: cli/node.md
 - Releases: releases.md
 - Roadmap: roadmap.md
 theme: readthedocs
