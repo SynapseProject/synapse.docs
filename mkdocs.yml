@@ -25,4 +25,5 @@ pages:
   - Node: cli/node.md
 - Releases: releases.md
 - Roadmap: roadmap.md
+- Support: support.md
 theme: readthedocs
