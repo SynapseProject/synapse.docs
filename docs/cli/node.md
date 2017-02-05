@@ -26,6 +26,19 @@ Syntax:
                as a cmdline-hosted daemon.
                - Commands: install|uninstall|run
                - Example:  synapse.node.cli service run
+               - Optional install args, use argname:value.  Defaults shown.
+                 - ServiceName:Synapse.Node
+                 - ServiceDisplayName:Synapse Node
+                 - MaxServerThreads:0
+                 - AuditLogRootPath:.\Logs
+                 - ServiceLogRootPath:.\Logs
+                 - Log4NetConversionPattern:%d{ISO8601}|%-5p|(%t)|%m%n
+                 - SerializeResultPlan:True
+                 - ValidatePlanSignature:True
+                 - ControllerServiceUrl:http://localhost:8008/synapse/execute
+                 - WebApiPort:8000
+                 - Run:true  (Optionally Starts the Windows Service)
+
 
   httpAction   Execute a command, optionally specify URL.
                Parm help: synapse.node.cli {httpAction} help.

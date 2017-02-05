@@ -26,6 +26,15 @@ Syntax:
                as a cmdline-hosted daemon.
                - Commands: install|uninstall|run
                - Example:  synapse.controller.cli service run
+               - Optional install args, use argname:value.  Defaults shown.
+                 - ServiceName:Synapse.Controller
+                 - ServiceDisplayName:Synapse Controller
+                 - AuthenticationScheme:IntegratedWindowsAuthentication
+                 - WebApiPort:8008
+                 - NodeServiceUrl:http://localhost:8000/synapse/node
+                 - DalProvider:Synapse.Controller.Dal.FileSystem:FileSystemDal
+                 - Run:true  (Optionally Starts the Windows Service)
+
 
   httpAction   Execute a command, optionally specify URL.
                Parm help: synapse.controller.cli {httpAction} help.
