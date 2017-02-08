@@ -27,16 +27,19 @@ Syntax:
                - Commands: install|uninstall|run
                - Example:  synapse.node.cli service run
                - Optional install args, use argname:value.  Defaults shown.
-                 - ServiceName:Synapse.Node
-                 - ServiceDisplayName:Synapse Node
-                 - MaxServerThreads:0
-                 - AuditLogRootPath:.\Logs
-                 - ServiceLogRootPath:.\Logs
-                 - Log4NetConversionPattern:%d{ISO8601}|%-5p|(%t)|%m%n
-                 - SerializeResultPlan:True
-                 - ValidatePlanSignature:True
-                 - ControllerServiceUrl:http://localhost:8008/synapse/execute
-                 - WebApiPort:8000
+                 - ServiceName:Synapse.[Controller/Node]
+                 - ServiceDisplayName:Synapse [Controller/Node]
+                 - ServerRole:Controller
+                 - WebApiPort:8008
+                 - AuthenticationScheme:IntegratedWindowsAuthentication
+                 - c.NodeUrl:http://localhost:8000/synapse/node
+                 - c.Dal:Synapse.Controller.Dal.FileSystem:FileSystemDal
+                 - n.MaxServerThreads:0
+                 - n.AuditLogRootPath:.\Logs
+                 - n.Log4NetConversionPattern:%d{ISO8601}|%-5p|(%t)|%m%n
+                 - n.SerializeResultPlan:True
+                 - n.ValidatePlanSignature:True
+                 - n.ControllerUrl:http://localhost:8008/synapse/execute
                  - Run:true  (Optionally Starts the Windows Service)
 
 

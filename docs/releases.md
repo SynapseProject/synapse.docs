@@ -17,15 +17,10 @@ Synapse.CLI as a stand-alone exe.  Use this to test plans locally.
  
  - <a href="https://github.com/SynapseProject/synapse.node.net/releases" target="_blank">https://github.com/SynapseProject/synapse.node.net/releases</a>
 
-### Synapse Controller
- Includes Synapse.Controller Service, CLI, and HttpClient, plus FileSystem and MongoDB DALs. Default configuration for FileSystemDal.
+### Synapse Server
+ Includes Synapse.Controller Service, Synapse.Node Service, Synapse.Controller/Node CLIs, and Synapse.Server.HttpClient, plus FileSystem and MongoDB DALs. Default configuration for FileSystemDal.
 
- - <a href="https://github.com/SynapseProject/synapse.controller.net/releases" target="_blank">https://github.com/SynapseProject/synapse.controller.net/releases</a>
-
-### Synapse Node
- Includes Synapse.Node Service, CLI, and HttpClient.
- 
- - <a href="https://github.com/SynapseProject/synapse.node.net/releases" target="_blank">https://github.com/SynapseProject/synapse.node.net/releases</a>
+ - <a href="https://github.com/SynapseProject/synapse.server.net/releases" target="_blank">https://github.com/SynapseProject/synapse.server.net/releases</a>
 
 
 - - -
@@ -40,12 +35,7 @@ Runtime Workflow Engine, POCOs.
  
  - <a href="https://www.nuget.org/packages/Synapse.Core.Signed" target="_blank">https://www.nuget.org/packages/Synapse.Core.Signed</a>
 
-### Controller HttpClient
-For programmatic integration with the Controller REST interface.
+### Server HttpClient
+For programmatic integration with the Controller/Node REST interfaces.
  
- - <a href="https://www.nuget.org/packages/Synapse.Controller.HttpClient" target="_blank">https://www.nuget.org/packages/Synapse.Controller.HttpClient</a>
-
-### Node HttpClient
-For programmatic integration with the Node REST interface.
- 
- - <a href="https://www.nuget.org/packages/Synapse.Node.HttpClient" target="_blank">https://www.nuget.org/packages/Synapse.Node.HttpClient</a>
+ - <a href="https://www.nuget.org/packages/Synapse.Server.HttpClient" target="_blank">https://www.nuget.org/packages/Synapse.Server.HttpClient</a>
