@@ -4,7 +4,7 @@ Synapse.Controller.cli provides a console interface to Synapse Controller, wheth
 
 Download the latest build of Synapse.Controller.cli from GitHub: <a href="https://github.com/SynapseProject/synapse.server.net/releases" target="_blank">https://github.com/SynapseProject/synapse.server.net/releases</a>.
 
-Synapse.Controller.cli is a wrapper on Syanpse.Server.HttpClient, invoking the Controller REST interface.  Syanpse.Server.HttpClient is available to download as a NuGet package: <a href="https://www.nuget.org/packages/Syanpse.Server.HttpClient" target="_blank">https://www.nuget.org/packages/Syanpse.Server.HttpClient</a>.  Syanpse.Server.HttpClient is suitable for programmatic Synapse integration.
+Synapse.Controller.cli is a wrapper on Syanpse.Server.HttpClient, invoking the Controller REST interface.  Synapse.Server.HttpClient is available to download as a NuGet package: <a href="https://www.nuget.org/packages/Synapse.Server.HttpClient" target="_blank">https://www.nuget.org/packages/Synapse.Server.HttpClient</a>.  Syanpse.Server.HttpClient is suitable for programmatic Synapse integration.
 
 ## CommandLine Help:
 
