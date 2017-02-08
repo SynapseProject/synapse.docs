@@ -2,9 +2,9 @@
 
 Synapse.Node.cli provides a console interface to Synapse Node, whether Synapse Node is running locally or remotely, and whether it is running as a proper server daemon or console hosted process.  Synapse.Node.cli can be used as an administrative interface for runtime operations as a way to host Synapse Node for testing purposes.
 
-Download the latest build of Synapse.Node.cli from GitHub: <a href="https://github.com/SynapseProject/synapse.node.net/releases" target="_blank">https://github.com/SynapseProject/synapse.node.net/releases</a>.
+Download the latest build of Synapse.Node.cli from GitHub: <a href="https://github.com/SynapseProject/synapse.server.net/releases" target="_blank">https://github.com/SynapseProject/synapse.server.net/releases</a>.
 
-Synapse.Node.cli is a wrapper on Syanpse.Node.HttpClient, which is available to download as a NuGet package: <a href="https://www.nuget.org/packages/Synapse.Node.HttpClient" target="_blank">https://www.nuget.org/packages/Synapse.Node.HttpClient</a>.  Syanpse.Node.HttpClient is suitable for programmatic Synapse integration.
+Synapse.Node.cli is a wrapper on Syanpse.Server.HttpClient, invoking the Node REST interface.  Syanpse.Server.HttpClient is available to download as a NuGet package: <a href="https://www.nuget.org/packages/Syanpse.Server.HttpClient" target="_blank">https://www.nuget.org/packages/Syanpse.Server.HttpClient</a>.  Syanpse.Server.HttpClient is suitable for programmatic Synapse integration.
 
 ## CommandLine Help:
 
