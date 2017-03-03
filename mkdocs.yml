@@ -23,6 +23,8 @@ pages:
   - Core: cli/core.md
   - Controller: cli/controller.md
   - Node: cli/node.md
+- Handlers:
+  - CommandLine: handlers/commandline.md
 - Releases: releases.md
 - Roadmap: roadmap.md
 - Support: support.md
