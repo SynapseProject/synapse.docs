@@ -19,10 +19,13 @@ pages:
         - Basic: plans/parms/xml/basic.md
         - ForEach: plans/parms/xml/foreach.md
     - Complete YAML: yaml.md
-- CommandLines:
-  - Core: cli/core.md
-  - Controller: cli/controller.md
-  - Node: cli/node.md
+- Usage:
+  - Installation/Configuration:
+    - Controller/Node: run/server.md
+  - CommandLines:
+    - Core: cli/core.md
+    - Controller: cli/controller.md
+    - Node: cli/node.md
 - Handlers:
   - CommandLine: handlers/commandline.md
 - Releases: releases.md
