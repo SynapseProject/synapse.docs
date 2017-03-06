@@ -27,7 +27,8 @@ pages:
     - Controller: cli/controller.md
     - Node: cli/node.md
 - Handlers:
-  - CommandLine: handlers/commandline.md
+  - Command Handler: handlers/command.md
+  - Script Handler: handlers/script.md
 - Releases: releases.md
 - Roadmap: roadmap.md
 - Support: support.md
