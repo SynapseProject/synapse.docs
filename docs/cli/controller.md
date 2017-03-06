@@ -32,8 +32,12 @@ Syntax:
                  - ServerRole:Controller
                  - WebApiPort:8008
                  - AuthenticationScheme:IntegratedWindowsAuthentication
+                 - SignatureKeyFile:
+                 - SignatureKeyContainerName:DefaultContainerName
+                 - SignatureCspProviderFlags:NoFlags
                  - c.NodeUrl:http://localhost:8000/synapse/node
                  - c.Dal:Synapse.Controller.Dal.FileSystem:FileSystemDal
+                 - c.SignPlan:True
                  - n.MaxServerThreads:0
                  - n.AuditLogRootPath:.\Logs
                  - n.Log4NetConversionPattern:%d{ISO8601}|%-5p|(%t)|%m%n
@@ -42,6 +46,10 @@ Syntax:
                  - n.ControllerUrl:http://localhost:8008/synapse/execute
                  - Run:true  (Optionally Starts the Windows Service)
 
+
+  keygen       Generate RSA key for signing Plans.
+               - keyContainerName:  Key values storage Container.
+               - filePath:          Path and filename to store key values.
 
   httpAction   Execute a command, optionally specify URL.
                Parm help: synapse.controller.cli {httpAction} help.

@@ -15,7 +15,7 @@ Releases and source code are available from GitHub and NuGet.
 ### Synapse CLI
 Synapse.CLI as a stand-alone exe.  Use this to test plans locally.
  
- - <a href="https://github.com/SynapseProject/synapse.node.net/releases" target="_blank">https://github.com/SynapseProject/synapse.node.net/releases</a>
+ - <a href="https://github.com/SynapseProject/synapse.core.net/releases" target="_blank">https://github.com/SynapseProject/synapse.core.net/releases</a>
 
 ### Synapse Server
  Includes Synapse.Controller Service, Synapse.Node Service, Synapse.Controller/Node CLIs, and Synapse.Server.HttpClient, plus FileSystem and MongoDB DALs. Default configuration for FileSystemDal.
