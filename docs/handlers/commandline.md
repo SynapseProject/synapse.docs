@@ -14,16 +14,7 @@ whatever credentails the handler is running under has rights to run "sqlplus.exe
 The config section of the plan specifies the command to execute and where it should be executed.  It also indicates how long it
 should attempt to run the command before giving up and what to do if that time is exceeded.
 
-|Element|Type|Required|Description
-|-------|----|--------|-----------
-|RunOn|String|No|Server where the command should be executed.  (Default = localhost)
-|WorkingDirectory|String|No|Directory where the command should be run from.  (Default = C:\Temp)
-|Command|String|Yes|The command to execute (ex: powershell.exe)
-|TimeoutMills|long|No|Number of milliseconds to wait before timing out. (Default = Never Timeout)
-|TimeoutAction|[Enum](#timeoutaction-values)|No|What action to take when a timeout occurs.  Click [here](#timeoutaction-values) for valid values.
-|ValidExitCodes|List of [Strings](#validexitcodes-values-and-syntax)|No|Specifies what status to report back based on exit code returned from the action exexuted Click [here](#validexitcodes-values-and-syntax) for syntax. (Default = "EqualTo 0").
-
-#### Example
+#### Sample
 ````yaml
   Handler:
     Type: Synapse.Handlers.CommandLine:CommandHandler
@@ -39,29 +30,30 @@ should attempt to run the command before giving up and what to do if that time i
         - "EqualTo 0 Complete"
 ````
 
+|Element|Type/Value|Required|Description
+|-------|----|--------|-----------
+|RunOn|String|No|Server where the command should be executed.  (Default = localhost)
+|WorkingDirectory|String|No|Directory where the command should be run from.  (Default = C:\Temp)
+|Command|String|Yes|The command to execute (ex: powershell.exe)
+|TimeoutMills|long|No|Number of milliseconds to wait before timing out. (Default = Never Timeout)
+|TimeoutAction|"Continue"<br>"Error"<br>"KillProcessAndContinue"<br>"KillProcessAndError"|No|What action to take when a timeout occurs.  Click [here](#timeoutaction-values) for detailed description of valid values.
+|ValidExitCodes|"EqualTo"<br>"NotEqualTo"<br>"LessThan"<br>"LessThanOrEqualTo"<br>"GreaterThan"<br>"GreaterThanOrEqualTo"<br>"Between"<br>"NotBetween"|No|Specifies what status to report back based on exit code returned from the action exexuted Click [here](#validexitcodes-values-and-syntax) for detailed scription of the syntax. (Default = "EqualTo 0").<br><br>**Syntax : [OPERATOR] VALUE1 [VALUE2] [STATUS]**
+
 ### Parameters
 
 The Parameters section specifies any arguments passed to the command, and optionally manipulates the argument string based on defined
 [Parser](#argument-parser-values) types.
 
-|Element|Type|Required|Description
-|-------|----|--------|-----------
-|Parser|[Enum](#argument-parser-values)|No|Tells handler how the Arguments should be parsed.  Click [here](#argument-parser-values) for valid values.  (Default = None)
-|Arguments|[Object](#arguments)|No|The Arguments section varies depending on the Parser specified.  For Parser "None", it simply takes it as a String and appends it to the command.  For other types, see [below](#arguments).
+#### Sample (Parser : None)
+````yaml
+  Parameters:
+    Type: Yaml
+    Values:
+      Parser: None
+      Arguments: -ExecutionPolicy Bypass -File C:\Temp\test-base64.ps1 -p1 aaa -p2 bbb -p3 ccc
+````
 
-#### Arguments
-When Parser = "Regex"
-
-|Element|Type|Required|Description
-|-------|----|--------|-----------
-|ArgString|String|Yes|A templated argument string used as the target for the regular expression matching.
-|Expressions|List of RegexSubstitutionType Elements (see next row)|An array of elements to match and replace against the ArgString above.
-|**RegexSubstitutuionType Element Definition :**|||
-|Find|String|Yes|Regex string to match against the ArgString
-|ReplaceWith|String|Yes|String to replace matched values with
-|Encoding|[Enum](#encodingtype-values)|No|Specifies how to encode the ReplaceWith string before replacement.  Click [here](#encodingtype-values) for valid values.  (Default = None)
-
-#### Example
+#### Sample (Parser : Regex)
 ````yaml
   Parameters:
     Type: Yaml
@@ -79,6 +71,12 @@ When Parser = "Regex"
           Encoding: Base64
 ````
 
+|Element|Type/Value|Required|Description
+|-------|----|--------|-----------
+|Parser|"None"<br>"Base64"|No|Tells handler how the Arguments should be parsed.  Click [here](#argument-parser-values) for detailed description of valid values.  (Default = None)
+|Arguments|String<br><br>or<br><br>ArgString<br>..Expressions<br>....Find<br>....ReplaceWith<br>....Encoding|No|The Arguments section varies depending on the Parser specified.  <br><br>For Parser "None", it simply takes it as a String and appends it to the command.  <br><br>For Parser "Regex", it performs a sequential regular expression replacement on the "ArgString", replacing any matches in the "Find" element with the value in the "ReplaceWith" element, optionally encoding based on the value specified in the "Encoding" element.  Click [here](#regex-arguments) for detailed view of the Regex Argument elements.
+
+
 
 # ScriptHandler
 The ScriptHandler allows a script of the [types](#scripttype-values) supported to be executed either locally, or on a remotely specified server.
@@ -90,42 +88,43 @@ The config section of the plan specifies the script to execute, any arguments ne
 and where it should be executed.  It also indicates how long it should attempt to run the command before giving up and
 what to do if that time is exceeded.
 
-|Element|Type|Required|Description
-|-------|----|--------|-----------
-|RunOn|String|No|Server where the command should be executed.  (Default = localhost)
-|WorkingDirectory|String|No|Directory where the command should be run from.  (Default = C:\Temp)
-|Type|[Enum](#scripttype-values)|Yes|Tells the handler what type of script is being executed.  Click [here](#scripttype-values) for valid values.
-|Args|String|No|Arguments passed into the script engine.
-|ScriptArgs|String|No|Arguments passed into the script.
-|ParameterType|[Enum](#parametertype-values)|No|Tells the handler whether the Parameter section is the script itself, or the location of the script.  Click [here](#parametertype-values) for valid values (Default = "Script").
-|TimeoutMills|long|No|Number of milliseconds to wait before timing out. (Default = Never Timeout)
-|TimeoutAction|[Enum](#timeoutaction-values)|No|What action to take when a timeout occurs.  Click [here](#timeoutaction-values) for valid values.
-|ValidExitCodes|List of [Strings](#validexitcodes-values-and-syntax)|No|Specifies what status to report back based on exit code returned from the action exexuted Click [here](#validexitcodes-values-and-syntax) for syntax. (Default = "EqualTo 0").
-
-#### Example
+#### Sample
 ````yaml
   Handler:
     Type: Synapse.Handlers.CommandLine:ScriptHandler
     Config:
       Type: Yaml
       Values:
+        RunOn: someserver.somedomain.com
         WorkingDirectory: C:\Temp
         Type: Powershell
         Args : -ExecutionPolicy Bypass
         ScriptArgs : "-p1 xxx -p2 yyy -p3 zzz"
+        ParameterType: Script
         TimeoutMills: 10000
         TimeoutAction: Error
         ValidExitCodes:
         - "EqualTo 0"
 ````
 
+|Element|Type/Value|Required|Description
+|-------|----|--------|-----------
+|RunOn|String|No|Server where the command should be executed.  (Default = localhost)
+|WorkingDirectory|String|No|Directory where the command should be run from.  (Default = C:\Temp)
+|Type|"Powershell"|Yes|Tells the handler what type of script is being executed.  Click [here](#scripttype-values) for detailed description of the valid values.
+|Args|String|No|Arguments passed into the script engine.
+|ScriptArgs|String|No|Arguments passed into the script.
+|ParameterType|"Script"<br>"File"|No|Tells the handler whether the Parameter section is the script itself, or the location of the script.  Click [here](#parametertype-values) for detailed description of the valid values (Default = "Script").
+|TimeoutMills|long|No|Number of milliseconds to wait before timing out. (Default = Never Timeout)
+|TimeoutAction|"Continue"<br>"Error"<br>"KillProcessAndContinue"<br>"KillProcessAndError"|No|What action to take when a timeout occurs.  Click [here](#timeoutaction-values) for detailed description of valid values.
+|ValidExitCodes|"EqualTo"<br>"NotEqualTo"<br>"LessThan"<br>"LessThanOrEqualTo"<br>"GreaterThan"<br>"GreaterThanOrEqualTo"<br>"Between"<br>"NotBetween"|No|Specifies what status to report back based on exit code returned from the action exexuted Click [here](#validexitcodes-values-and-syntax) for detailed scription of the syntax. (Default = "EqualTo 0").<br><br>**Syntax : [OPERATOR] VALUE1 [VALUE2] [STATUS]**
+
 ### Parameters
 
 The Parameters section is read in as a string.  It is either the script itself, or the location of the script to execute 
 (specified by the [ParameterType](#parametertype-values) element in the Config section.)
 
-
-#### Example
+#### Sample (ParameterType : Script)
 ````yaml
   Parameters:
     Type: Unspecified
@@ -144,7 +143,16 @@ The Parameters section is read in as a string.  It is either the script itself, 
       exit -1
 ````
 
-## Enumerations
+#### Sample (ParameterType : File)
+````yaml
+  Parameters:
+    Type: Unspecified
+    Values: C:\MyDir\MyScript.ps1
+````
+
+## Detailed Descriptions
+Below are detailed descriptions of the enumerations and synatax used in the config and parameter sections above.
+
 ### TimeoutAction Values
 Specifies what action to take when a timeout occurs.
 
@@ -226,6 +234,18 @@ Tells the CommandHandler how the values should be encoded when replaced.
 |-----|-----------
 |None|No Encoding Used.
 |Base64|Encodes value as BASE64 string.
+
+### Regex Arguments
+A detailed description of the Regex variable replacement object used in the Parameters section of the CommandHandler.
+
+|Element|Type/Value|Required|Description
+|-------|----|--------|-----------
+|ArgString|String|Yes|A templated argument string used as the target for the regular expression matching.
+|Expressions|List of RegexSubstitutionType Elements (see next row)|An array of elements to match and replace against the ArgString above.
+|**RegexSubstitutuionType Element Definition :**|||
+|Find|String|Yes|Regex string to match against the ArgString
+|ReplaceWith|String|Yes|String to replace matched values with
+|Encoding|[Enum](#encodingtype-values)|No|Specifies how to encode the ReplaceWith string before replacement.  Click [here](#encodingtype-values) for valid values.  (Default = None)
 
 ### ScriptType Values
 
