@@ -33,7 +33,8 @@ should attempt to run the command before giving up and what to do if that time i
 |WorkingDirectory|String|No|Directory where the command should be run from.  (Default = C:\Temp)
 |Command|String|Yes|The command to execute (ex: powershell.exe)
 |TimeoutMills|long|No|Number of milliseconds to wait before timing out. (Default = Never Timeout)
-|TimeoutAction|"Continue"<br>"Error"<br>"KillProcessAndContinue"<br>"KillProcessAndError"|No|What action to take when a timeout occurs.  Click [here](#timeoutaction-values) for detailed description of valid values.
+|TimeoutStatus|None<br>New<br>Initializing<br>Running<br>Waiting<br>Cancelling<br>Complete<br>Success<br>CompletedWithErrors<br>SuccessWithErrors<br>Failed<br>Cancelled<br>Tombstoned<br>Any|No|Status to return when a timeout occurs.  Click [here](#statustype-values) for more details on Synapse StatusType values.  (Default value = "None".  Return status will be evaluated based on Exit Code instead.)
+|KillRemoteProcessOnTimeout|boolean|No|Specifies whether the process running on the "RunOn" server should be terminiated when a timeout occurs.  This only applies when RunOn is specified.  Process will always terminate on timeout when RunOn is not specified.  (Default Value = false)
 |ValidExitCodes|"EqualTo"<br>"NotEqualTo"<br>"LessThan"<br>"LessThanOrEqualTo"<br>"GreaterThan"<br>"GreaterThanOrEqualTo"<br>"Between"<br>"NotBetween"|No|Specifies what status to report back based on exit code returned from the action exexuted Click [here](#validexitcodes-values-and-syntax) for detailed scription of the syntax. (Default = "EqualTo 0").<br><br>**Syntax : [OPERATOR] VALUE1 [VALUE2] [STATUS]**
 
 ### Parameters
