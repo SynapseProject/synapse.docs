@@ -20,6 +20,14 @@ what to do if that time is exceeded.
         Type: Powershell
         Args : -ExecutionPolicy Bypass
         ScriptArgs : "-p1 xxx -p2 yyy -p3 zzz"
+        Expressions: 
+        - Find: xxx
+          RepalceWith: aaa
+        - Find: yyy
+          RepalceWith: bbb
+        - Find: zzz
+          RepalceWith: ccc
+          Encoding: Base64
         ParameterType: Script
         TimeoutMills: 10000
         TimeoutAction: Error
@@ -34,6 +42,7 @@ what to do if that time is exceeded.
 |Type|"Powershell"|Yes|Tells the handler what type of script is being executed.  Click [here](#scripttype-values) for detailed description of the valid values.
 |Args|String|No|Arguments passed into the script engine.
 |ScriptArgs|String|No|Arguments passed into the script.
+|Expressions|List of :<br>- Find:<br>&nbsp;&nbsp;ReplaceWith:<br>&nbsp;&nbsp;Encoding:|No|Performs a Regular Expression replacement of both Args and ScriptArgs elements matching on element "Find" and replacing with value "ReplaceWith".  Optional "Encoding" of the value can occur.<br><br>Supported Encoding : <br>"Base64"
 |ParameterType|"Script"<br>"File"|No|Tells the handler whether the Parameter section is the script itself, or the location of the script.  Click [here](#parametertype-values) for detailed description of the valid values (Default = "Script").
 |TimeoutMills|long|No|Number of milliseconds to wait before timing out. (Default = Never Timeout)
 |TimeoutStatus|"None"<br>"New"<br>"Initializing"<br>"Running"<br>"Waiting"<br>"Cancelling"<br>"Complete"<br>"Success"<br>"CompletedWithErrors"<br>"SuccessWithErrors"<br>"Failed"<br>"Cancelled"<br>"Tombstoned"<br>"Any"|No|Status to return when a timeout occurs.  Click [here](#statustype-values) for more details on Synapse StatusType values.  (Default value = "None".  Return status will be evaluated based on Exit Code instead.)
