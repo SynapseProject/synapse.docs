@@ -18,16 +18,7 @@ what to do if that time is exceeded.
         RunOn: someserver.somedomain.com
         WorkingDirectory: C:\Temp
         Type: Powershell
-        Args : -ExecutionPolicy Bypass
-        ScriptArgs : "-p1 xxx -p2 yyy -p3 zzz"
-        Expressions: 
-        - Find: xxx
-          RepalceWith: aaa
-        - Find: yyy
-          RepalceWith: bbb
-        - Find: zzz
-          RepalceWith: ccc
-          Encoding: Base64
+        Arguments : -ExecutionPolicy Bypass
         ParameterType: Script
         TimeoutMills: 10000
         TimeoutAction: Error
@@ -39,11 +30,8 @@ what to do if that time is exceeded.
 |-------|----|--------|-----------
 |RunOn|String|No|Server where the command should be executed.  (Default = localhost)
 |WorkingDirectory|String|No|Directory where the command should be run from.  (Default = C:\Temp)
-|Type|"Powershell"|Yes|Tells the handler what type of script is being executed.  Click [here](#scripttype-values) for detailed description of the valid values.
-|Args|String|No|Arguments passed into the script engine.
-|ScriptArgs|String|No|Arguments passed into the script.
-|Expressions|List of :<br>- Find:<br>&nbsp;&nbsp;ReplaceWith:<br>&nbsp;&nbsp;Encoding:|No|Performs a Regular Expression replacement of both Args and ScriptArgs elements matching on element "Find" and replacing with value "ReplaceWith".  Optional "Encoding" of the value can occur.<br><br>Supported Encoding : <br>"Base64"
-|ParameterType|"Script"<br>"File"|No|Tells the handler whether the Parameter section is the script itself, or the location of the script.  Click [here](#parametertype-values) for detailed description of the valid values (Default = "Script").
+|Type|"Powershell"<br>"Batch"|Yes|Tells the handler what type of script is being executed.  Click [here](#scripttype-values) for detailed description of the valid values.
+|Arguments|String|No|Arguments passed into the script engine.
 |TimeoutMills|long|No|Number of milliseconds to wait before timing out. (Default = Never Timeout)
 |TimeoutStatus|"None"<br>"New"<br>"Initializing"<br>"Running"<br>"Waiting"<br>"Cancelling"<br>"Complete"<br>"Success"<br>"CompletedWithErrors"<br>"SuccessWithErrors"<br>"Failed"<br>"Cancelled"<br>"Tombstoned"<br>"Any"|No|Status to return when a timeout occurs.  Click [here](#statustype-values) for more details on Synapse StatusType values.  (Default value = "None".  Return status will be evaluated based on Exit Code instead.)
 |KillRemoteProcessOnTimeout|boolean|No|Specifies whether the process running on the "RunOn" server should be terminiated when a timeout occurs.  This only applies when RunOn is specified.  Process will always terminate on timeout when RunOn is not specified.  (Default Value = false)
@@ -51,34 +39,54 @@ what to do if that time is exceeded.
 
 ### Parameters
 
-The Parameters section is read in as a string.  It is either the script itself, or the location of the script to execute 
-(specified by the [ParameterType](#parametertype-values) element in the Config section.)
+The Parameters section specifies any arguments passed to the script, and optionally manipulates the argument string using Regular Expression replacement. 
 
-#### Sample (ParameterType : Script)
+#### Sample (Script is embedded directly in the plan)
 ````yaml
   Parameters:
-    Type: Unspecified
-    Values: |
-      param(
-        [string]$p1 = 'aaa',
-        [string]$p2 = 'bbb',
-        [string]$p3 = 'ccc'
-      )
-      write-host "P1 = [$p1]"
-      write-host "P2 = [$p2]"
-      write-host "P3 = [$p3]"
-      hostname
-      whoami
-      write-host "Hello World"
-      exit -1
+    Type: Yaml
+    Values:
+      ScriptBlock: |
+        param(
+          [string]$p1 = 'aaa',
+          [string]$p2 = 'bbb',
+          [string]$p3 = 'ccc'
+        )
+        write-host "P1 = [$p1]"
+        write-host "P2 = [$p2]"
+        write-host "P3 = [$p3]"
+        hostname
+        whoami
+        write-host "Hello World"
+        exit -1
+      Arguments: "-p1 xxx -p2 yyy -p3 zzz
+      Expressions:
+      - Find: xxx
+        ReplaceWith: ggg
+      - Find: yyy
+        ReplaceWith: hhh
+      - Find: zzz
+        ReplaceWith iii
+        Encoding: Base64
 ````
 
-#### Sample (ParameterType : File)
+#### Sample (Script is in a seperate file)
 ````yaml
   Parameters:
-    Type: Unspecified
-    Values: C:\MyDir\MyScript.ps1
+    Type: Yaml
+    Values:
+      Script: C:\MyDir\MyScript.ps1
+      Arguments: "-p1 xxx -p2 yyy -p3 zzz"
 ````
+
+|Element|Type/Value|Required|Description
+|-------|----|--------|-----------
+|Script|String|Yes*|Specifies a file where the script is saved.  Handler will run script from that location.
+|ScriptBlock|String|Yes*|Specifies a block of code to run as a script.  String is saved into a temp file and executed.
+|Arguments|String|No|The arguments passed into the script.
+|Expressions|List of :<br>- Find:<br>..ReplaceWith:<br>..Encoding:|No|Performs a Regular Expression replacement of the Arguments element matching on element "Find" and replacing with value "ReplaceWith".  Optional "Encoding" of the value can occur.<br><br>Supported Encoding : <br>"Base64"<br><br>Click [here](#regex-arguments) for detailed description of each element.
+
+\* **Either Script or ScriptBlock must exist, but not both.**
 
 ## Detailed Descriptions
 Below are detailed descriptions of the enumerations and synatax used in the config and parameter sections above.
@@ -89,26 +97,8 @@ Tells the ScriptHandler what type of script it is executing.
 
 |Value|Description
 |-----|-----------
-|Powershell|Indicates the script to run is a Powershell script.
-
-### ParameterType Values
-
-Tells the ScriptHandler how the Parameters section of the plan should be treated.
-
-|Value|Description
-|-----|-----------
-|Script|Tells the handler that the Paramter value is the script itself.
-|File|Tells the handler that the Parameter value is a file that contians the script.
-
-### TimeoutAction Values
-Specifies what action to take when a timeout occurs.
-
-|Value|Description
-|-----|-----------
-|Continue|Ignore the timeout and continue.  Leave remote process running.
-|Error|Stop plan execution and return error status.  Leave remote process running.
-|KillProcessAndContinue|Ignore the itmeout and continue.  Kill remotely running process.
-|KillProcessAndError|Stop plan execution and return error status.  Kill remomtely running process.
+|Powershell|Indicates the script to run is a Powershell script.  Runs using powershell.exe
+|Batch|Indicates the script to run is a Windows Batch script.  Runs using cmd.exe
 
 ### ValidExitCodes Values and Syntax
 A space-delimited string that specifies exit codes and what status they represent.
@@ -163,3 +153,12 @@ namespace Synapse.Core
     }
 }
 ````
+
+### Regex Arguments
+A detailed description of the Regex variable replacement object used in the Parameters section of the CommandHandler.
+
+|Element|Type/Value|Required|Description
+|-------|----|--------|-----------
+|Find|String|Yes|Regex string to match against the Argument string.
+|ReplaceWith|String|Yes|String to replace matched values with
+|Encoding|[Enum](#encodingtype-values)|No|Specifies how to encode the ReplaceWith string before replacement.  Click [here](#encodingtype-values) for valid values.  (Default = None)
