@@ -62,6 +62,32 @@ The Parameters section specifies any arguments passed to the command, and option
 |Arguments|String|No|The arguments passed into the command.
 |Expressions|List of :<br>- Find:<br>..ReplaceWith:<br>..Encoding:|No|Performs a Regular Expression replacement of the Arguments element matching on element "Find" and replacing with value "ReplaceWith".  Optional "Encoding" of the value can occur.<br><br>Supported Encoding : <br>"Base64"<br><br>Click [here](#regex-arguments) for detailed description of each element.
 
+## Parameter Substitution
+The command handler allows for certain Synapse data to be passed into the command arguments via parameter substitution.  These "variables" are specified by enclosing the parameter name between double-tilde delimeters like "~~ PARAMETER ~~".  These parameter names are case insenstive and any white space between the tildes is ignored.
+
+````yaml
+Parameters:
+    Type: Yaml
+    Values:
+      Arguments : -ExecutionPolicy Bypass -File C:\Hold\test.ps1 -p1 "~~IsDryRun~~" -p2 "bbb" -p3 "ccc"
+      Expressions:
+      - Find: bbb
+        ReplaceWith: Action Name = ~~actionName~~
+      - Find: ccc
+        ReplaceWith: ~~ rUnTiMeTiMeTyPe ~~
+````
+
+### Available Handler Variables
+|Variable|Native Type|Passed As|Description
+|--------|-----------|---------|----------
+|InstanceId|Long|String|Unique Identifier for this run of Synapse.
+|IsDryRun|Boolean|"True" or "False"|Flag indicating whether this is a true "run" of the hander, or a test.
+|ParentExitData|Object|Base64 Encoded Result of "ToString()"|Standard Output and Standard Error logs from the command.
+|RequestNumber|String|String|Id tying the run back to a change request.
+|RequestUser|String|String|User making the request.
+|ActionName|String|String|Action name from the plan document.
+|RuntimeType|String|String|Description of which handler dll was being used by Synapse.
+
 ## Detailed Descriptions
 Below are detailed descriptions of the enumerations and synatax used in the config and parameter sections above.
 
