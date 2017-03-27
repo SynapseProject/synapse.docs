@@ -81,6 +81,8 @@ Parameters:
 |Variable|Native Type|Passed As|Description
 |--------|-----------|---------|----------
 |InstanceId|Long|String|Unique Identifier for this run of Synapse.
+|PlanInstanceId|Long|String|Unique Identifier for this run of Synapse. (Same as InstanceId)
+|ActionInstanceId|Long|String|Unique Identifier for this action in this run of Synapse.
 |IsDryRun|Boolean|"True" or "False"|Flag indicating whether this is a true "run" of the hander, or a test.
 |ParentExitData|Object|Base64 Encoded Result of "ToString()"|Standard Output and Standard Error logs from the command.
 |RequestNumber|String|String|Id tying the run back to a change request.
