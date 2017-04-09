@@ -35,6 +35,11 @@ Runtime Workflow Engine, POCOs.
  
  - <a href="https://www.nuget.org/packages/Synapse.Core.Signed" target="_blank">https://www.nuget.org/packages/Synapse.Core.Signed</a>
 
+### Synapse.Server.Extensibility
+Helper classes for extensting Synapse.Controller with custom ApiControllers.
+ 
+ - <a href="https://www.nuget.org/packages/Synapse.Server.Extensibility" target="_blank">https://www.nuget.org/packages/Synapse.Server.Extensibility</a>
+
 ### Server HttpClient
 For programmatic integration with the Controller/Node REST interfaces.
  

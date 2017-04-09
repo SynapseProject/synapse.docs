@@ -26,6 +26,9 @@ pages:
     - Core: cli/core.md
     - Controller: cli/controller.md
     - Node: cli/node.md
+  - SDK:
+    - Custom Handlers: sdk/handlers.md
+    - Custom Controller Interface: sdk/controller.md
 - Handlers:
   - Command Handler: handlers/command.md
   - Script Handler: handlers/script.md
