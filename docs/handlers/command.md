@@ -22,10 +22,11 @@ should attempt to run the command before giving up and what to do if that time i
         WorkingDirectory: C:\Temp
         Command: powershell.exe
         TimeoutMills: 10000
-        TimeoutAction: Error
-        ReturnStdout: true
+        TimeoutStatus: Failed
+        KillRemoteProcessOnTimeout: true
         ValidExitCodes:
         - "EqualTo 0 Complete"
+        ReturnStdout: true
 ````
 
 |Element|Type/Value|Required|Description
@@ -37,7 +38,7 @@ should attempt to run the command before giving up and what to do if that time i
 |TimeoutStatus|"None"<br>"New"<br>"Initializing"<br>"Running"<br>"Waiting"<br>"Cancelling"<br>"Complete"<br>"Success"<br>"CompletedWithErrors"<br>"SuccessWithErrors"<br>"Failed"<br>"Cancelled"<br>"Tombstoned"<br>"Any"|No|Status to return when a timeout occurs.  Click [here](#statustype-values) for more details on Synapse StatusType values.  (Default value = "None".  Return status will be evaluated based on Exit Code instead.)
 |KillRemoteProcessOnTimeout|boolean|No|Specifies whether the process running on the "RunOn" server should be terminiated when a timeout occurs.  This only applies when RunOn is specified.  Process will always terminate on timeout when RunOn is not specified.  (Default Value = false)
 |ValidExitCodes|"EqualTo"<br>"NotEqualTo"<br>"LessThan"<br>"LessThanOrEqualTo"<br>"GreaterThan"<br>"GreaterThanOrEqualTo"<br>"Between"<br>"NotBetween"|No|Specifies what status to report back based on exit code returned from the action exexuted Click [here](#validexitcodes-values-and-syntax) for detailed scription of the syntax. (Default = "EqualTo 0").<br><br>**Syntax : [OPERATOR] VALUE1 [VALUE2] [STATUS]**
-|ReturnStdout|boolean|No|Specifies whether or not StdOut / Stderr should be returned in the ExitData field and made available in the ParentExitData element for future actions. (Default Value = true)<br><br>Used mostly when excessive script output being stored in memory becomes a memory usage issue for the handler.
+|ReturnStdout|boolean|No|Specifies whether or not StdOut / Stderr should be returned in the ExitData field and made available in the ParentExitData element for future actions. (Default Value = true)<br><br>Used mostly when excessive command output being stored in memory becomes a memory usage issue for the handler.
 
 ### Parameters
 

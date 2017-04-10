@@ -21,10 +21,11 @@ what to do if that time is exceeded.
         Arguments : -ExecutionPolicy Bypass
         ParameterType: Script
         TimeoutMills: 10000
-        TimeoutAction: Error
-        ReturnStdout: true
+        TimeoutStatus: Failed
+        KillRemoteProcessOnTimeout: true
         ValidExitCodes:
         - "EqualTo 0"
+        ReturnStdout: true
 ````
 
 |Element|Type/Value|Required|Description
