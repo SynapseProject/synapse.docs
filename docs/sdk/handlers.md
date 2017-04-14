@@ -4,7 +4,7 @@ Synapse Handlers provide techncial capability to the Synapse Workflow Engine.  C
 
 ## "Free" Extensibility
 
-Perhaps the easist way to add capability is the through the existing CommandHandler.  The CommandHandler can already execute any arbitrary command-line, and has special helper interfaces for scripts and batch files.  You can create new "technical modules" as scripts or whole logical processing workflows and integrate via the CommandHandler, as-is.  See the <a href="https://github.com/SynapseProject/synapse.examples/tree/develop/Plans/CommandLine" target="_blank">CommandHandler Examples (develop branch)</a>.
+Perhaps the easist way to add capability is the through the existing CommandHandler.  The CommandHandler can already execute any arbitrary command-line, and has special helper interfaces for scripts and batch files.  You can create new "technical modules" as scripts or whole logical processing workflows and integrate via the CommandHandler, as-is.  See the <a href="https://github.com/SynapseProject/synapse.examples/tree/develop/Plans/CommandLine" target="_blank">CommandHandler Examples (develop branch)</a>.  You can also [read the docs](/handlers/command/ "CommandHandler").
 
 ## Code-based Custom Handlers
 
@@ -24,9 +24,9 @@ At a high level, the implementation flows as:
 ```java
     public interface IHandlerRuntime
     {
-        //implmement simple getter/settet; value set by the runtime engine
+        //implmement simple getter/setter; value set by the runtime engine
         string ActionName { get; set; }
-        //implmement simple getter/settet; value set by the runtime engine
+        //implmement simple getter/setter; value set by the runtime engine
         string RuntimeType { get; set; }
 
         IHandlerRuntime Initialize(string config);
