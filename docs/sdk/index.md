@@ -16,7 +16,7 @@ Creating a custom Handler is intentionally a straighforward, easy to understand 
 4. Return "Exit Data" (could simply be exit/summary data, or any complex data-return requirement)
 
 <p align="center">
-<img alt="Synapse Handler" src="../../img/syn_handler.png" />
+<img alt="Synapse Handler" src="../img/syn_handler.png" />
 </p>
 
 
@@ -31,7 +31,7 @@ Custom ApiControllers are for extending the "look & feel" of Synapse's API, or f
 If you want to use the Synapse Controller capability, but you want a more natural feel to your REST API, you may choose to inject a custom Microsoft Web Api ApiController into the Synapse Controller.  Custom ApiControllers participate in the REST transaction pipeline independent from the native Synapse Controller interfaces, thus enabling complete control of input data, processing, and return data.
 
 <p align="center">
-<img alt="Synapse Custom ApiContoller" src="../../img/syn_customContoller.png" />
+<img alt="Synapse Custom ApiContoller" src="../img/syn_customContoller.png" />
 </p>
 
 For more detailed information and links to code expamples, see the [Controllers SDK page](/sdk/controller/ "Controllers SDK page").
