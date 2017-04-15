@@ -27,6 +27,7 @@ pages:
     - Controller: cli/controller.md
     - Node: cli/node.md
   - SDK:
+    - About: sdk/index.md
     - Custom Handlers: sdk/handlers.md
     - Custom Controller Interface: sdk/controller.md
 - Handlers:
