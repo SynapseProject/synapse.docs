@@ -34,6 +34,10 @@ Actions:
   {Actions}
 RunAs:
   {SecurityContext}
+Crypto:
+  KeyFile: {RSA key}
+  Elements:
+  - {list of Plan elements to encrypt}
 StartInfo:
   RequestNumber: 12345
   RequestUser: John Doe

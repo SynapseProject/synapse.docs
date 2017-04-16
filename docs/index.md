@@ -21,10 +21,15 @@ Actions:
   {Actions}
 RunAs:
   {SecurityContext}
+Crypto:
+  KeyFile: {RSA key}
+  Elements:
+  - {list of Plan elements to encrypt}
 StartInfo:
   RequestNumber: {string, contextual execution data}
   RequestUser: {string, contextual execution data}
 ```
+
 `Action` definition:
 ```yaml
 Action:
