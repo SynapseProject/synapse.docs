@@ -31,8 +31,13 @@ pages:
     - Custom Handlers: sdk/handlers.md
     - Custom Controller Interface: sdk/controller.md
 - Handlers:
-  - Command Handler: handlers/command.md
-  - Script Handler: handlers/script.md
+  - CommandLine:
+    - Command Handler: handlers/commandline/command.md
+    - Script Handler: handlers/commandline/script.md
+  - Database:
+    - SqlServer: handlers/sql/sqlserver.md
+    - Oracle: handlers/sql/oracle.md
+    - Odbc: handlers/sql/odbc.md
 - Releases: releases.md
 - Roadmap: roadmap.md
 - Support: support.md
