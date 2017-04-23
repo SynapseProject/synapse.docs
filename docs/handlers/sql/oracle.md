@@ -42,7 +42,7 @@ Connection String information can be found online.  A good resource can be found
 
 ### Parameters
 
-The Parameters section specifies any arguments passed to the command, and optionally manipulates the argument string using Regular Expression replacement. 
+The Parameters section specifies the sql statement or stored procedure that is to be executed, and any parameters to that command or stored procedure.
 
 #### Samples
 ````yaml

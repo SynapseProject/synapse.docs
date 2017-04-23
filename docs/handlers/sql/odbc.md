@@ -25,7 +25,7 @@ The config section of the plan specifies the information needed to connect to th
 
 ### Parameters
 
-The Parameters section specifies any arguments passed to the command, and optionally manipulates the argument string using Regular Expression replacement. 
+The Parameters section specifies the sql statement or stored procedure that is to be executed, and any parameters to that command or stored procedure. 
 
 #### Samples
 ````yaml
