@@ -14,6 +14,7 @@ The config section of the plan specifies the information needed to connect to th
         ConnectionString: DSN=SQL_SANDBOX
         OutputType: Yaml
         OutputFile: C:\Temp\output.yaml
+        PrettyPrint: false
 ````
 
 
@@ -22,6 +23,7 @@ The config section of the plan specifies the information needed to connect to th
 |ConnectionString|String|Yes|The raw connection string used to connect to the database.  The format of the string is purely dependant on the ODBC driver used.  Check your driver documentation or [http://connectionstrings.com](http://www.connectionstrings.com) for the exact format.
 |OutputType|"None"<br>"Csv"<br>"Xml"<br>"Json"<br>"Yaml"|No|Specifies the format for the results and/or paramters returned from the call.  Default = "Csv"
 |OutputFile|String|No|When provided, indicates the results returned from the call should be written to a file instead of being returned in ExitData.  This should be used when the size of the result set is too great to store in memory.
+|PrettyPrint|bool|No|Formats Json and Xml output with line breaks and indention.  (Default = false)
 
 ### Parameters
 

@@ -16,8 +16,9 @@ The config section of the plan specifies the information needed to connect to th
         Database: SANDBOX
         IntegratedSecurity: true
         ConnectionTimeout: 30
-        OutputType: Yaml
-        OutputFile: C:\Temp\output.yaml
+        OutputType: Xml
+        OutputFile: C:\Temp\output.xml
+        PrettyPrint: true
 ````
 ````yaml
     Config:
@@ -25,6 +26,7 @@ The config section of the plan specifies the information needed to connect to th
       Values:
         ConnectionString: data source=localhost;Integrated Security=SSPI;database=SANDBOX;connection timeout=30;
         OutputType: Xml
+        PrettyPrint: false
 ````
 
 
@@ -40,6 +42,7 @@ The config section of the plan specifies the information needed to connect to th
 |ConnectionString|String|No*|The raw connection string used to connect to the database.  The handler uses the [.NET Framework Data Provider for SQL Server](https://www.connectionstrings.com/sql-server/) format to connect.
 |OutputType|"None"<br>"Csv"<br>"Xml"<br>"Json"<br>"Yaml"|No|Specifies the format for the results and/or paramters returned from the call.  Default = "Csv"
 |OutputFile|String|No|When provided, indicates the results returned from the call should be written to a file instead of being returned in ExitData.  This should be used when the size of the result set is too great to store in memory.
+|PrettyPrint|bool|No|Formats Json and Xml output with line breaks and indention.  (Default = false)
 
 \* Note: Either "ConnectionString" or "Datasource, User, Password, etc.." must be provided, but not both.
 
