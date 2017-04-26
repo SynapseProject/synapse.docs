@@ -38,8 +38,9 @@ The config section of the plan specifies the information needed to connect to th
 |Database|String|No*|Adds "database=xxxx;" to the connection string.
 |IntegratedSecurity|bool|No*|Adds "Integrated Security=SSPI;" to the connection string.
 |TrustedConnection|bool|No*|Adds "Trusted_Connection=yes" to the connection string.
-|ConnectionTimeout|int|No*|Adds "connection timeout=" to the connection string.
+|ConnectionTimeout|int|No|Adds "Connection Timeout=xxxx" to the connection string.  (Default = 15 seconds)
 |ConnectionString|String|No*|The raw connection string used to connect to the database.  The handler uses the [.NET Framework Data Provider for SQL Server](https://www.connectionstrings.com/sql-server/) format to connect.
+|CommandTimeout|int|No|Sets number of seconds to wait for the command to execute.  (Default value = 30 seconds).
 |OutputType|"None"<br>"Csv"<br>"Xml"<br>"Json"<br>"Yaml"|No|Specifies the format for the results and/or paramters returned from the call.  Default = "Csv"
 |OutputFile|String|No|When provided, indicates the results returned from the call should be written to a file instead of being returned in ExitData.  This should be used when the size of the result set is too great to store in memory.
 |PrettyPrint|bool|No|Formats Json and Xml output with line breaks and indention.  (Default = false)

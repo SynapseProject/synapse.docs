@@ -21,6 +21,8 @@ The config section of the plan specifies the information needed to connect to th
 |Element|Type/Value|Required|Description
 |-------|----|--------|-----------
 |ConnectionString|String|Yes|The raw connection string used to connect to the database.  The format of the string is purely dependant on the ODBC driver used.  Check your driver documentation or [http://connectionstrings.com](http://www.connectionstrings.com) for the exact format.
+|ConnectionTimeout|int|No|Sets number of seconds to wait for a connection to open.  (Default value = 15 seconds).
+|CommandTimeout|int|No|Sets number of seconds to wait for the command to execute.  (Default value = 30 seconds).
 |OutputType|"None"<br>"Csv"<br>"Xml"<br>"Json"<br>"Yaml"|No|Specifies the format for the results and/or paramters returned from the call.  Default = "Csv"
 |OutputFile|String|No|When provided, indicates the results returned from the call should be written to a file instead of being returned in ExitData.  This should be used when the size of the result set is too great to store in memory.
 |PrettyPrint|bool|No|Formats Json and Xml output with line breaks and indention.  (Default = false)
