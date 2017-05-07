@@ -21,7 +21,14 @@ pages:
     - Complete YAML: yaml.md
 - Usage:
   - Installation/Configuration:
-    - Controller/Node: run/server.md
+    - Controller/Node: run/setup.md
+    - Data Access Layer: run/dal.md
+#    - SSL/TLS: run/ssl.md
+#    - Encrypting Plans: run/crypto.md
+  - Web API:
+    - Controller: run/controller.md
+    - Node: run/node.md
+    - Swagger: run/swagger.md
   - CommandLines:
     - Core: cli/core.md
     - Controller: cli/controller.md
