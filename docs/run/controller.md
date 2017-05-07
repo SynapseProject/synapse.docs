@@ -28,7 +28,7 @@ The Synapse Controller /part/ interface is designed to allow selection of one or
 
 ### Syntax
 
-Selecting Plan elements requires a rooted path, expressed asshown below.  If an element is part of a list, use a index specifier.
+Selecting Plan elements requires a rooted path, expressed as shown below.  If an element is part of a list, use a index specifier.
 
 - element:element:element:etc.
 - element[index]:element:element[index]:element:etc.
