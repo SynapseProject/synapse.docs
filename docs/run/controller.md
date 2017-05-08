@@ -47,4 +47,4 @@ To return "native" data formats from the Synapse Controller API, specify the ser
 - XML
 - Unspecified
 
-YAML/JSON/XML will attempt to parse the element data into the specified format before returing it.  "Unspecified" will return the data, as-is.
+YAML/JSON/XML will attempt to parse the element data into the specified format before returning it.  "Unspecified" will return the data, as-is.
