@@ -5,37 +5,44 @@ Installing and configuring Synapse.Server is accompished via the CLI ([Controlle
 ### Common Settings
 
 ```yaml
-ServiceName: Synapse.Controller
-ServiceDisplayName: Synapse Controller
-ServerRole: Controller
-WebApiPort: 20000
-AuthenticationScheme: IntegratedWindowsAuthentication
-AuthenticationConfig:
-  {authentication provider initialization config}
-SignatureKeyFile: .\path\RsaKeyFileName.xml
-SignatureKeyContainerName: DefaultContainerName
-SignatureCspProviderFlags: NoFlags
+Service:
+  Name: Synapse.Server
+  DisplayName: Synapse Server
+  Role: Server
+WebApi:
+  Host: localhost
+  Port: 20000
+  IsSecure: false
+  Authentication:
+    Scheme: IntegratedWindowsAuthentication
+    Config: 
+      {authentication provider initialization config}
+Signature:
+  KeyUri: .\path\RsaKeyFileName.xml
+  KeyContainerName: 
+  CspProviderFlags: NoFlags
 ```
 
 |Name|Description
 |-|-
-|ServiceName & ServiceDisplayName|These values are only used when Installing Synapse.Server as a Windows Service.  Provide uniquely named values to run multiple instances of the services side-by-side.  The default values shown in the examples below will be modified to reflect Synapse.Controller or Synapse.Node (depending on role) under a default installation.  Alternatively, you may specify values directly.   _Note:_ Each unique instance of Synapse.Server should be distributed to an independent folder.  _Note:_ Do not modify these values _after_ installation.  You must first _uninstall_ the service, then modify and re-install.
-|ServerRole|`Controller` or `Node`
-|WebApiPort|Select a port value.
-|WebApiIsSecure|Indicates if service is configured for SSL/TLS.
-|AuthenticationScheme|Authentication  options.  See <a href="https://msdn.microsoft.com/en-us/library/system.net.authenticationschemes(v=vs.110).aspx" target="_blank">MSDN</a> for details.
-|AuthenticationConfig|Proprietary configuration for specific authentication providers.  See [Configuring Basic Authentication] below.
-|SignatureKeyFile|Filepath to RSA key file.  For a Controller instance, the keyfile must contain public and prvite key values.  For a Node instance, the keyfile must contain only the public key value.  If running both the Controller and Node from a single distribution, the keyfile must contain public and prvite key values.  To generate new RsaKeyFiles, use synapse.controller.cli *genkeys* option.  See CLI help for details.
-|SignatureKeyContainerName|The name of the container in which to look for key values.  A keyfile may contain multiple containers.
-|SignatureCspProviderFlags|CspProviderFlags options.  See <a href="https://msdn.microsoft.com/en-us/library/system.security.cryptography.cspproviderflags(v=vs.110).aspx" target="_blank">MSDN</a> for details.
+|Service Name & DisplayName|These values are only used when Installing Synapse.Server as a Windows Service.  Provide uniquely named values to run multiple instances of the services side-by-side.  The default values shown in the examples below will be modified to reflect Synapse.Controller or Synapse.Node (depending on role) under a default installation.  Alternatively, you may specify values directly.   _Note:_ Each unique instance of Synapse.Server should be distributed to an independent folder.  _Note:_ Do not modify these values _after_ installation.  You must first _uninstall_ the service, then modify and re-install.
+|Role|`Controller` or `Node` or `Server`
+|Web:ApiPort|Select a port value.
+|WebApi:IsSecure|Indicates if service is configured for SSL/TLS.
+|Authentication:Scheme|Authentication  options.  See <a href="https://msdn.microsoft.com/en-us/library/system.net.authenticationschemes(v=vs.110).aspx" target="_blank">MSDN</a> for details.
+|Authentication:Config|Proprietary configuration for specific authentication providers.  See [Configuring Basic Authentication] below.
+|Signature:KeyUri|Filepath to RSA key file.  For a Controller instance, the keyfile must contain public and prvite key values.  For a Node instance, the keyfile must contain only the public key value.  If running both the Controller and Node from a single distribution, the keyfile must contain public and prvite key values.  To generate new RsaKeyFiles, use synapse.controller.cli *genkeys* option.  See CLI help for details.
+|Signature:KeyContainerName|The name of the container in which to look for key values.  A keyfile may contain multiple containers.
+|Signature:CspProviderFlags|CspProviderFlags options.  See <a href="https://msdn.microsoft.com/en-us/library/system.security.cryptography.cspproviderflags(v=vs.110).aspx" target="_blank">MSDN</a> for details.
 
 #### Configuring Basic Authentication
 
 ```yaml
-AuthenticationScheme: Basic
-AuthenticationConfig:
-  LdapRoot:
-  Domain: {Active Directory Domain}
+Authentication:
+  Scheme: Basic
+  Config:
+    LdapRoot:
+    Domain: {Active Directory Domain}
 ```
 
 |Name|Description
@@ -48,6 +55,11 @@ AuthenticationConfig:
 Binaries to support extended authentication paradigms are in the [controller-folder]/Authentication subfolder.
 
 ### Controller Settings
+
+Use `synapse.controller.cli install [run:true|false]` to install.
+
+ - If a `synapse.server.config.yaml` file is present, the installer will use the settings in the file, as-is. 
+ - If no `synapse.server.config.yaml` file is present, the installer will create a file with default values.
 
 ```yaml
 Controller:
@@ -71,7 +83,12 @@ Controller:
 
 Locate binaries to support custom ApiControllers in the [controller-folder]/Assemblies subfolder.  Create an additional subfolder per ApiController, as follows: [controller-folder]/Assemblies/[library name].
 
-### Synapse.Server.config.yaml Node Example:
+### Node Settings:
+
+Use `synapse.node.cli install [run:true|false]` to install.
+
+ - If a `synapse.server.config.yaml` file is present, the installer will use the settings in the file, as-is. 
+ - If no `synapse.server.config.yaml` file is present, the installer will create a file with default values.
 
 ```yaml
 Node:
@@ -96,3 +113,13 @@ Node:
 #### Handlers Subfolder
 
 Locate binaries to support Handlers in the [node-folder]/Handlers subfolder.  Create an additional subfolder per Handler, as follows: [controller-folder]/Handlers/[library name].
+
+### Install Synapse Server as "Dual"
+
+You may install Synapse Server under a single folder, supporting both the Controller and the Node, as follows:
+
+Use `synapse.server.exe install [run:true|false]` to install.
+
+ - If a `synapse.server.config.yaml` file is present, the installer will use the settings in the file, as-is. 
+ - If no `synapse.server.config.yaml` file is present, the installer will create a file with default values.
+

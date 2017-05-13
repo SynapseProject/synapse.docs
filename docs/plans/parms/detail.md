@@ -2,6 +2,15 @@
 
 ParameterInfo blocks are configuration information used to initialize Handler modules and pass runtime invocation data to Handler methods.  Additionally, a ParameterInfo block declares the start-up configuration for SecurityContext modules.
 
+## Example per SerializationType
+
+|Serialization | Basic | ForEach
+|-|-|-
+|YAML | [Basic](/plans/parms/yaml/basic/) | [ForEach](/plans/parms/yaml/foreach/)
+|JSON | [Basic](/plans/parms/json/basic/) | [ForEach](/plans/parms/json/foreach/)
+|XML | [Basic](/plans/parms/xml/basic/) | [ForEach](/plans/parms/xml/foreach/)
+
+
 ## Detailed Field Description
 
 #### Name

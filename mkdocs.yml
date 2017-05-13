@@ -8,16 +8,6 @@ pages:
   - Parameters: plans/parms/detail.md
   - Handlers: plans/handlers.md
   - Examples:
-    - Parameters:
-      - YAML:
-        - Basic: plans/parms/yaml/basic.md
-        - ForEach: plans/parms/yaml/foreach.md
-      - JSON:
-        - Basic: plans/parms/json/basic.md
-        - ForEach: plans/parms/json/foreach.md
-      - XML:
-        - Basic: plans/parms/xml/basic.md
-        - ForEach: plans/parms/xml/foreach.md
     - Complete YAML: yaml.md
 - Usage:
   - Installation/Configuration:
@@ -48,4 +38,16 @@ pages:
 - Releases: releases.md
 - Roadmap: roadmap.md
 - Support: support.md
+- Examples:
+  - Parameters:
+    - YAML:
+      - Basic: plans/parms/yaml/basic.md
+      - ForEach: plans/parms/yaml/foreach.md
+    - JSON:
+      - Basic: plans/parms/json/basic.md
+      - ForEach: plans/parms/json/foreach.md
+    - XML:
+      - Basic: plans/parms/xml/basic.md
+      - ForEach: plans/parms/xml/foreach.md
+  - Complete YAML: yaml.md
 theme: readthedocs

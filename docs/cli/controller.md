@@ -6,6 +6,14 @@ Download the latest build of Synapse.Controller.cli from GitHub: <a href="https:
 
 Synapse.Controller.cli is a wrapper on Syanpse.Server.HttpClient, invoking the Controller REST interface.  Synapse.Server.HttpClient is available to download as a NuGet package: <a href="https://www.nuget.org/packages/Synapse.Server.HttpClient" target="_blank">https://www.nuget.org/packages/Synapse.Server.HttpClient</a>.  Syanpse.Server.HttpClient is suitable for programmatic Synapse integration.
 
+## Service Runtime Support
+
+|Command|Description
+|-|-
+|install|Installs Syanpse.Server pre-configured as Controller
+|uninstall|Uninstalls this instance of Syanpse.Server
+|run|Runs Syanpse.Server as cmdline daemon, pre-configured as Controller
+
 ## CommandLine Help:
 
 ```dos
@@ -24,28 +32,9 @@ Syntax:
 
   service      Install/Uninstall the Windows Service, or Run the Service
                as a cmdline-hosted daemon.
-               - Commands: install|uninstall|run
-               - Example:  synapse.controller.cli service run
-               - Optional install args, use argname:value.  Defaults shown.
-                 - ServiceName:Synapse.[Controller/Node]
-                 - ServiceDisplayName:Synapse [Controller/Node]
-                 - ServerRole:Controller
-                 - WebApiPort:8008
-                 - AuthenticationScheme:IntegratedWindowsAuthentication
-                 - SignatureKeyFile:
-                 - SignatureKeyContainerName:DefaultContainerName
-                 - SignatureCspProviderFlags:NoFlags
-                 - c.NodeUrl:http://localhost:8000/synapse/node
-                 - c.Dal:Synapse.Controller.Dal.FileSystem:FileSystemDal
-                 - c.SignPlan:True
-                 - n.MaxServerThreads:0
-                 - n.AuditLogRootPath:.\Logs
-                 - n.Log4NetConversionPattern:%d{ISO8601}|%-5p|(%t)|%m%n
-                 - n.SerializeResultPlan:True
-                 - n.ValidatePlanSignature:True
-                 - n.ControllerUrl:http://localhost:8008/synapse/execute
-                 - Run:true  (Optionally Starts the Windows Service)
-
+               - Commands: install [run:true|false] | uninstall | run
+               - Example:  synapse.controller.cli service install run:false
+                           synapse.controller.cli service run
 
   keygen       Generate RSA key for signing Plans.
                - keyContainerName:  Key values storage Container.
