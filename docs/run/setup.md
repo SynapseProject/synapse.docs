@@ -1,6 +1,22 @@
 # Synapse Server
 
-Installing and configuring Synapse.Server is accompished via the CLI ([Controller](/cli/controller/ "Controller command-line"), [Node](/cli/node/ "Node command-line")).  In either case, the code distribution is the same - you're simply choosing to run either as a Controller or Node.  The important settings for determining role are in `Synapse.Server.config.yaml`.  When extracting Synapse Server for setup. no Synapse.Server.config.yaml is present by default.  Synapse will generate a new, complete Synapse.Server.config.yaml wen you install the service, or by running the Controller/Node CLIs (for any reason).
+## Installation
+
+Installing and configuring Synapse.Server is accompished via the CLI ([Controller](/cli/controller/ "Controller command-line"), [Node](/cli/node/ "Node command-line"), [Server](/cli/server/ "Server command-line")).  In all cases, the code distribution is the same - you're simply choosing to run either as a Controller, Node, or both.  The important settings for determining role are in `Synapse.Server.config.yaml`.  When extracting Synapse Server for setup, no Synapse.Server.config.yaml is present by default.  Synapse will generate a new, complete Synapse.Server.config.yaml when you install the service, or by running the Controller/Node/Server CLIs.
+
+### To install Synapse.Server:
+
+1. Download the latest build from GitHub: <a href="https://github.com/SynapseProject/synapse.server.net/releases" target="_blank">https://github.com/SynapseProject/synapse.server.net/releases</a>.
+2. Extract the contents of the zip into one folder for a "dual" install (Controller/Node running in a single process), or two folders (by convention: .\Controller & .\Node) to run as separate processes.  For a distributed-node deployment, extract the contents in remote locations, as desired.
+3. Run `synapse.server install [run:true|false]` in the single folder, or `synapse.controller.cli install [run:true|false]` and `synapse.node.cli install [run:true|false]` in the separate folders.
+
+### Notes:
+* Optionally, you may execute `Synapse.Controller.setup.cmd`/`Synapse.Node.setup.cmd`.  These run the install commands as shown above, and also delete unnecessary files/folders in a split deployment.
+* **Important**: Each CLI above will generate a Synapse.Server.config.yaml file if none is present, pre-configured for the installation option of choice.  However, if a Synapse.Server.config.yaml is already present, the installation will use the existing file, as-is, to install/execute the service.
+
+## Configuration
+
+Synapse.Server.config.yaml contains the settings that determine role and behavior of the installation.  Settings are read at server startup; if you change the settings, you need to restart Synapse.Server.exe for the changes to take effect.  The settings are divided into three sections, as shown below: Common (applies to both Controller and Node), Controller (-specific), and Node (-specific).
 
 ### Common Settings
 
@@ -25,8 +41,8 @@ Signature:
 
 |Name|Description
 |-|-
-|Service Name & DisplayName|These values are only used when Installing Synapse.Server as a Windows Service.  Provide uniquely named values to run multiple instances of the services side-by-side.  The default values shown in the examples below will be modified to reflect Synapse.Controller or Synapse.Node (depending on role) under a default installation.  Alternatively, you may specify values directly.   _Note:_ Each unique instance of Synapse.Server should be distributed to an independent folder.  _Note:_ Do not modify these values _after_ installation.  You must first _uninstall_ the service, then modify and re-install.
-|Role|`Controller` or `Node` or `Server`
+|Service:Name & :DisplayName|These values are only used when installing Synapse.Server as a Windows Service.  Provide uniquely named values to run multiple instances of the services side-by-side.  The default values shown in the examples below will be modified to reflect Synapse.Controller or Synapse.Node (depending on role) under a default installation.  Alternatively, you may specify values directly.   **Note:** Each unique instance of Synapse.Server should be distributed to an independent folder.  **Note:** Do not modify these values _after_ installation.  You must first _uninstall_ the service, then modify and re-install.
+|Service:Role|`Controller` or `Node` or `Server`
 |Web:ApiPort|Select a port value.
 |WebApi:IsSecure|Indicates if service is configured for SSL/TLS.
 |Authentication:Scheme|Authentication  options.  See <a href="https://msdn.microsoft.com/en-us/library/system.net.authenticationschemes(v=vs.110).aspx" target="_blank">MSDN</a> for details.
@@ -38,11 +54,11 @@ Signature:
 #### Configuring Basic Authentication
 
 ```yaml
-Authentication:
-  Scheme: Basic
-  Config:
-    LdapRoot:
-    Domain: {Active Directory Domain}
+  Authentication:
+    Scheme: Basic
+    Config:
+      LdapRoot: LDAP://...
+      Domain: {Active Directory Domain}
 ```
 
 |Name|Description
@@ -74,7 +90,7 @@ Controller:
 
 |Name|Description
 |-|-
-|NodeUrl|[Optional] When configuring a Controller, populate the URI value for where this Controller sends work by default.  When executing Plans, the Start method allows a Node URL parameter, so it's possible to specify/override this setting per Start call.
+|NodeUrl|[Optional] When configuring a Controller, populate the URI value for where this Controller sends work by default.  When executing Plans, the Start method allows a Node URL parameter, so it's possible to specify/override this setting per Start call.  **Note:** If you do not specify a default setting here, you must supply a NodeUrl per Plan execution.
 |SignPlan|Specifies whether to sign the Plan with a hash value.
 |Assemblies|A list of ApiControllers to dynamically load into the Synapse Controller execution space; provides for custom URI implementations.  Specify as library:classname.
 |Dal|Specifies the type of Data Access Layer to invoke. See [Controller Data Access Layer](dal "Controller Data Access Layer") for details.

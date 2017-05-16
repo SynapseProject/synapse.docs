@@ -23,6 +23,7 @@ pages:
     - Core: cli/core.md
     - Controller: cli/controller.md
     - Node: cli/node.md
+    - Server: cli/server.md
   - SDK:
     - About: sdk/index.md
     - Custom Handlers: sdk/handlers.md
