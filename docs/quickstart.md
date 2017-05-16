@@ -43,4 +43,4 @@ Calling StartPlan on http://localhost:20000/synapse/execute
 636302779130701013
 ```
 
-* **Check the result:** Look in the .\Controller\Dal\History folder to see the ResultPlan.  Open the file in any friendly YAML editor, such as Visual Studi Code or Notepad++.
+* **Check the result:** Look in the .\Controller\Dal\History folder to see the ResultPlan.  Open the file in any friendly YAML editor, such as Visual Studio Code or Notepad++.
