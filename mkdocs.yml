@@ -2,6 +2,7 @@ site_name: Synapse
 pages:
 - Synapse: index.md
 - Architecture: architecture.md
+- Quick Start: quickstart.md
 - Plans:
   - Overview: plans.md
   - Actions: plans/actions/detail.md
