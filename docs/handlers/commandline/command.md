@@ -39,6 +39,7 @@ should attempt to run the command before giving up and what to do if that time i
 |KillRemoteProcessOnTimeout|boolean|No|Specifies whether the process running on the "RunOn" server should be terminiated when a timeout occurs.  This only applies when RunOn is specified.  Process will always terminate on timeout when RunOn is not specified.  (Default Value = false)
 |ValidExitCodes|"EqualTo"<br>"NotEqualTo"<br>"LessThan"<br>"LessThanOrEqualTo"<br>"GreaterThan"<br>"GreaterThanOrEqualTo"<br>"Between"<br>"NotBetween"|No|Specifies what status to report back based on exit code returned from the action exexuted Click [here](#validexitcodes-values-and-syntax) for detailed scription of the syntax. (Default = "EqualTo 0").<br><br>**Syntax : [OPERATOR] VALUE1 [VALUE2] [STATUS]**
 |ReturnStdout|boolean|No|Specifies whether or not StdOut / Stderr should be returned in the ExitData field and made available in the ParentExitData element for future actions. (Default Value = true)<br><br>Used mostly when excessive command output being stored in memory becomes a memory usage issue for the handler.
+|SupportsDryRun|boolean|No|Indicates that the script or command specified has implemented the DryRun functionality, and should be called when the DryRun flag is specified.  (Default Value = false)<br><br>The plan is responsible for passing the ~~IsDryRun~~ flag into the script or command where expected.
 
 ### Parameters
 
