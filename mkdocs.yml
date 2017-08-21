@@ -14,6 +14,10 @@ pages:
   - Installation/Configuration:
     - Controller/Node: run/setup.md
     - Data Access Layer: run/dal.md
+    - Setup:
+#      - Options: run/setup/options.md
+      - Authentication: run/setup/authentication.md
+      - Impersonation: run/setup/impersonation.md
 #    - SSL/TLS: run/ssl.md
 #    - Encrypting Plans: run/crypto.md
   - Web API:
