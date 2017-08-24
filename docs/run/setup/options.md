@@ -21,7 +21,7 @@ Generating a custom config supports flexibility in bin re-use or file distributi
 
 To generate new config file, run any of the exes with the `genconfig` option.  As the table above indicates, the relevant sections of the config will be populated with default values.  Of note, you may specify a new, custom filename when creating the config file.
 
-- `synapse.server genconfig *synapseConfig*:{path\filename}`
+- `synapse.server genconfig filepath:{path\filename}`
 - `synapse.controller.cli genconfig filepath:{path\filename}`
 - `synapse.node.cli genconfig filepath:{path\filename}`
 
@@ -32,21 +32,27 @@ Synapse.Server accepts a custom filename/path as an install/uninstall parameter,
 - `synapse.server install synapseConfig:{path\filename}`
 - `synapse.server uninstall synapseConfig:{path\filename}`
 
-Synapse.Controller and Synapse.Node install/uninstall syntax is:
+Synapse.Controller and Synapse.Node install/uninstall/run syntax is:
 
-- `synapse.controller.cli service install synapseConfig:{path\filename}`
-- `synapse.controller.cli service uninstall synapseConfig:{path\filename}`
-- `synapse.node.cli service install synapseConfig:{path\filename}`
-- `synapse.node.cli service uninstall synapseConfig:{path\filename}`
+- Controller:
+  - `synapse.controller.cli service install synapseConfig:{path\filename}`
+  - `synapse.controller.cli service uninstall synapseConfig:{path\filename}`
+  - `synapse.controller.cli service run synapseConfig:{path\filename}`
+- Node:
+  - `synapse.node.cli service install synapseConfig:{path\filename}`
+  - `synapse.node.cli service uninstall synapseConfig:{path\filename}`
+  - `synapse.node.cli service run synapseConfig:{path\filename}`
 
-For reference, the install action results in a Windows Service runtime similar to:
+For reference, the install action results in a Windows Service runtime similar to the below, where {path\filename} represent a synapseConfig file.
 
 - `synapse.server {path\filename}`
 
 ### Consuming a custom Synapse.Server.Config.yaml for Synapse.Controller/Node.cli HttpAction Execution
 
-- `synapse.controller.cli {httpAction} {parm:value} synapseConfig:{path\filename}`
-- `synapse.node.cli {httpAction} {parm:value} synapseConfig:{path\filename}`
+- Controller:
+  - `synapse.controller.cli {httpAction} {parm:value} synapseConfig:{path\filename}`
+- Node:
+  - `synapse.node.cli {httpAction} {parm:value} synapseConfig:{path\filename}`
 
 
 ## Relocating the Assemblies, Authorization, Dal, and Handlers Folders
@@ -60,7 +66,9 @@ To relocate the Assemblies, Authorization, Dal, or Handlers folders, open **each
 |Synapse.Server|Synapse.Server.exe.config
 |Synapse.Controller.cli|Synapse.Controller.cli.exe.config
 |Synapse.Node.cli|Synapse.Node.cli.exe.config
+|Synapse.cli|Synapse.cli.exe.config
 
+### Default Synapse binary resolution configuration:
 ```xml
 <?xml version="1.0" encoding="utf-8"?>
 <configuration>
