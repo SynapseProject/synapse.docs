@@ -22,7 +22,7 @@ The Synapse Server, Controller and Node support the following authentication typ
 
 ## Valid Configurations
 
-Certain combinations of authentication types between the Controller and Node will not allow Synapse to function as expected, mostly because the authentication required by one isn't sufficient to meet the authentication nees of the other.
+Certain combinations of authentication types between the Controller and Node will not allow Synapse to function as expected, mostly because the authentication required by one isn't sufficient to meet the authentication needs of the other.   Below is a table defining whether the combination of Authentication schemes for the Controller (Vertical) and the Node (Horizontal) will allow normal Synapse functionality.
 
 |Controller \| Node >>><br/>  vvv|Anonymous|Basic|Integrated|Ntlm|Negotiate
 |------------------------------|---------|-----|----------|----|---------
@@ -41,7 +41,7 @@ WebApi:
   Host: localhost
   Port: 1370
   IsSecure: false
-  UseImpersonation: true
+  UseImpersonation: false
   Authentication:
     Scheme: Basic
     Config: 
@@ -130,9 +130,16 @@ Also, each scenario below assumes [impersonation](/run/setup/impersonation) is s
 
 ### Simple Windows Authentication
 
-This is where the Controller and Node both accept a single authentcation type of IntegratedWindowsAuthentication, Ntlm or Negotiate.
+![Windows Authentication, No Impersonation](/img/syn_auth_windows.png "Simple Windows Authentication")
 
-#### Config Setup
+The Controller and Node both accept a single authentcation type of IntegratedWindowsAuthentication, Ntlm or Negotiate.
+
+1. Client passes user's (SANDBOX\guy) credentials to Controller.
+2. Controller passes plan to Node using the Controller service RunAs credentails (SANDBOX\synapse-controller).
+3. Node executes handlers using the Node service RunAs credentials. (SANDBOX\synapse-node).
+4. Node sends status updates to Controller using the Node service RunAs credentials (SANDBOX\synapse-node).
+
+#### Server Config File Setup Details
 
 |Synapse Server Config|Value
 |---------------------|-----
@@ -140,24 +147,21 @@ This is where the Controller and Node both accept a single authentcation type of
 |WebApi > Authentication > Scheme (Node)|IntegratedWindowsAuthentication
 |Controller > NodeAuthenticationScheme|Empty
 |Node > ControllerAuthenticationScheme|Empty
-|WebApi > [UseImpersonation](/run/setup/impersonation)|false
-
-#### Example Flow
-
-1. Client passes user's (SANDBOX\guy) credentials to Controller.
-2. Controller passes plan to Node the credentails under which the Controller service is running (SANDBOX\synapse-controller).
-3. Node sends status updates to Controller using the credentails under which the Node service is running (SANDBOX\synapse-node).
-
-#### Diagram
-
-Coming Soon
-
+|WebApi > [UseImpersonation](/run/setup/impersonation) (Controller)|false
+|WebApi > [UseImpersonation](/run/setup/impersonation) (Node)|false
 
 ### No Authentication
 
+![No Authentication, No Impersonation](/img/syn_auth_anonymous.png "No Authentication")
+
 This is where the controller and node are open to the world.
 
-#### Config Setup
+1. Client passes no credentials to Controller.
+2. Controller passes plan to Node with no credentials.
+3. Node executes handlers using the Node service RunAs credentials. (SANDBOX\synapse-node).
+4. Node sends status updates to Controller with no credentials.
+
+#### Server Config File Setup Details
 
 |Synapse Server Config|Value
 |---------------------|-----
@@ -165,24 +169,23 @@ This is where the controller and node are open to the world.
 |WebApi > Authentication > Scheme (Node)|Anonymous
 |Controller > NodeAuthenticationScheme|Empty
 |Node > ControllerAuthenticationScheme|Empty
-|WebApi > [UseImpersonation](/run/setup/impersonation)|false
+|WebApi > [UseImpersonation](/run/setup/impersonation) (Controller)|false
+|WebApi > [UseImpersonation](/run/setup/impersonation) (Node)|false
 
-#### Example Flow
-
-1. Client passes no credentials to Controller.
-2. Controller passes plan to Node the credentails with no credentials.
-3. Node sends status updates to Controller with no credentials.
-
-#### Diagram
-
-Coming Soon
 
 
 ### Authentication on Controller Only
 
+![Authentication on Controller Only, No Impersonation](/img/syn_auth_ntlmctrlonly.png "Ntlm on Controller Only")
+
 This is where the controller has Windows Authentication set (Ntlm, Negotiate, or IntegratedWindowsAuthentication) but the node is running with no authentication.  The key thing to remember here is that if you don't have "SignPlan" set to true in the Controller, and "ValidatePlanSignature" set to true in the node, users could bypass the Controller and execute plans directly if they knew the URL, without any authentication.
 
-#### Config Setup
+1. Client passes user's (SANDBOX\guy) credentials to Controller.
+2. Controller passes plan to Node with no credentials.
+3. Node executes handlers using the Node service RunAs credentials. (SANDBOX\synapse-node).
+4. Node sends status updates to Controller using the Node service RunAs credentials (SANDBOX\synapse-node).
+
+#### Server Config File Setup Details
 
 |Synapse Server Config|Value
 |---------------------|-----
@@ -190,23 +193,21 @@ This is where the controller has Windows Authentication set (Ntlm, Negotiate, or
 |WebApi > Authentication > Scheme (Node)|Anonymous
 |Controller > NodeAuthenticationScheme|Empty
 |Node > ControllerAuthenticationScheme|Empty
-|WebApi > [UseImpersonation](/run/setup/impersonation)|false
-
-#### Example Flow
-
-1. Client passes user's (SANDBOX\guy) credentials to Controller.
-2. Controller passes plan to Node the credentails under which the Controller service is running (SANDBOX\synapse-controller).
-3. Node sends status updates to Controller using the credentails under which the Node service is running (SANDBOX\synapse-node).
-
-#### Diagram
-
-Coming Soon
+|WebApi > [UseImpersonation](/run/setup/impersonation) (Controller)|false
+|WebApi > [UseImpersonation](/run/setup/impersonation) (Node)|false
 
 ### Multi-Authentication on Controller, Windows Authentication on Node
 
+![Multi Controller, Ntlm Node, No Impersonation](/img/syn_auth_multictrl_ntlmnode.png "Multi Controller, Ntlm Node")
+
 This allows both Basic and Windows Authentication (Ntlm, Negotiate, or IntegratedWindowsAuthentication) to the Controller, but enforces Windows Authentication on the Node.  This setup is used to support applications that don't support sending Windows credentails in their web calls.  **Warning** : Basic authentication is not secure on its own.  The username and password are simply Base64 encoded in the Request header.  This should only be used over a secure connection.
 
-#### Config Setup
+1. Client passes user's (SANDBOX\guy) credentials to Controller either via Basic or Ntlm authentication.
+2. Controller passes plan to Node using the Controller service RunAs credentails via Ntlm authentication (SANDBOX\synapse-controller).
+3. Node executes handlers using the Node service RunAs credentials. (SANDBOX\synapse-node).
+4. Node sends status updates to Controller using the Node service RunAs credentails via Ntlm authentication (SANDBOX\synapse-node).
+
+#### Server Config File Setup Details
 
 |Synapse Server Config|Value
 |---------------------|-----
@@ -214,15 +215,6 @@ This allows both Basic and Windows Authentication (Ntlm, Negotiate, or Integrate
 |WebApi > Authentication > Scheme (Node)|Ntlm
 |Controller > NodeAuthenticationScheme|Ntlm
 |Node > ControllerAuthenticationScheme|Ntlm
-|WebApi > [UseImpersonation](/run/setup/impersonation)|false
-
-#### Example Flow
-
-1. Client passes user's (SANDBOX\guy) credentials to Controller either via Basic or Ntlm authentication.
-2. Controller passes plan to Node the credentails under which the Controller service is running (SANDBOX\synapse-controller).
-3. Node sends status updates to Controller using the credentails under which the Node service is running (SANDBOX\synapse-node).
-
-#### Diagram
-
-Coming Soon
+|WebApi > [UseImpersonation](/run/setup/impersonation) (Controller)|false
+|WebApi > [UseImpersonation](/run/setup/impersonation) (Node)|false
 
