@@ -62,11 +62,12 @@ To relocate the Assemblies, Authorization, Dal, or Handlers folders, open **each
 - **Important**: you must edit each file below and match the *probing privatePath* setting.
 
 |Exe|.NET Config File
-|-|-|-
+|-|-
 |Synapse.Server|Synapse.Server.exe.config
 |Synapse.Controller.cli|Synapse.Controller.cli.exe.config
 |Synapse.Node.cli|Synapse.Node.cli.exe.config
 |Synapse.cli|Synapse.cli.exe.config
+
 
 ### Default Synapse binary resolution configuration:
 
