@@ -69,6 +69,7 @@ To relocate the Assemblies, Authorization, Dal, or Handlers folders, open **each
 |Synapse.cli|Synapse.cli.exe.config
 
 ### Default Synapse binary resolution configuration:
+
 ```xml
 <?xml version="1.0" encoding="utf-8"?>
 <configuration>
