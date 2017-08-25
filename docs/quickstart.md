@@ -9,6 +9,8 @@ If you want to try Synapse Server out, you may do so on any Windows server/works
 3. Open two DOS-prompt windows, one in the .\Controller folder, the other in the .\Node folder.
 4. From .\Controller, run `synapse.controller.cli service run`.  From .\Node, run `synapse.node.cli service run`.
 
+**Note:** synapse.[controller/node].cli use `synapse.server.config.yaml` for understanding server bindings.  By default, each will establish a function-specific config, so running the clis from their respective folders is important (such that they have access to appropriate config settings).  This is very configurable: see [Options](/run/setup/options) for information on configuring `synapse.server.config.yaml` or for using alternate config files.
+
 ```dos
 C:\synapse\Controller>Synapse.Controller.Cli.exe service run
 Starting Synapse.Server as Server: Press Ctrl-C/Ctrl-Break to stop.
