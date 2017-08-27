@@ -47,3 +47,15 @@ See the examples on GitHub.
 
 - <a href="https://github.com/SynapseProject/synapse.examples/tree/develop/Plans/CommandLine" target="_blank">CommandHandler Examples (develop branch)</a>
 - <a href="https://gist.github.com/SynapseProject/b8747c156843dad7119f6135d320f7bf" target="_blank">Custom Handler Example</a>
+
+## Debugging
+
+In order to test your custom Handler in the Visual Studio debugger, edit the the project properties: click on the project in the Solution Explorer window, and press Alt-Enter on the keyboard. From the Project Properties window, choose the Debug option from the left menu/option-list.
+
+1. Choose “Start external program” and browse to a copy of synapse.cli.exe (<a href="https://github.com/SynapseProject/synapse.core.net/releases" target="_blank">download</a>). It’s typically easiest to locate synapse.cli.exe in the debug output folder location (usually, \bin\Debug).
+2. Under “Start Options,” fill in the “Command line arguments” with a Plan, such as /plan:sample.yaml. You may also choose to add /resultPlan:true, in order to capture the output of the workflow engine.
+3. Press F5 to launch a debug session.
+
+<p align="center">
+<img alt="Synapse Handler" src="../../img/syn_handlerDebug.png" />
+</p>
