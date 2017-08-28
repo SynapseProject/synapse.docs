@@ -59,5 +59,5 @@ In order to test your custom ApiController in the Visual Studio debugger, edit t
 4. Press F5 to launch a debug session.
 
 <p align="center">
-<img alt="Synapse Handler" src="../../img/syn_controllerDebug_.png" />
+<img alt="Synapse Handler" src="../../img/syn_controllerDebug.png" />
 </p>

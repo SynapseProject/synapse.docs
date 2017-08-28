@@ -19,7 +19,7 @@ pages:
       - Authentication: run/setup/authentication.md
       - Impersonation: run/setup/impersonation.md
 #    - SSL/TLS: run/ssl.md
-#    - Encrypting Plans: run/crypto.md
+    - Encrypting Plans: run/crypto.md
   - Web API:
     - Controller: run/controller.md
     - Node: run/node.md
