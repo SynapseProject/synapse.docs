@@ -14,9 +14,14 @@ Plans support encrypting ParameterInfo blocks (Config, Parameters). You will ned
 To create an RSA public/private key pair, use the `synapse.cli -> genkey` option.
 
 ```
-genkey       Generate RSA key for signing Plans.
-             - keyContainerName:  Key values storage Container.
-             - filePath:          Path and filename to store key values.
+synapse.cli.exe genkey:{filePath} [kcn:{keyContainerName}]
+
+ - Create RSA keypair for use in encrypt/decrypt actions.
+
+ genkey       - filePath: Valid path to create keys.
+ kcn          - keyContainerName: Optional container within file.
+              If keyContainerName is specified, it must be used in
+                encrypt/decrypt actions (specified in Plans settings).
 ```
 
 This will generate two files: [path]\filename.ext.**pubOnly** (public key only) and [path]\filename.ext.**pubPriv** (public and private key, both).  The keyContainer is an internal mechanism used in key storage.  You will specify the same keyContainer when encrypting/decrypting plans.
@@ -33,11 +38,15 @@ At the Plan level, you may declare the KeyUri and KeyContainerName.  These setti
 Name: crypto_sample
 Description: Test Plan Encryption
 Crypto:
-  KeyUri: file or http path to the pubPriv file.
-  KeyContainerName:
+  KeyUri: #file or http path to the pubPriv file.
+  KeyContainerName: #name specified when creating the keys.
 Actions:
   ...
 ```
+
+### RunAs Settings
+
+At the Plan and Action level, you may declare local Crypto settings within a RunAs block.  By default, RunAs->Crypto blocks will inherit the Plan->Crypto settings.
 
 ### Action Settings
 
@@ -47,8 +56,8 @@ At the Action level, you will declare a list of Elements within a ParameterInfo 
 Name: crypto_sample
 Description: Test Plan Encryption
 Crypto:
-  KeyUri: file or http path to the pubPriv file.
-  KeyContainerName:
+  KeyUri: #file or http path to the pubPriv file.
+  KeyContainerName: #name specified when creating the keys.
 Actions:
 - Name: action_name
   ...
