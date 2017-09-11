@@ -38,8 +38,9 @@ At the Plan level, you may declare the KeyUri and KeyContainerName.  These setti
 Name: crypto_sample
 Description: Test Plan Encryption
 Crypto:
-  KeyUri: #file or http path to the pubPriv file.
-  KeyContainerName: #name specified when creating the keys.
+  Key:
+    Uri: #file or http path to the pubPriv file.
+    ContainerName: #name specified when creating the keys.
 Actions:
   ...
 ```
@@ -47,6 +48,22 @@ Actions:
 ### RunAs Settings
 
 At the Plan and Action level, you may declare local Crypto settings within a RunAs block.  By default, RunAs->Crypto blocks will inherit the Plan->Crypto settings.
+
+```yaml
+RunAs:
+  Domain: myDomain
+  UserName: myUser
+  Password: qbMVEA84crEncryptedStringQ2eFbJ/fvs=
+  Crypto:
+    Key:
+      Uri: 'C:\crypto\pubPriv.xml'
+      ContainerName: myContainer
+    Elements:
+    - Password
+  IsInheritable: true
+  BlockInheritance: true
+```
+
 
 ### Action Settings
 
@@ -56,8 +73,9 @@ At the Action level, you will declare a list of Elements within a ParameterInfo 
 Name: crypto_sample
 Description: Test Plan Encryption
 Crypto:
-  KeyUri: #file or http path to the pubPriv file.
-  KeyContainerName: #name specified when creating the keys.
+  Key:
+    Uri: #file or http path to the pubPriv file.
+    ContainerName: #name specified when creating the keys.
 Actions:
 - Name: action_name
   ...
@@ -66,9 +84,10 @@ Actions:
     Config:
       ...
       Crypto:
+        Key:
+          Uri: #{optional setting, overides Plan-level declaration}
+          ContainerName: #{optional setting, overides Plan-level declaration}
         Elements:
-        KeyUri: #{optional setting, overides Plan-level declaration}
-        KeyContainerName: #{optional setting, overides Plan-level declaration}
         - Type
         - Values:a:b
         - Values:a:c[0]:d
@@ -77,8 +96,9 @@ Actions:
         ...
   Parameters:
     Crypto:
-      KeyUri: #{optional setting, overides Plan-level declaration}
-      KeyContainerName: #{optional setting, overides Plan-level declaration}
+      Key:
+        Uri: #{optional setting, overides Plan-level declaration}
+        ContainerName: #{optional setting, overides Plan-level declaration}
       Elements:
       - Type
       - Values:a:b
