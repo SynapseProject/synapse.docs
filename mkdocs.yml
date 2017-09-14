@@ -41,6 +41,9 @@ pages:
     - SqlServer: handlers/sql/sqlserver.md
     - Oracle: handlers/sql/oracle.md
     - Odbc: handlers/sql/odbc.md
+  - Active Directory:
+    - Handler: handlers/ad/handler.md
+    - Api: handlers/ad/api.md
 - Releases: releases.md
 - Roadmap: roadmap.md
 - Support: support.md
