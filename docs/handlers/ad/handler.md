@@ -1,8 +1,8 @@
 # Overview
 The ActiveDirectory Handler allows a simple, programatic way to interact with an ActiveDirectory instance.
 
-## Supported Objects and Actions
-### ActiveDirectory Objects and Identities
+# Supported Objects and Actions
+## ActiveDirectory Objects and Identities
 
 Below is a table of supported active diretory object types, and the supported way to "identify" an object for all actions except for Create.  Create (or Modify using upsert) MUST provide the full distinguished name.
 
@@ -14,7 +14,7 @@ Below is a table of supported active diretory object types, and the supported wa
 
 (1) - Assumes only a single name exists.  Since multiple objects are allowed to have the same name under different organizational units, when multiple objects exist with the same name, an error will occur.
 
-### Actions
+## Actions
 
 Below is a list of supported actions that can be performed on ActiveDirectory objects.  The action will execute against the objects in a certain order, depending on the action.  For example, Organizational Units will be created before users and groups that might be members of that Organizational Unit.
 
@@ -29,12 +29,12 @@ Below is a list of supported actions that can be performed on ActiveDirectory ob
 
 (2) - When the "UseUpsert" config is set, calling "Create" on an existing object can be done using its [identity](#activedirectory-objects-and-identities).  Calling "Modify" on an object that does not exist will only create the object if called using a distinguished name.
 
-## Plan Details
-### Config
+# Plan Details
+## Config
 
 The config section of the plan specifies the action to perform against that AD instance, how the action should be run, and what information to return from the call.
 
-#### Sample
+### Sample
 ````yaml
   Handler:
     Type: Synapse.Handlers.ActiveDirectory:ActiveDirectoryHandler
@@ -63,12 +63,12 @@ The config section of the plan specifies the action to perform against that AD i
 |PrettyPrint|boolean|No|Tells the adapter whether to indent and add newlines to the returned output.  (Default = "true")
 
 
-### Parameters
+## Parameters
 
 The parameters section of the plan is simply a list of each type of object you wish to perform the action on.  Every object must contain an [identity](#activedirectory-objects-and-identities), but depending on the action, other fields might be required.  Below are examples of each action and object type with the required fields.
 
 ---
-#### Action: Query and Delete, Object Type: All
+### Action: Query and Delete, Object Type: All
 ````yaml
   Parameters:
     Type: Yaml
@@ -96,7 +96,7 @@ The parameters section of the plan is simply a list of each type of object you w
 For Query and Delete actions, the only field required for every ActiveDirectory object is its identity.  The example above shows each object type with every possible way it can be queried or deleted.
 
 ---
-#### Action: AddToGroup and RemoveFromGroup, Object Type: Users and Groups
+### Action: AddToGroup and RemoveFromGroup, Object Type: Users and Groups
 ````yaml
   Parameters:
     Type: Yaml
@@ -115,7 +115,7 @@ For Query and Delete actions, the only field required for every ActiveDirectory 
 For Group Membership actions (AddToGroup and RemoveFromGroup), a "Groups" section is added below the Identity of each ActiveDirectory object.  The "Groups" section is a list of valid group [identities](#activedirectory-objects-and-identities) that specify which group the "Add" or "Remove" action it to be performed on.
 
 ---
-#### Action: Create or Modify, Object Type: Users
+### Action: Create or Modify, Object Type: Users
 ````yaml
   Parameters:
     Type: Yaml
@@ -173,17 +173,15 @@ For Group Membership actions (AddToGroup and RemoveFromGroup), a "Groups" sectio
         Properties:               # See Description Below For Details
           initials:
           - MJF
-          physicalDeliveryOfficeName:
-          - 
           otherTelephone:
-          -
-          -
+          - 281-555-1212
+          - 832-555-1212
           wWWHomePage:
-          -
+          - http://www.google.com
           url:
-          -
-          -
-          -
+          - http://www.bing.com
+          - http://www.yahoo.com
+          - http://www.github.com
 ````
 
 The named fields are directly mapped to values in the [System.DirectoryServices.AccountManagement.UserPrincipal](https://msdn.microsoft.com/en-us/library/system.directoryservices.accountmanagement.userprincipal(v=vs.110).aspx) class in .NET.  Descriptions can be found in the Microsoft documentation [here](https://msdn.microsoft.com/en-us/library/system.directoryservices.accountmanagement.userprincipal(v=vs.110).aspx).
@@ -234,7 +232,7 @@ Values under the "Properties" section are dynamic.  Any "attribute" that ActiveD
 |wWWHomePage|WWw Home Page
 
 ---
-#### Action: Create or Modify, Object Type: Groups
+### Action: Create or Modify, Object Type: Groups
 ````yaml
   Parameters:
     Type: Yaml
@@ -249,7 +247,7 @@ Values under the "Properties" section are dynamic.  Any "attribute" that ActiveD
           managedBy:
           - cn=mfox,ou=MyOrgUnit,DC=sandbox,DC=local
           mail:
-          - mygroup@company.com
+          - ~null~
           info:
           - Some Random Notes Here
 ````
@@ -271,7 +269,7 @@ Values under the "Properties" section are dynamic.  Any "attribute" that ActiveD
 |managedBy|Managed By User (Distinguished Name)
 
 ---
-#### Action: Create or Modify, Object Type: Organizational Units
+### Action: Create or Modify, Object Type: Organizational Units
 ````yaml
   Parameters:
     Type: Yaml
@@ -285,7 +283,7 @@ Values under the "Properties" section are dynamic.  Any "attribute" that ActiveD
           c:
           - US
           l:
-          - Houston
+          - ~null~
 ````
 **Properties**
 
@@ -302,9 +300,9 @@ Values under the "Properties" section are dynamic.  Any "attribute" that ActiveD
 |street|Street 
 |st|State/Province
 
-## Important Notes
+# Important Notes
 
-### Modify : Clear Out A Field (~null~)
+## Modify : Clear Out A Field (~null~)
 
 The action "Modify" only changes the fields you include in the plan.  You are not required to set every single field you want to keep on a modify.   However, this does beg the question, "How do I 'clear out' a field?".  This is done by placing the value "**~null~**" in the field.  For properties, if any of the possible values is "**~null~**", then it will clear out all values, ignoring any other values specififed in the plan.
 
