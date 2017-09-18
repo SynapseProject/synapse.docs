@@ -26,9 +26,12 @@ The query string is used to control how the output from the rest call will be fo
 |Parameter|Type/Value|Default Value|Description
 |---------|----------|-------------|-----------
 |querygroupmembership|boolean|false|Returns a list of groups the User or Group is a member of.
+|returnobjects|boolean|true|Returns the object along with the status of the action.
+
+<!--
 |outputtype|"Json"<br>"Yaml"<br>"Xml"|Json|Specifies the output type of the adapter.
 |prettyprint|boolean|false|Returns data with newlines and indentions to make more human readable.
-|returnobjects|boolean|true|Returns the object along with the status of the action.
+-->
 
 # Result Object / Error Messages
 

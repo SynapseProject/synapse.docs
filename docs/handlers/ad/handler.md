@@ -210,6 +210,7 @@ Values under the "Properties" section are dynamic.  Any "attribute" that ActiveD
 |initials|User Initials
 |ipPhone|IP Phone
 |l|City 
+|lockoutTime|Date and Time Account was locked out (Set To "0" For Unlock)
 |logonWorkstation|Log On To
 |manager|Manager Name (Distinguished Name) 
 |mobile|Mobile
