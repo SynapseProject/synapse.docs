@@ -334,8 +334,8 @@ Body:
   Description: "Famous Actors and Actresses",
   Scope: "Universal",
   IsSecurityGroup: "true",
+  ManagedBy: mfox,
   Properties: {
-	"managedBy": [ "cn=mfox,ou=Synapse,dc=sandbox,dc=local" ],
 	"info": [ "Group of famous actors and actresses." ]
   }
 }
@@ -447,8 +447,8 @@ Body:
 Body:
 {
   Description: "Hello World",
+  ManagedBy: "mfox",
   Properties: {
-  	"managedBy": [ "cn=mfox,ou=Synapse,dc=sandbox,dc=local" ],
   	"postalCode": [ "90210" ]
   }
 }
@@ -1260,6 +1260,8 @@ The format for the URL is identical for an AddToGroup and RemoveFromGroup action
 ````
 
 ### Add/Remove Group to Group
+
+The format for the URL is identical for an AddToGroup and RemoveFromGroup action.  The only real difference would be the status message returned, either "Added To" or "Removed From" depending on which action was called.
 
 **Request**
 

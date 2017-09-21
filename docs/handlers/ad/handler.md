@@ -242,11 +242,12 @@ Values under the "Properties" section are dynamic.  Any "attribute" that ActiveD
       - Identity: cn=MyNewGroup,ou=Synapse,DC=sandbox,DC=local
         Scope: Universal     # Local, Global or Universal
         IsSecurityGroup: true
-        SamAccountName: trumd2
+        SamAccountName: MyNewGroupSam
         Description: Some Lame Description
+        ManagedBy: mfox      # Can Be Identity of any User or Group
         Properties:
           managedBy:
-          - cn=mfox,ou=MyOrgUnit,DC=sandbox,DC=local
+          - cn=mfox,ou=MyOrgUnit,DC=sandbox,DC=local   # Property Takes Precedence Over Field
           mail:
           - ~null~
           info:
@@ -278,9 +279,10 @@ Values under the "Properties" section are dynamic.  Any "attribute" that ActiveD
       OrganizationalUnits:
       - Identity: ou=MyOrgUnit,dc=sandbox,dc=local
         Description: Some Lame Description
+        ManagedBy: mfox    # Can Be Identity of any User or Group
         Properties:
           managedBy:
-          - cn=mfox,ou=MyOrgUnit,DC=sandbox,DC=local
+          - cn=mfox,ou=MyOrgUnit,DC=sandbox,DC=local    # Property Takes Precedence Over Field
           c:
           - US
           l:
@@ -307,3 +309,15 @@ Values under the "Properties" section are dynamic.  Any "attribute" that ActiveD
 
 The action "Modify" only changes the fields you include in the plan.  You are not required to set every single field you want to keep on a modify.   However, this does beg the question, "How do I 'clear out' a field?".  This is done by placing the value "**~null~**" in the field.  For properties, if any of the possible values is "**~null~**", then it will clear out all values, ignoring any other values specififed in the plan.
 
+## Properties
+
+Things to know about using properites : 
+
+* Propeprties directly interact with the underlying DirectoryEntry object.  You must provide the values in the format ActiveDirectory expects.  (Example: The property "managedby" expects a DisginguishedName).
+* Any values that appear in a plan both as a class value and a property (ManagedBy, DisplayName, etc...) will take the value from the property.   Class variables are processed first, followed by the properties.
+
+## ManagedBy Field vs Property
+
+The "ManagedBy" field of Groups and Organizational Units can be any valid identity of a User or Group.  The handler looks up the User or Group and provides the DistinguishedName to the "managedby" property.
+
+The "managedBy" property must be the DistinguishedName of a User or Group.  Properties directly manipulate the underlying DirectoryEntry and must match expected formats.
