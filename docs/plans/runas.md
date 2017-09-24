@@ -42,4 +42,4 @@ RunAs:
 
 ## Example
 
-![Inheritance Example](/img/syn_runas_inheritance.png "Inheritance Example")
+![Inheritance Example](../img/syn_runas_inheritance.png "Inheritance Example")
