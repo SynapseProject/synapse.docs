@@ -8,6 +8,7 @@ pages:
   - Actions: plans/actions/detail.md
   - Parameters: plans/parms/detail.md
   - Handlers: plans/handlers.md
+  - RunAs: plans/runas.md
   - Examples:
     - Complete YAML: yaml.md
 - Usage:
