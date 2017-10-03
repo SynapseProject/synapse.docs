@@ -26,6 +26,11 @@ Below is a list of supported actions that can be performed on ActiveDirectory ob
 |**Delete**|Deletes a single ActiveDirectory object by its [identity](#activedirectory-objects-and-identities)|Users<br>Groups<br>Organizational Units
 |**AddToGroup**|Adds Users and/or Groups to an existing ActiveDirecory group by its [identity](#activedirectory-objects-and-identities).|Users<br>Groups
 |**RemoveFromGroup**|Removes Users and/or Groups from an existing ActiveDirectory group by its [identity](#activedirectory-objects-and-identities).|Users<br>Groups
+|**AddAccessRule**|Adds Access Rights to an ActiveDirectory object for a given Principal (User or Group)|Users<br>Groups<br>Organizational Units
+|**RemoveAccessRule**|Removes Access Rights from an ActiveDirectory object for a given Principal (User or Group)|Users<br>Groups<br>Organizational Units
+|**SetAccessRule**|Sets Access Rights on an ActiveDirectory object for a given Principal (User or Group), clearing out any existing rights that might exist.|Users<br>Groups<br>Organizational Units
+|**PurgeAccessRules**|Removes All Access Rights to an ActiveDirectory object for a given Principal (User or Group)|Users<br>Groups<br>Organizational Units
+
 
 (2) - When the "UseUpsert" config is set, calling "Create" on an existing object can be done using its [identity](#activedirectory-objects-and-identities).  Calling "Modify" on an object that does not exist will only create the object if called using a distinguished name.
 
@@ -45,6 +50,8 @@ The config section of the plan specifies the action to perform against that AD i
         RunSequential: true
         QueryGroupMembership: false
         ReturnObjects: true
+        ReturnObjectProperties: true
+        ReturnAccessRules: false
         SuppressOutput: false
         UseUpsert: true
         OutputType: Yaml
@@ -57,6 +64,8 @@ The config section of the plan specifies the action to perform against that AD i
 |RunSequential|boolean|No|Tells the adapter how to process the objects in the plan.  If set to "true", objects will be acted upon in the order they appear in the plan.  (Defualt = "false")
 |QueryGroupMembership|boolean|No|Tells the adapter to return a list of groups that the User or Group is a member of.  (Default = "true")
 |ReturnObjects|boolean|No|Tells the adapter to return the ActiveDirectory object along with the status of the action.  (Default = "true")
+|ReturnObjectProperties|boolean|No|Tells the adapter to return the raw, DirectoryEntry properties associated with an ActiveDirectory object (Default = "true").
+|ReturnAccessRules|boolean|No|Tells the adatper to return all the Access Rules associated with the object along with the status of the action (Default = "false")
 |SuppressOutput|boolean|No|Tells the adapter to not output the ExitData returned from the action into the logs.  (Default = "false")
 |UseUpsert|boolean|No|Tells the adapter to perform a "Modify" action when a "Create" action is called and the object exists, and to perform a "Create" action when a "Modify" action is called and the object does not exist.  (Default = "true")
 |OutputType|"Json"<br>"Xml"<br>"Yaml"|No|Tells the adapter how to format the returned status from the action.  (Default = "Json")
@@ -302,6 +311,69 @@ Values under the "Properties" section are dynamic.  Any "attribute" that ActiveD
 |postalCode|Zip/Postal Code 
 |street|Street 
 |st|State/Province
+
+---
+### Action: AddAccessRule, RemoveAccessRule or SetAccessRule, Object Type: All
+
+````yaml
+  Parameters:
+    Type: Yaml
+    Values:
+      Users:
+      - Identity: SomeUser001
+        AccessRules:
+        - Identity: TestUser001
+          Type: Allow
+          Rights: Self,GenericRead
+        - Identity: TestUser001
+          Type: Deny
+          Rights: ListChildren
+      Groups:
+      - Identity: SomeGroup001
+        AccessRules:
+        - Identity: TestUser001
+          Type: Allow
+          Rights: Self,GenericRead
+        - Identity: TestUser001
+          Type: Deny
+          Rights: ListChildren
+      OrganizationalUnits:
+      - Identity: SomeOrgUnit001
+        AccessRules:
+        - Identity: TestUser001
+          Type: Allow
+          Rights: Self,GenericRead
+        - Identity: TestUser001
+          Type: Deny
+          Rights: ListChildren
+````
+
+The "AccessRules" section creates AccessRules to allow or deny rights on the object to a given Principal (User or Group).  The "Type" field can either be the value "Allow" or "Deny".  The Rights field maps to the ActiveDirectoryRights Enumeration in C#.  To assign multiple rights in a single rule, comma-separate the values in the field (ex: "Self, GenericRead").   Below is the list of rights supported : 
+
+#### ActiveDirectoryRights Enumeration
+
+|Right|Description
+|-----|-----------
+|AccessSystemSecurity|The right to get or set the SACL in the object security descriptor.
+|CreateChild|The right to create children of the object.
+|Delete|The right to delete the object.
+|DeleteChild|The right to delete children of the object.
+|DeleteTree|The right to delete all children of this object, regardless of the permissions of the children.
+|ExtendedRight|A customized control access right. For a list of possible extended rights, see the topic "Extended Rights" in the MSDN Library at http://msdn.microsoft.com. For more information about extended rights, see the topic "Control Access Rights" in the MSDN Library at http://msdn.microsoft.com.
+|GenericAll|The right to create or delete children, delete a subtree, read and write properties, examine children and the object itself, add and remove the object from the directory, and read or write with an extended right.
+|GenericExecute|The right to read permissions on, and list the contents of, a container object.
+|GenericRead|The right to read permissions on this object, read all the properties on this object, list this object name when the parent container is listed, and list the contents of this object if it is a container.
+|GenericWrite|The right to read permissions on this object, write all the properties on this object, and perform all validated writes to this object.
+|ListChildren|The right to list children of this object. For more information about this right, see the topic "Controlling Object Visibility" in the MSDN Library http://msdn.microsoft.com/library.
+|ListObject|The right to list a particular object. For more information about this right, see the topic "Controlling Object Visibility" in the MSDN Library at http://msdn.microsoft.com/library.
+|ReadControl|The right to read data from the security descriptor of the object, not including the data in the SACL.
+|ReadProperty|The right to read properties of the object.
+|Self|The right to perform an operation that is controlled by a validated write access right.
+|Synchronize|The right to use the object for synchronization. This right enables a thread to wait until that object is in the signaled state.
+|WriteDacl|The right to modify the DACL in the object security descriptor.
+|WriteOwner|The right to assume ownership of the object. The user must be an object trustee. The user cannot transfer the ownership to other users.
+|WriteProperty|The right to write properties of the object.
+
 
 # Important Notes
 

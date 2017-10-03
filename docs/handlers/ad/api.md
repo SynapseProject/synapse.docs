@@ -17,6 +17,10 @@ The general format for the rest URL is above, using HTTP Verbs to indicate what 
 |Delete|DELETE|&lt;protocol&gt;://&lt;host&gt;:&lt;port&gt;/ad/&lt;object&gt;/&lt;identity&gt;
 |AddToGroup|POST|&lt;protocol&gt;://&lt;host&gt;:&lt;port&gt;/ad/&lt;object&gt;/&lt;identity&gt;/&lt;groupIdentity&gt;
 |RemoveFromGroup|DELETE|&lt;protocol&gt;://&lt;host&gt;:&lt;port&gt;/ad/&lt;object&gt;/&lt;identity&gt;&lt;groupIdentity&gt;
+|AddAccessRule|POST|&lt;protocol&gt;://&lt;host&gt;:&lt;port&gt;/ad/accessrule/&lt;object&gt;/&lt;identity&gt;/&lt;principal&gt;/&lt;type&gt;/&lt;rights&gt;
+|RemoveAccessRule|DELETE|&lt;protocol&gt;://&lt;host&gt;:&lt;port&gt;/ad/accessrule/&lt;object&gt;/&lt;identity&gt;/&lt;principal&gt;/&lt;type&gt;/&lt;rights&gt;
+|SetAccessRule|PUT|&lt;protocol&gt;://&lt;host&gt;:&lt;port&gt;/ad/accessrule/&lt;object&gt;/&lt;identity&gt;/&lt;principal&gt;/&lt;type&gt;/&lt;rights&gt;
+|PurgeAccessRules|DELETE|&lt;protocol&gt;://&lt;host&gt;:&lt;port&gt;/ad/accessrule/&lt;object&gt;/&lt;identity&gt;/&lt;principal&gt;
 
 
 ## Query String
@@ -27,6 +31,8 @@ The query string is used to control how the output from the rest call will be fo
 |---------|----------|-------------|-----------
 |querygroupmembership|boolean|false|Returns a list of groups the User or Group is a member of.
 |returnobjects|boolean|true|Returns the object along with the status of the action.
+|returnobjectproperties|boolean|true|Returns the raw DirectoryEntry properties associated with the object.
+|returnaccessrules|boolean|false|Returns all the access rules associated with the object.
 
 <!--
 |outputtype|"Json"<br>"Yaml"<br>"Xml"|Json|Specifies the output type of the adapter.
@@ -1380,6 +1386,2731 @@ The format for the URL is identical for an AddToGroup and RemoveFromGroup action
                 "Groups": []
             },
             "OrganizationalUnit": null
+        }
+    ]
+}
+````
+
+## AddAccessRule (HTTP POST), RemoveAccessRule (HTTP DELETE) or SetAccessRule (HTTP PUT)
+
+The format for the URL is identical for the AddAccessRule, RemoveAccessRule and SetAccessRule actions.  The only differences would be :
+* On Delete, no object will be returned (kinda obvious)
+* The "Statuses > Action" field would reflect either "AddAccessRule", "RemoveAccessRule or "SetAccessRule", depending on which was called.  Valid values for permitted "rights" can be found [here](handler.md#activedirectoryrights-enumeration).
+
+**NOTE** : For this example, the query flag "returnaccessrules=true" was included to show the access rules being returned.
+
+---
+### AddAccessRule/RemoveAccessRule/SetAccessRule to User
+
+**Requests**
+
+````
+{{protocol}}://{{host}}:{{port}}/ad/accessrule/user/mfox/user001/Allow/GenericAll  (By Name)
+{{protocol}}://{{host}}:{{port}}/ad/user/CN=mfox,OU=Synapse,DC=sandbox,DC=local/CN=user001,OU=Synapse,DC=sandbox,DC=local/Allow/GenericAll  (By Distinguished Name)
+{{protocol}}://{{host}}:{{port}}/ad/user/S-1-5-21-4054027134-3251639354-3875066094-1773/S-1-5-21-4054027134-3251639354-3875066094-1206/Allow/GenericAll  (By Sid)
+{{protocol}}://{{host}}:{{port}}/ad/user/1722b838-57e1-4058-a394-338882af9e2f/4db94271-1fde-402a-a8c5-1564dfd8d62b/Allow/GenericAll  (By Guid)
+{{protocol}}://{{host}}:{{port}}/ad/user/mfox/user001/Allow/GenericAll  (By SamAccountName)
+{{protocol}}://{{host}}:{{port}}/ad/user/mfox@sandbox.local/user001@sandbox.local/Allow/GenericAll  (By UserPrincipal)
+````
+
+**Response**
+
+````
+{
+    "Results": [
+        {
+            "Statuses": [
+                {
+                    "Status": 1,
+                    "Message": "Success",
+                    "Action": 9
+                }
+            ],
+            "Type": 1,
+            "Identity": "mfox",
+            "User": {
+                "EmailAddress": "mfox@company.com",
+                "EmployeeId": "42",
+                "GivenName": "Michael",
+                "MiddleName": null,
+                "Surname": "Fox",
+                "VoiceTelephoneNumber": "1-800-555-1212",
+                "Properties": {
+                    "objectClass": [
+                        "top",
+                        "person",
+                        "organizationalPerson",
+                        "user"
+                    ],
+                    "cn": [
+                        "mfox"
+                    ],
+                    "sn": [
+                        "Fox"
+                    ],
+                    "description": [
+                        "American Actor, Back to the Future."
+                    ],
+                    "telephoneNumber": [
+                        "1-800-555-1212"
+                    ],
+                    "givenName": [
+                        "Michael"
+                    ],
+                    "distinguishedName": [
+                        "CN=mfox,OU=Synapse,DC=sandbox,DC=local"
+                    ],
+                    "instanceType": [
+                        "4"
+                    ],
+                    "whenCreated": [
+                        "10/3/2017 6:11:40 PM"
+                    ],
+                    "whenChanged": [
+                        "10/3/2017 6:12:08 PM"
+                    ],
+                    "displayName": [
+                        "Michael J. Fox"
+                    ],
+                    "uSNCreated": [],
+                    "uSNChanged": [],
+                    "nTSecurityDescriptor": [],
+                    "name": [
+                        "mfox"
+                    ],
+                    "objectGUID": [
+                        "49517710-7432-4450-bd6a-cfd4d6b7e0f5"
+                    ],
+                    "userAccountControl": [
+                        "328320"
+                    ],
+                    "badPwdCount": [
+                        "0"
+                    ],
+                    "codePage": [
+                        "0"
+                    ],
+                    "countryCode": [
+                        "0"
+                    ],
+                    "employeeID": [
+                        "42"
+                    ],
+                    "homeDirectory": [
+                        "C:\\Temp"
+                    ],
+                    "homeDrive": [
+                        "F:"
+                    ],
+                    "badPasswordTime": [],
+                    "lastLogoff": [],
+                    "lastLogon": [],
+                    "scriptPath": [
+                        "C:\\Temp\\Scripts"
+                    ],
+                    "pwdLastSet": [],
+                    "primaryGroupID": [
+                        "513"
+                    ],
+                    "objectSid": [
+                        "S-1-5-21-4054027134-3251639354-3875066094-1834"
+                    ],
+                    "accountExpires": [],
+                    "logonCount": [
+                        "0"
+                    ],
+                    "sAMAccountName": [
+                        "mfox"
+                    ],
+                    "sAMAccountType": [
+                        "805306368"
+                    ],
+                    "userPrincipalName": [
+                        "mfox@sandbox.local"
+                    ],
+                    "objectCategory": [
+                        "CN=Person,CN=Schema,CN=Configuration,DC=sandbox,DC=local"
+                    ],
+                    "dSCorePropagationData": [
+                        "10/3/2017 6:12:08 PM",
+                        "1/1/1601 12:00:00 AM"
+                    ],
+                    "mail": [
+                        "mfox@company.com"
+                    ]
+                },
+                "AccountExpirationDate": "2017-10-10T11:35:46-05:00",
+                "AccountLockoutTime": null,
+                "AllowReversiblePasswordEncryption": true,
+                "BadLogonCount": 0,
+                "DelegationPermitted": true,
+                "Enabled": true,
+                "HomeDirectory": "C:\\Temp",
+                "HomeDrive": "F:",
+                "LastBadPasswordAttempt": null,
+                "LastLogon": null,
+                "LastPasswordSet": "2017-10-03T13:11:40.9300291-05:00",
+                "PasswordNeverExpires": true,
+                "PasswordNotRequired": false,
+                "PermittedLogonTimes": null,
+                "ScriptPath": "C:\\Temp\\Scripts",
+                "SmartcardLogonRequired": true,
+                "UserCannotChangePassword": false,
+                "ContextType": 1,
+                "Description": "American Actor, Back to the Future.",
+                "DisplayName": "Michael J. Fox",
+                "DistinguishedName": "CN=mfox,OU=Synapse,DC=sandbox,DC=local",
+                "Guid": "49517710-7432-4450-bd6a-cfd4d6b7e0f5",
+                "Name": "mfox",
+                "SamAccountName": "mfox",
+                "Sid": "S-1-5-21-4054027134-3251639354-3875066094-1834",
+                "StructuralObjectClass": "user",
+                "UserPrincipalName": "mfox@sandbox.local",
+                "Groups": null,
+                "AccessRules": [
+                    {
+                        "ControlType": 0,
+                        "Rights": 131220,
+                        "IdentityReference": "S-1-5-10",
+                        "IdentityName": "SELF",
+                        "InheritanceFlags": 0,
+                        "IsInherited": false
+                    },
+                    {
+                        "ControlType": 0,
+                        "Rights": 131072,
+                        "IdentityReference": "S-1-5-11",
+                        "IdentityName": "Authenticated Users",
+                        "InheritanceFlags": 0,
+                        "IsInherited": false
+                    },
+                    {
+                        "ControlType": 0,
+                        "Rights": 983551,
+                        "IdentityReference": "S-1-5-18",
+                        "IdentityName": "SYSTEM",
+                        "InheritanceFlags": 0,
+                        "IsInherited": false
+                    },
+                    {
+                        "ControlType": 0,
+                        "Rights": 983551,
+                        "IdentityReference": "S-1-5-32-548",
+                        "IdentityName": "Account Operators",
+                        "InheritanceFlags": 0,
+                        "IsInherited": false
+                    },
+                    {
+                        "ControlType": 0,
+                        "Rights": 983551,
+                        "IdentityReference": "S-1-5-21-4054027134-3251639354-3875066094-512",
+                        "IdentityName": "Domain Admins",
+                        "InheritanceFlags": 0,
+                        "IsInherited": false
+                    },
+                    {
+                        "ControlType": 0,
+                        "Rights": 983551,
+                        "IdentityReference": "S-1-5-21-4054027134-3251639354-3875066094-1206",
+                        "IdentityName": "User001",
+                        "InheritanceFlags": 0,
+                        "IsInherited": false
+                    },
+                    {
+                        "ControlType": 0,
+                        "Rights": 256,
+                        "IdentityReference": "S-1-1-0",
+                        "IdentityName": "Everyone",
+                        "InheritanceFlags": 0,
+                        "IsInherited": false
+                    },
+                    {
+                        "ControlType": 0,
+                        "Rights": 48,
+                        "IdentityReference": "S-1-5-10",
+                        "IdentityName": "SELF",
+                        "InheritanceFlags": 0,
+                        "IsInherited": false
+                    },
+                    {
+                        "ControlType": 0,
+                        "Rights": 48,
+                        "IdentityReference": "S-1-5-10",
+                        "IdentityName": "SELF",
+                        "InheritanceFlags": 0,
+                        "IsInherited": false
+                    },
+                    {
+                        "ControlType": 0,
+                        "Rights": 256,
+                        "IdentityReference": "S-1-5-10",
+                        "IdentityName": "SELF",
+                        "InheritanceFlags": 0,
+                        "IsInherited": false
+                    },
+                    {
+                        "ControlType": 0,
+                        "Rights": 256,
+                        "IdentityReference": "S-1-5-10",
+                        "IdentityName": "SELF",
+                        "InheritanceFlags": 0,
+                        "IsInherited": false
+                    },
+                    {
+                        "ControlType": 0,
+                        "Rights": 256,
+                        "IdentityReference": "S-1-5-10",
+                        "IdentityName": "SELF",
+                        "InheritanceFlags": 0,
+                        "IsInherited": false
+                    },
+                    {
+                        "ControlType": 0,
+                        "Rights": 48,
+                        "IdentityReference": "S-1-5-10",
+                        "IdentityName": "SELF",
+                        "InheritanceFlags": 0,
+                        "IsInherited": false
+                    },
+                    {
+                        "ControlType": 0,
+                        "Rights": 16,
+                        "IdentityReference": "S-1-5-11",
+                        "IdentityName": "Authenticated Users",
+                        "InheritanceFlags": 0,
+                        "IsInherited": false
+                    },
+                    {
+                        "ControlType": 0,
+                        "Rights": 16,
+                        "IdentityReference": "S-1-5-11",
+                        "IdentityName": "Authenticated Users",
+                        "InheritanceFlags": 0,
+                        "IsInherited": false
+                    },
+                    {
+                        "ControlType": 0,
+                        "Rights": 16,
+                        "IdentityReference": "S-1-5-11",
+                        "IdentityName": "Authenticated Users",
+                        "InheritanceFlags": 0,
+                        "IsInherited": false
+                    },
+                    {
+                        "ControlType": 0,
+                        "Rights": 16,
+                        "IdentityReference": "S-1-5-11",
+                        "IdentityName": "Authenticated Users",
+                        "InheritanceFlags": 0,
+                        "IsInherited": false
+                    },
+                    {
+                        "ControlType": 0,
+                        "Rights": 16,
+                        "IdentityReference": "S-1-5-32-560",
+                        "IdentityName": "Windows Authorization Access Group",
+                        "InheritanceFlags": 0,
+                        "IsInherited": false
+                    },
+                    {
+                        "ControlType": 0,
+                        "Rights": 48,
+                        "IdentityReference": "S-1-5-32-561",
+                        "IdentityName": "Terminal Server License Servers",
+                        "InheritanceFlags": 0,
+                        "IsInherited": false
+                    },
+                    {
+                        "ControlType": 0,
+                        "Rights": 48,
+                        "IdentityReference": "S-1-5-32-561",
+                        "IdentityName": "Terminal Server License Servers",
+                        "InheritanceFlags": 0,
+                        "IsInherited": false
+                    },
+                    {
+                        "ControlType": 0,
+                        "Rights": 48,
+                        "IdentityReference": "S-1-5-21-4054027134-3251639354-3875066094-517",
+                        "IdentityName": "Cert Publishers",
+                        "InheritanceFlags": 0,
+                        "IsInherited": false
+                    },
+                    {
+                        "ControlType": 0,
+                        "Rights": 16,
+                        "IdentityReference": "S-1-5-21-4054027134-3251639354-3875066094-553",
+                        "IdentityName": "RAS and IAS Servers",
+                        "InheritanceFlags": 0,
+                        "IsInherited": false
+                    },
+                    {
+                        "ControlType": 0,
+                        "Rights": 16,
+                        "IdentityReference": "S-1-5-21-4054027134-3251639354-3875066094-553",
+                        "IdentityName": "RAS and IAS Servers",
+                        "InheritanceFlags": 0,
+                        "IsInherited": false
+                    },
+                    {
+                        "ControlType": 0,
+                        "Rights": 16,
+                        "IdentityReference": "S-1-5-21-4054027134-3251639354-3875066094-553",
+                        "IdentityName": "RAS and IAS Servers",
+                        "InheritanceFlags": 0,
+                        "IsInherited": false
+                    },
+                    {
+                        "ControlType": 0,
+                        "Rights": 16,
+                        "IdentityReference": "S-1-5-21-4054027134-3251639354-3875066094-553",
+                        "IdentityName": "RAS and IAS Servers",
+                        "InheritanceFlags": 0,
+                        "IsInherited": false
+                    },
+                    {
+                        "ControlType": 0,
+                        "Rights": 16,
+                        "IdentityReference": "S-1-5-32-554",
+                        "IdentityName": "Pre-Windows 2000 Compatible Access",
+                        "InheritanceFlags": 1,
+                        "IsInherited": true
+                    },
+                    {
+                        "ControlType": 0,
+                        "Rights": 16,
+                        "IdentityReference": "S-1-5-32-554",
+                        "IdentityName": "Pre-Windows 2000 Compatible Access",
+                        "InheritanceFlags": 1,
+                        "IsInherited": true
+                    },
+                    {
+                        "ControlType": 0,
+                        "Rights": 16,
+                        "IdentityReference": "S-1-5-32-554",
+                        "IdentityName": "Pre-Windows 2000 Compatible Access",
+                        "InheritanceFlags": 1,
+                        "IsInherited": true
+                    },
+                    {
+                        "ControlType": 0,
+                        "Rights": 16,
+                        "IdentityReference": "S-1-5-32-554",
+                        "IdentityName": "Pre-Windows 2000 Compatible Access",
+                        "InheritanceFlags": 1,
+                        "IsInherited": true
+                    },
+                    {
+                        "ControlType": 0,
+                        "Rights": 16,
+                        "IdentityReference": "S-1-5-32-554",
+                        "IdentityName": "Pre-Windows 2000 Compatible Access",
+                        "InheritanceFlags": 1,
+                        "IsInherited": true
+                    },
+                    {
+                        "ControlType": 0,
+                        "Rights": 16,
+                        "IdentityReference": "S-1-5-32-554",
+                        "IdentityName": "Pre-Windows 2000 Compatible Access",
+                        "InheritanceFlags": 1,
+                        "IsInherited": true
+                    },
+                    {
+                        "ControlType": 0,
+                        "Rights": 16,
+                        "IdentityReference": "S-1-5-32-554",
+                        "IdentityName": "Pre-Windows 2000 Compatible Access",
+                        "InheritanceFlags": 1,
+                        "IsInherited": true
+                    },
+                    {
+                        "ControlType": 0,
+                        "Rights": 16,
+                        "IdentityReference": "S-1-5-32-554",
+                        "IdentityName": "Pre-Windows 2000 Compatible Access",
+                        "InheritanceFlags": 1,
+                        "IsInherited": true
+                    },
+                    {
+                        "ControlType": 0,
+                        "Rights": 16,
+                        "IdentityReference": "S-1-5-32-554",
+                        "IdentityName": "Pre-Windows 2000 Compatible Access",
+                        "InheritanceFlags": 1,
+                        "IsInherited": true
+                    },
+                    {
+                        "ControlType": 0,
+                        "Rights": 16,
+                        "IdentityReference": "S-1-5-32-554",
+                        "IdentityName": "Pre-Windows 2000 Compatible Access",
+                        "InheritanceFlags": 1,
+                        "IsInherited": true
+                    },
+                    {
+                        "ControlType": 0,
+                        "Rights": 48,
+                        "IdentityReference": "S-1-5-21-4054027134-3251639354-3875066094-526",
+                        "IdentityName": "Key Admins",
+                        "InheritanceFlags": 1,
+                        "IsInherited": true
+                    },
+                    {
+                        "ControlType": 0,
+                        "Rights": 48,
+                        "IdentityReference": "S-1-5-21-4054027134-3251639354-3875066094-527",
+                        "IdentityName": "Enterprise Key Admins",
+                        "InheritanceFlags": 1,
+                        "IsInherited": true
+                    },
+                    {
+                        "ControlType": 0,
+                        "Rights": 8,
+                        "IdentityReference": "S-1-3-0",
+                        "IdentityName": "CREATOR OWNER",
+                        "InheritanceFlags": 1,
+                        "IsInherited": true
+                    },
+                    {
+                        "ControlType": 0,
+                        "Rights": 8,
+                        "IdentityReference": "S-1-5-10",
+                        "IdentityName": "SELF",
+                        "InheritanceFlags": 1,
+                        "IsInherited": true
+                    },
+                    {
+                        "ControlType": 0,
+                        "Rights": 16,
+                        "IdentityReference": "S-1-5-9",
+                        "IdentityName": "ENTERPRISE DOMAIN CONTROLLERS",
+                        "InheritanceFlags": 1,
+                        "IsInherited": true
+                    },
+                    {
+                        "ControlType": 0,
+                        "Rights": 16,
+                        "IdentityReference": "S-1-5-9",
+                        "IdentityName": "ENTERPRISE DOMAIN CONTROLLERS",
+                        "InheritanceFlags": 1,
+                        "IsInherited": true
+                    },
+                    {
+                        "ControlType": 0,
+                        "Rights": 16,
+                        "IdentityReference": "S-1-5-9",
+                        "IdentityName": "ENTERPRISE DOMAIN CONTROLLERS",
+                        "InheritanceFlags": 1,
+                        "IsInherited": true
+                    },
+                    {
+                        "ControlType": 0,
+                        "Rights": 32,
+                        "IdentityReference": "S-1-5-10",
+                        "IdentityName": "SELF",
+                        "InheritanceFlags": 1,
+                        "IsInherited": true
+                    },
+                    {
+                        "ControlType": 0,
+                        "Rights": 131220,
+                        "IdentityReference": "S-1-5-32-554",
+                        "IdentityName": "Pre-Windows 2000 Compatible Access",
+                        "InheritanceFlags": 1,
+                        "IsInherited": true
+                    },
+                    {
+                        "ControlType": 0,
+                        "Rights": 131220,
+                        "IdentityReference": "S-1-5-32-554",
+                        "IdentityName": "Pre-Windows 2000 Compatible Access",
+                        "InheritanceFlags": 1,
+                        "IsInherited": true
+                    },
+                    {
+                        "ControlType": 0,
+                        "Rights": 131220,
+                        "IdentityReference": "S-1-5-32-554",
+                        "IdentityName": "Pre-Windows 2000 Compatible Access",
+                        "InheritanceFlags": 1,
+                        "IsInherited": true
+                    },
+                    {
+                        "ControlType": 0,
+                        "Rights": 48,
+                        "IdentityReference": "S-1-5-10",
+                        "IdentityName": "SELF",
+                        "InheritanceFlags": 3,
+                        "IsInherited": true
+                    },
+                    {
+                        "ControlType": 0,
+                        "Rights": 304,
+                        "IdentityReference": "S-1-5-10",
+                        "IdentityName": "SELF",
+                        "InheritanceFlags": 1,
+                        "IsInherited": true
+                    },
+                    {
+                        "ControlType": 0,
+                        "Rights": 983551,
+                        "IdentityReference": "S-1-5-21-4054027134-3251639354-3875066094-519",
+                        "IdentityName": "Enterprise Admins",
+                        "InheritanceFlags": 1,
+                        "IsInherited": true
+                    },
+                    {
+                        "ControlType": 0,
+                        "Rights": 4,
+                        "IdentityReference": "S-1-5-32-554",
+                        "IdentityName": "Pre-Windows 2000 Compatible Access",
+                        "InheritanceFlags": 1,
+                        "IsInherited": true
+                    },
+                    {
+                        "ControlType": 0,
+                        "Rights": 983485,
+                        "IdentityReference": "S-1-5-32-544",
+                        "IdentityName": "Administrators",
+                        "InheritanceFlags": 1,
+                        "IsInherited": true
+                    }
+                ]
+            },
+            "Group": null,
+            "OrganizationalUnit": null
+        }
+    ]
+}
+````
+
+---
+### AddAccessRule/RemoveAccessRule/SetAccessRule to Group
+
+**Requests**
+
+````
+{{protocol}}://{{host}}:{{port}}/ad/accessrule/group/FamousActors/mfox/Allow/GenericAll  (By Name)
+{{protocol}}://{{host}}:{{port}}/ad/group/CN=FamousActors,OU=Synapse,DC=sandbox,DC=local/CN=mfox,OU=Synapse,DC=sandbox,DC=local/Allow/GenericAll  (By Distinguished Name)
+{{protocol}}://{{host}}:{{port}}/ad/group/S-1-5-21-4054027134-3251639354-3875066094-1835/S-1-5-21-4054027134-3251639354-3875066094-1773/Allow/GenericAll  (By Sid)
+{{protocol}}://{{host}}:{{port}}/ad/group/72e11fd9-10f4-4c27-acb4-08dd30c78b8f/1722b838-57e1-4058-a394-338882af9e2f/Allow/GenericAll  (By Guid)
+{{protocol}}://{{host}}:{{port}}/ad/group/FamousActors/mfox/Allow/GenericAll  (By SamAccountName)
+````
+
+**Response**
+````
+{
+    "Results": [
+        {
+            "Statuses": [
+                {
+                    "Status": 1,
+                    "Message": "Success",
+                    "Action": 9
+                }
+            ],
+            "Type": 2,
+            "Identity": "FamousActors",
+            "User": null,
+            "Group": {
+                "GroupScope": 2,
+                "IsSecurityGroup": true,
+                "Members": null,
+                "Properties": {
+                    "objectClass": [
+                        "top",
+                        "group"
+                    ],
+                    "cn": [
+                        "FamousActors"
+                    ],
+                    "distinguishedName": [
+                        "CN=FamousActors,OU=Synapse,DC=sandbox,DC=local"
+                    ],
+                    "instanceType": [
+                        "4"
+                    ],
+                    "whenCreated": [
+                        "10/3/2017 6:19:31 PM"
+                    ],
+                    "whenChanged": [
+                        "10/3/2017 6:22:01 PM"
+                    ],
+                    "uSNCreated": [],
+                    "uSNChanged": [],
+                    "nTSecurityDescriptor": [],
+                    "name": [
+                        "FamousActors"
+                    ],
+                    "objectGUID": [
+                        "72e11fd9-10f4-4c27-acb4-08dd30c78b8f"
+                    ],
+                    "objectSid": [
+                        "S-1-5-21-4054027134-3251639354-3875066094-1835"
+                    ],
+                    "sAMAccountName": [
+                        "FamousActors"
+                    ],
+                    "sAMAccountType": [
+                        "268435456"
+                    ],
+                    "groupType": [
+                        "-2147483640"
+                    ],
+                    "objectCategory": [
+                        "CN=Group,CN=Schema,CN=Configuration,DC=sandbox,DC=local"
+                    ],
+                    "dSCorePropagationData": [
+                        "10/3/2017 6:22:01 PM",
+                        "1/1/1601 12:00:00 AM"
+                    ]
+                },
+                "ContextType": 1,
+                "Description": null,
+                "DisplayName": null,
+                "DistinguishedName": "CN=FamousActors,OU=Synapse,DC=sandbox,DC=local",
+                "Guid": "72e11fd9-10f4-4c27-acb4-08dd30c78b8f",
+                "Name": "FamousActors",
+                "SamAccountName": "FamousActors",
+                "Sid": "S-1-5-21-4054027134-3251639354-3875066094-1835",
+                "StructuralObjectClass": "group",
+                "UserPrincipalName": null,
+                "Groups": null,
+                "AccessRules": [
+                    {
+                        "ControlType": 0,
+                        "Rights": 131220,
+                        "IdentityReference": "S-1-5-10",
+                        "IdentityName": "SELF",
+                        "InheritanceFlags": 0,
+                        "IsInherited": false
+                    },
+                    {
+                        "ControlType": 0,
+                        "Rights": 131220,
+                        "IdentityReference": "S-1-5-11",
+                        "IdentityName": "Authenticated Users",
+                        "InheritanceFlags": 0,
+                        "IsInherited": false
+                    },
+                    {
+                        "ControlType": 0,
+                        "Rights": 983551,
+                        "IdentityReference": "S-1-5-18",
+                        "IdentityName": "SYSTEM",
+                        "InheritanceFlags": 0,
+                        "IsInherited": false
+                    },
+                    {
+                        "ControlType": 0,
+                        "Rights": 983551,
+                        "IdentityReference": "S-1-5-32-548",
+                        "IdentityName": "Account Operators",
+                        "InheritanceFlags": 0,
+                        "IsInherited": false
+                    },
+                    {
+                        "ControlType": 0,
+                        "Rights": 983551,
+                        "IdentityReference": "S-1-5-21-4054027134-3251639354-3875066094-512",
+                        "IdentityName": "Domain Admins",
+                        "InheritanceFlags": 0,
+                        "IsInherited": false
+                    },
+                    {
+                        "ControlType": 0,
+                        "Rights": 983551,
+                        "IdentityReference": "S-1-5-21-4054027134-3251639354-3875066094-1834",
+                        "IdentityName": "mfox",
+                        "InheritanceFlags": 0,
+                        "IsInherited": false
+                    },
+                    {
+                        "ControlType": 0,
+                        "Rights": 256,
+                        "IdentityReference": "S-1-5-11",
+                        "IdentityName": "Authenticated Users",
+                        "InheritanceFlags": 0,
+                        "IsInherited": false
+                    },
+                    {
+                        "ControlType": 0,
+                        "Rights": 16,
+                        "IdentityReference": "S-1-5-32-560",
+                        "IdentityName": "Windows Authorization Access Group",
+                        "InheritanceFlags": 0,
+                        "IsInherited": false
+                    },
+                    {
+                        "ControlType": 0,
+                        "Rights": 16,
+                        "IdentityReference": "S-1-5-32-554",
+                        "IdentityName": "Pre-Windows 2000 Compatible Access",
+                        "InheritanceFlags": 1,
+                        "IsInherited": true
+                    },
+                    {
+                        "ControlType": 0,
+                        "Rights": 16,
+                        "IdentityReference": "S-1-5-32-554",
+                        "IdentityName": "Pre-Windows 2000 Compatible Access",
+                        "InheritanceFlags": 1,
+                        "IsInherited": true
+                    },
+                    {
+                        "ControlType": 0,
+                        "Rights": 16,
+                        "IdentityReference": "S-1-5-32-554",
+                        "IdentityName": "Pre-Windows 2000 Compatible Access",
+                        "InheritanceFlags": 1,
+                        "IsInherited": true
+                    },
+                    {
+                        "ControlType": 0,
+                        "Rights": 16,
+                        "IdentityReference": "S-1-5-32-554",
+                        "IdentityName": "Pre-Windows 2000 Compatible Access",
+                        "InheritanceFlags": 1,
+                        "IsInherited": true
+                    },
+                    {
+                        "ControlType": 0,
+                        "Rights": 16,
+                        "IdentityReference": "S-1-5-32-554",
+                        "IdentityName": "Pre-Windows 2000 Compatible Access",
+                        "InheritanceFlags": 1,
+                        "IsInherited": true
+                    },
+                    {
+                        "ControlType": 0,
+                        "Rights": 16,
+                        "IdentityReference": "S-1-5-32-554",
+                        "IdentityName": "Pre-Windows 2000 Compatible Access",
+                        "InheritanceFlags": 1,
+                        "IsInherited": true
+                    },
+                    {
+                        "ControlType": 0,
+                        "Rights": 16,
+                        "IdentityReference": "S-1-5-32-554",
+                        "IdentityName": "Pre-Windows 2000 Compatible Access",
+                        "InheritanceFlags": 1,
+                        "IsInherited": true
+                    },
+                    {
+                        "ControlType": 0,
+                        "Rights": 16,
+                        "IdentityReference": "S-1-5-32-554",
+                        "IdentityName": "Pre-Windows 2000 Compatible Access",
+                        "InheritanceFlags": 1,
+                        "IsInherited": true
+                    },
+                    {
+                        "ControlType": 0,
+                        "Rights": 16,
+                        "IdentityReference": "S-1-5-32-554",
+                        "IdentityName": "Pre-Windows 2000 Compatible Access",
+                        "InheritanceFlags": 1,
+                        "IsInherited": true
+                    },
+                    {
+                        "ControlType": 0,
+                        "Rights": 16,
+                        "IdentityReference": "S-1-5-32-554",
+                        "IdentityName": "Pre-Windows 2000 Compatible Access",
+                        "InheritanceFlags": 1,
+                        "IsInherited": true
+                    },
+                    {
+                        "ControlType": 0,
+                        "Rights": 48,
+                        "IdentityReference": "S-1-5-21-4054027134-3251639354-3875066094-526",
+                        "IdentityName": "Key Admins",
+                        "InheritanceFlags": 1,
+                        "IsInherited": true
+                    },
+                    {
+                        "ControlType": 0,
+                        "Rights": 48,
+                        "IdentityReference": "S-1-5-21-4054027134-3251639354-3875066094-527",
+                        "IdentityName": "Enterprise Key Admins",
+                        "InheritanceFlags": 1,
+                        "IsInherited": true
+                    },
+                    {
+                        "ControlType": 0,
+                        "Rights": 8,
+                        "IdentityReference": "S-1-3-0",
+                        "IdentityName": "CREATOR OWNER",
+                        "InheritanceFlags": 1,
+                        "IsInherited": true
+                    },
+                    {
+                        "ControlType": 0,
+                        "Rights": 8,
+                        "IdentityReference": "S-1-5-10",
+                        "IdentityName": "SELF",
+                        "InheritanceFlags": 1,
+                        "IsInherited": true
+                    },
+                    {
+                        "ControlType": 0,
+                        "Rights": 16,
+                        "IdentityReference": "S-1-5-9",
+                        "IdentityName": "ENTERPRISE DOMAIN CONTROLLERS",
+                        "InheritanceFlags": 1,
+                        "IsInherited": true
+                    },
+                    {
+                        "ControlType": 0,
+                        "Rights": 16,
+                        "IdentityReference": "S-1-5-9",
+                        "IdentityName": "ENTERPRISE DOMAIN CONTROLLERS",
+                        "InheritanceFlags": 1,
+                        "IsInherited": true
+                    },
+                    {
+                        "ControlType": 0,
+                        "Rights": 16,
+                        "IdentityReference": "S-1-5-9",
+                        "IdentityName": "ENTERPRISE DOMAIN CONTROLLERS",
+                        "InheritanceFlags": 1,
+                        "IsInherited": true
+                    },
+                    {
+                        "ControlType": 0,
+                        "Rights": 32,
+                        "IdentityReference": "S-1-5-10",
+                        "IdentityName": "SELF",
+                        "InheritanceFlags": 1,
+                        "IsInherited": true
+                    },
+                    {
+                        "ControlType": 0,
+                        "Rights": 131220,
+                        "IdentityReference": "S-1-5-32-554",
+                        "IdentityName": "Pre-Windows 2000 Compatible Access",
+                        "InheritanceFlags": 1,
+                        "IsInherited": true
+                    },
+                    {
+                        "ControlType": 0,
+                        "Rights": 131220,
+                        "IdentityReference": "S-1-5-32-554",
+                        "IdentityName": "Pre-Windows 2000 Compatible Access",
+                        "InheritanceFlags": 1,
+                        "IsInherited": true
+                    },
+                    {
+                        "ControlType": 0,
+                        "Rights": 131220,
+                        "IdentityReference": "S-1-5-32-554",
+                        "IdentityName": "Pre-Windows 2000 Compatible Access",
+                        "InheritanceFlags": 1,
+                        "IsInherited": true
+                    },
+                    {
+                        "ControlType": 0,
+                        "Rights": 48,
+                        "IdentityReference": "S-1-5-10",
+                        "IdentityName": "SELF",
+                        "InheritanceFlags": 3,
+                        "IsInherited": true
+                    },
+                    {
+                        "ControlType": 0,
+                        "Rights": 304,
+                        "IdentityReference": "S-1-5-10",
+                        "IdentityName": "SELF",
+                        "InheritanceFlags": 1,
+                        "IsInherited": true
+                    },
+                    {
+                        "ControlType": 0,
+                        "Rights": 983551,
+                        "IdentityReference": "S-1-5-21-4054027134-3251639354-3875066094-519",
+                        "IdentityName": "Enterprise Admins",
+                        "InheritanceFlags": 1,
+                        "IsInherited": true
+                    },
+                    {
+                        "ControlType": 0,
+                        "Rights": 4,
+                        "IdentityReference": "S-1-5-32-554",
+                        "IdentityName": "Pre-Windows 2000 Compatible Access",
+                        "InheritanceFlags": 1,
+                        "IsInherited": true
+                    },
+                    {
+                        "ControlType": 0,
+                        "Rights": 983485,
+                        "IdentityReference": "S-1-5-32-544",
+                        "IdentityName": "Administrators",
+                        "InheritanceFlags": 1,
+                        "IsInherited": true
+                    }
+                ]
+            },
+            "OrganizationalUnit": null
+        }
+    ]
+}
+````
+
+---
+### AddAccessRule/RemoveAccessRule/SetAccessRule to OrganizationalUnit
+
+**Requests**
+
+````
+{{protocol}}://{{host}}:{{port}}/ad/accessrule/ou/AmericanActors/FamousActors/Allow/GenericAll  (By Name)
+{{protocol}}://{{host}}:{{port}}/ad/ou/CN=AmericanActors,OU=Synapse,DC=sandbox,DC=local/CN=FamousActors,OU=Synapse,DC=sandbox,DC=local/Allow/GenericAll  (By Distinguished Name)
+{{protocol}}://{{host}}:{{port}}/ad/ou/768d8062-c1d2-4d67-9ad6-57c73cc3982b/72e11fd9-10f4-4c27-acb4-08dd30c78b8f/Allow/GenericAll  (By Guid)
+````
+
+**Response**
+````
+{
+    "Results": [
+        {
+            "Statuses": [
+                {
+                    "Status": 1,
+                    "Message": "Success",
+                    "Action": 9
+                }
+            ],
+            "Type": 4,
+            "Identity": "AmericanActors",
+            "User": null,
+            "Group": null,
+            "OrganizationalUnit": {
+                "DistinguishedName": "OU=AmericanActors,OU=Synapse,DC=sandbox,DC=local",
+                "Guid": "768d8062-c1d2-4d67-9ad6-57c73cc3982b",
+                "Name": "OU=AmericanActors",
+                "NativeGuid": "62808d76d2c1674d9ad657c73cc3982b",
+                "Parent": {
+                    "Guid": "4322bb5f-01d8-445c-86ea-b021fe21609b",
+                    "Name": "OU=Synapse",
+                    "NativeGuid": "5fbb2243d8015c4486eab021fe21609b",
+                    "Parent": null,
+                    "Path": "LDAP://OU=Synapse,DC=sandbox,DC=local",
+                    "Properties": null,
+                    "SchemaClassName": "organizationalUnit",
+                    "SchemaEntry": null,
+                    "UsePropertyCache": true,
+                    "Username": null,
+                    "AccessRules": null
+                },
+                "Path": "LDAP://OU=AmericanActors,OU=Synapse,DC=sandbox,DC=local",
+                "Properties": {
+                    "objectClass": [
+                        "top",
+                        "organizationalUnit"
+                    ],
+                    "ou": [
+                        "AmericanActors"
+                    ],
+                    "description": [
+                        "Hello World"
+                    ],
+                    "postalCode": [
+                        "90210"
+                    ],
+                    "distinguishedName": [
+                        "OU=AmericanActors,OU=Synapse,DC=sandbox,DC=local"
+                    ],
+                    "instanceType": [
+                        "4"
+                    ],
+                    "whenCreated": [
+                        "10/3/2017 6:27:26 PM"
+                    ],
+                    "whenChanged": [
+                        "10/3/2017 6:27:58 PM"
+                    ],
+                    "uSNCreated": [],
+                    "uSNChanged": [],
+                    "nTSecurityDescriptor": [],
+                    "name": [
+                        "AmericanActors"
+                    ],
+                    "objectGUID": [
+                        "768d8062-c1d2-4d67-9ad6-57c73cc3982b"
+                    ],
+                    "managedBy": [
+                        "CN=mfox,OU=Synapse,DC=sandbox,DC=local"
+                    ],
+                    "objectCategory": [
+                        "CN=Organizational-Unit,CN=Schema,CN=Configuration,DC=sandbox,DC=local"
+                    ],
+                    "dSCorePropagationData": [
+                        "10/3/2017 6:27:58 PM",
+                        "1/1/1601 12:00:00 AM"
+                    ]
+                },
+                "SchemaClassName": "organizationalUnit",
+                "SchemaEntry": {
+                    "Guid": "228d9a87-c302-11cf-9aa4-00aa004a5691",
+                    "Name": "organizationalUnit",
+                    "NativeGuid": "{228D9A87-C302-11CF-9AA4-00AA004A5691}",
+                    "Parent": null,
+                    "Path": "LDAP://schema/organizationalUnit",
+                    "Properties": null,
+                    "SchemaClassName": "Class",
+                    "SchemaEntry": null,
+                    "UsePropertyCache": true,
+                    "Username": null,
+                    "AccessRules": null
+                },
+                "UsePropertyCache": true,
+                "Username": null,
+                "AccessRules": [
+                    {
+                        "ControlType": 0,
+                        "Rights": 131220,
+                        "IdentityReference": "S-1-5-9",
+                        "IdentityName": "ENTERPRISE DOMAIN CONTROLLERS",
+                        "InheritanceFlags": 0,
+                        "IsInherited": false
+                    },
+                    {
+                        "ControlType": 0,
+                        "Rights": 131220,
+                        "IdentityReference": "S-1-5-11",
+                        "IdentityName": "Authenticated Users",
+                        "InheritanceFlags": 0,
+                        "IsInherited": false
+                    },
+                    {
+                        "ControlType": 0,
+                        "Rights": 983551,
+                        "IdentityReference": "S-1-5-18",
+                        "IdentityName": "SYSTEM",
+                        "InheritanceFlags": 0,
+                        "IsInherited": false
+                    },
+                    {
+                        "ControlType": 0,
+                        "Rights": 983551,
+                        "IdentityReference": "S-1-5-21-4054027134-3251639354-3875066094-512",
+                        "IdentityName": "Domain Admins",
+                        "InheritanceFlags": 0,
+                        "IsInherited": false
+                    },
+                    {
+                        "ControlType": 0,
+                        "Rights": 983551,
+                        "IdentityReference": "S-1-5-21-4054027134-3251639354-3875066094-1835",
+                        "IdentityName": "FamousActors",
+                        "InheritanceFlags": 0,
+                        "IsInherited": false
+                    },
+                    {
+                        "ControlType": 0,
+                        "Rights": 3,
+                        "IdentityReference": "S-1-5-32-548",
+                        "IdentityName": "Account Operators",
+                        "InheritanceFlags": 0,
+                        "IsInherited": false
+                    },
+                    {
+                        "ControlType": 0,
+                        "Rights": 3,
+                        "IdentityReference": "S-1-5-32-548",
+                        "IdentityName": "Account Operators",
+                        "InheritanceFlags": 0,
+                        "IsInherited": false
+                    },
+                    {
+                        "ControlType": 0,
+                        "Rights": 3,
+                        "IdentityReference": "S-1-5-32-548",
+                        "IdentityName": "Account Operators",
+                        "InheritanceFlags": 0,
+                        "IsInherited": false
+                    },
+                    {
+                        "ControlType": 0,
+                        "Rights": 3,
+                        "IdentityReference": "S-1-5-32-548",
+                        "IdentityName": "Account Operators",
+                        "InheritanceFlags": 0,
+                        "IsInherited": false
+                    },
+                    {
+                        "ControlType": 0,
+                        "Rights": 3,
+                        "IdentityReference": "S-1-5-32-550",
+                        "IdentityName": "Print Operators",
+                        "InheritanceFlags": 0,
+                        "IsInherited": false
+                    },
+                    {
+                        "ControlType": 0,
+                        "Rights": 16,
+                        "IdentityReference": "S-1-5-32-554",
+                        "IdentityName": "Pre-Windows 2000 Compatible Access",
+                        "InheritanceFlags": 1,
+                        "IsInherited": true
+                    },
+                    {
+                        "ControlType": 0,
+                        "Rights": 16,
+                        "IdentityReference": "S-1-5-32-554",
+                        "IdentityName": "Pre-Windows 2000 Compatible Access",
+                        "InheritanceFlags": 1,
+                        "IsInherited": true
+                    },
+                    {
+                        "ControlType": 0,
+                        "Rights": 16,
+                        "IdentityReference": "S-1-5-32-554",
+                        "IdentityName": "Pre-Windows 2000 Compatible Access",
+                        "InheritanceFlags": 1,
+                        "IsInherited": true
+                    },
+                    {
+                        "ControlType": 0,
+                        "Rights": 16,
+                        "IdentityReference": "S-1-5-32-554",
+                        "IdentityName": "Pre-Windows 2000 Compatible Access",
+                        "InheritanceFlags": 1,
+                        "IsInherited": true
+                    },
+                    {
+                        "ControlType": 0,
+                        "Rights": 16,
+                        "IdentityReference": "S-1-5-32-554",
+                        "IdentityName": "Pre-Windows 2000 Compatible Access",
+                        "InheritanceFlags": 1,
+                        "IsInherited": true
+                    },
+                    {
+                        "ControlType": 0,
+                        "Rights": 16,
+                        "IdentityReference": "S-1-5-32-554",
+                        "IdentityName": "Pre-Windows 2000 Compatible Access",
+                        "InheritanceFlags": 1,
+                        "IsInherited": true
+                    },
+                    {
+                        "ControlType": 0,
+                        "Rights": 16,
+                        "IdentityReference": "S-1-5-32-554",
+                        "IdentityName": "Pre-Windows 2000 Compatible Access",
+                        "InheritanceFlags": 1,
+                        "IsInherited": true
+                    },
+                    {
+                        "ControlType": 0,
+                        "Rights": 16,
+                        "IdentityReference": "S-1-5-32-554",
+                        "IdentityName": "Pre-Windows 2000 Compatible Access",
+                        "InheritanceFlags": 1,
+                        "IsInherited": true
+                    },
+                    {
+                        "ControlType": 0,
+                        "Rights": 16,
+                        "IdentityReference": "S-1-5-32-554",
+                        "IdentityName": "Pre-Windows 2000 Compatible Access",
+                        "InheritanceFlags": 1,
+                        "IsInherited": true
+                    },
+                    {
+                        "ControlType": 0,
+                        "Rights": 16,
+                        "IdentityReference": "S-1-5-32-554",
+                        "IdentityName": "Pre-Windows 2000 Compatible Access",
+                        "InheritanceFlags": 1,
+                        "IsInherited": true
+                    },
+                    {
+                        "ControlType": 0,
+                        "Rights": 48,
+                        "IdentityReference": "S-1-5-21-4054027134-3251639354-3875066094-526",
+                        "IdentityName": "Key Admins",
+                        "InheritanceFlags": 1,
+                        "IsInherited": true
+                    },
+                    {
+                        "ControlType": 0,
+                        "Rights": 48,
+                        "IdentityReference": "S-1-5-21-4054027134-3251639354-3875066094-527",
+                        "IdentityName": "Enterprise Key Admins",
+                        "InheritanceFlags": 1,
+                        "IsInherited": true
+                    },
+                    {
+                        "ControlType": 0,
+                        "Rights": 8,
+                        "IdentityReference": "S-1-3-0",
+                        "IdentityName": "CREATOR OWNER",
+                        "InheritanceFlags": 1,
+                        "IsInherited": true
+                    },
+                    {
+                        "ControlType": 0,
+                        "Rights": 8,
+                        "IdentityReference": "S-1-5-10",
+                        "IdentityName": "SELF",
+                        "InheritanceFlags": 1,
+                        "IsInherited": true
+                    },
+                    {
+                        "ControlType": 0,
+                        "Rights": 16,
+                        "IdentityReference": "S-1-5-9",
+                        "IdentityName": "ENTERPRISE DOMAIN CONTROLLERS",
+                        "InheritanceFlags": 1,
+                        "IsInherited": true
+                    },
+                    {
+                        "ControlType": 0,
+                        "Rights": 16,
+                        "IdentityReference": "S-1-5-9",
+                        "IdentityName": "ENTERPRISE DOMAIN CONTROLLERS",
+                        "InheritanceFlags": 1,
+                        "IsInherited": true
+                    },
+                    {
+                        "ControlType": 0,
+                        "Rights": 16,
+                        "IdentityReference": "S-1-5-9",
+                        "IdentityName": "ENTERPRISE DOMAIN CONTROLLERS",
+                        "InheritanceFlags": 1,
+                        "IsInherited": true
+                    },
+                    {
+                        "ControlType": 0,
+                        "Rights": 32,
+                        "IdentityReference": "S-1-5-10",
+                        "IdentityName": "SELF",
+                        "InheritanceFlags": 1,
+                        "IsInherited": true
+                    },
+                    {
+                        "ControlType": 0,
+                        "Rights": 131220,
+                        "IdentityReference": "S-1-5-32-554",
+                        "IdentityName": "Pre-Windows 2000 Compatible Access",
+                        "InheritanceFlags": 1,
+                        "IsInherited": true
+                    },
+                    {
+                        "ControlType": 0,
+                        "Rights": 131220,
+                        "IdentityReference": "S-1-5-32-554",
+                        "IdentityName": "Pre-Windows 2000 Compatible Access",
+                        "InheritanceFlags": 1,
+                        "IsInherited": true
+                    },
+                    {
+                        "ControlType": 0,
+                        "Rights": 131220,
+                        "IdentityReference": "S-1-5-32-554",
+                        "IdentityName": "Pre-Windows 2000 Compatible Access",
+                        "InheritanceFlags": 1,
+                        "IsInherited": true
+                    },
+                    {
+                        "ControlType": 0,
+                        "Rights": 48,
+                        "IdentityReference": "S-1-5-10",
+                        "IdentityName": "SELF",
+                        "InheritanceFlags": 3,
+                        "IsInherited": true
+                    },
+                    {
+                        "ControlType": 0,
+                        "Rights": 304,
+                        "IdentityReference": "S-1-5-10",
+                        "IdentityName": "SELF",
+                        "InheritanceFlags": 1,
+                        "IsInherited": true
+                    },
+                    {
+                        "ControlType": 0,
+                        "Rights": 983551,
+                        "IdentityReference": "S-1-5-21-4054027134-3251639354-3875066094-519",
+                        "IdentityName": "Enterprise Admins",
+                        "InheritanceFlags": 1,
+                        "IsInherited": true
+                    },
+                    {
+                        "ControlType": 0,
+                        "Rights": 4,
+                        "IdentityReference": "S-1-5-32-554",
+                        "IdentityName": "Pre-Windows 2000 Compatible Access",
+                        "InheritanceFlags": 1,
+                        "IsInherited": true
+                    },
+                    {
+                        "ControlType": 0,
+                        "Rights": 983485,
+                        "IdentityReference": "S-1-5-32-544",
+                        "IdentityName": "Administrators",
+                        "InheritanceFlags": 1,
+                        "IsInherited": true
+                    }
+                ]
+            }
+        }
+    ]
+}
+````
+
+
+## PurgeAccessRules (HTTP DELETE)
+
+The format for the URL is identical for the AddAccessRule, RemoveAccessRule and SetAccessRule actions, except there is no need for a type or rights, since purge removes all rules (Allow and Deny) for the given principal (user or group).
+
+**NOTE** : For this example, the query flag "returnaccessrules=true" was included to show the access rules being returned.
+
+---
+### PurgeAccessRules on User
+
+**Requests**
+
+````
+{{protocol}}://{{host}}:{{port}}/ad/accessrule/user/mfox/user001  (By Name)
+{{protocol}}://{{host}}:{{port}}/ad/user/CN=mfox,OU=Synapse,DC=sandbox,DC=local/CN=user001,OU=Synapse,DC=sandbox,DC=local  (By Distinguished Name)
+{{protocol}}://{{host}}:{{port}}/ad/user/S-1-5-21-4054027134-3251639354-3875066094-1773/S-1-5-21-4054027134-3251639354-3875066094-1206  (By Sid)
+{{protocol}}://{{host}}:{{port}}/ad/user/1722b838-57e1-4058-a394-338882af9e2f/4db94271-1fde-402a-a8c5-1564dfd8d62b  (By Guid)
+{{protocol}}://{{host}}:{{port}}/ad/user/mfox/user001/Allow/GenericAll  (By SamAccountName)
+{{protocol}}://{{host}}:{{port}}/ad/user/mfox@sandbox.local/user001@sandbox.local  (By UserPrincipal)
+````
+
+**Response**
+
+````
+{
+    "Results": [
+        {
+            "Statuses": [
+                {
+                    "Status": 1,
+                    "Message": "Success",
+                    "Action": 12
+                }
+            ],
+            "Type": 1,
+            "Identity": "mfox",
+            "User": {
+                "EmailAddress": "mfox@company.com",
+                "EmployeeId": "42",
+                "GivenName": "Michael",
+                "MiddleName": null,
+                "Surname": "Fox",
+                "VoiceTelephoneNumber": "1-800-555-1212",
+                "Properties": {
+                    "objectClass": [
+                        "top",
+                        "person",
+                        "organizationalPerson",
+                        "user"
+                    ],
+                    "cn": [
+                        "mfox"
+                    ],
+                    "sn": [
+                        "Fox"
+                    ],
+                    "description": [
+                        "American Actor, Back to the Future."
+                    ],
+                    "telephoneNumber": [
+                        "1-800-555-1212"
+                    ],
+                    "givenName": [
+                        "Michael"
+                    ],
+                    "distinguishedName": [
+                        "CN=mfox,OU=Synapse,DC=sandbox,DC=local"
+                    ],
+                    "instanceType": [
+                        "4"
+                    ],
+                    "whenCreated": [
+                        "10/3/2017 6:11:40 PM"
+                    ],
+                    "whenChanged": [
+                        "10/3/2017 6:33:32 PM"
+                    ],
+                    "displayName": [
+                        "Michael J. Fox"
+                    ],
+                    "uSNCreated": [],
+                    "uSNChanged": [],
+                    "nTSecurityDescriptor": [],
+                    "name": [
+                        "mfox"
+                    ],
+                    "objectGUID": [
+                        "49517710-7432-4450-bd6a-cfd4d6b7e0f5"
+                    ],
+                    "userAccountControl": [
+                        "328320"
+                    ],
+                    "badPwdCount": [
+                        "0"
+                    ],
+                    "codePage": [
+                        "0"
+                    ],
+                    "countryCode": [
+                        "0"
+                    ],
+                    "employeeID": [
+                        "42"
+                    ],
+                    "homeDirectory": [
+                        "C:\\Temp"
+                    ],
+                    "homeDrive": [
+                        "F:"
+                    ],
+                    "badPasswordTime": [],
+                    "lastLogoff": [],
+                    "lastLogon": [],
+                    "scriptPath": [
+                        "C:\\Temp\\Scripts"
+                    ],
+                    "pwdLastSet": [],
+                    "primaryGroupID": [
+                        "513"
+                    ],
+                    "objectSid": [
+                        "S-1-5-21-4054027134-3251639354-3875066094-1834"
+                    ],
+                    "accountExpires": [],
+                    "logonCount": [
+                        "0"
+                    ],
+                    "sAMAccountName": [
+                        "mfox"
+                    ],
+                    "sAMAccountType": [
+                        "805306368"
+                    ],
+                    "managedObjects": [
+                        "OU=AmericanActors,OU=Synapse,DC=sandbox,DC=local"
+                    ],
+                    "userPrincipalName": [
+                        "mfox@sandbox.local"
+                    ],
+                    "objectCategory": [
+                        "CN=Person,CN=Schema,CN=Configuration,DC=sandbox,DC=local"
+                    ],
+                    "dSCorePropagationData": [
+                        "10/3/2017 6:33:32 PM",
+                        "10/3/2017 6:12:08 PM",
+                        "1/1/1601 12:00:00 AM"
+                    ],
+                    "mail": [
+                        "mfox@company.com"
+                    ]
+                },
+                "AccountExpirationDate": "2017-10-10T11:35:46-05:00",
+                "AccountLockoutTime": null,
+                "AllowReversiblePasswordEncryption": true,
+                "BadLogonCount": 0,
+                "DelegationPermitted": true,
+                "Enabled": true,
+                "HomeDirectory": "C:\\Temp",
+                "HomeDrive": "F:",
+                "LastBadPasswordAttempt": null,
+                "LastLogon": null,
+                "LastPasswordSet": "2017-10-03T13:11:40.9300291-05:00",
+                "PasswordNeverExpires": true,
+                "PasswordNotRequired": false,
+                "PermittedLogonTimes": null,
+                "ScriptPath": "C:\\Temp\\Scripts",
+                "SmartcardLogonRequired": true,
+                "UserCannotChangePassword": false,
+                "ContextType": 1,
+                "Description": "American Actor, Back to the Future.",
+                "DisplayName": "Michael J. Fox",
+                "DistinguishedName": "CN=mfox,OU=Synapse,DC=sandbox,DC=local",
+                "Guid": "49517710-7432-4450-bd6a-cfd4d6b7e0f5",
+                "Name": "mfox",
+                "SamAccountName": "mfox",
+                "Sid": "S-1-5-21-4054027134-3251639354-3875066094-1834",
+                "StructuralObjectClass": "user",
+                "UserPrincipalName": "mfox@sandbox.local",
+                "Groups": null,
+                "AccessRules": [
+                    {
+                        "ControlType": 0,
+                        "Rights": 131220,
+                        "IdentityReference": "S-1-5-10",
+                        "IdentityName": "SELF",
+                        "InheritanceFlags": 0,
+                        "IsInherited": false
+                    },
+                    {
+                        "ControlType": 0,
+                        "Rights": 131072,
+                        "IdentityReference": "S-1-5-11",
+                        "IdentityName": "Authenticated Users",
+                        "InheritanceFlags": 0,
+                        "IsInherited": false
+                    },
+                    {
+                        "ControlType": 0,
+                        "Rights": 983551,
+                        "IdentityReference": "S-1-5-18",
+                        "IdentityName": "SYSTEM",
+                        "InheritanceFlags": 0,
+                        "IsInherited": false
+                    },
+                    {
+                        "ControlType": 0,
+                        "Rights": 983551,
+                        "IdentityReference": "S-1-5-32-548",
+                        "IdentityName": "Account Operators",
+                        "InheritanceFlags": 0,
+                        "IsInherited": false
+                    },
+                    {
+                        "ControlType": 0,
+                        "Rights": 983551,
+                        "IdentityReference": "S-1-5-21-4054027134-3251639354-3875066094-512",
+                        "IdentityName": "Domain Admins",
+                        "InheritanceFlags": 0,
+                        "IsInherited": false
+                    },
+                    {
+                        "ControlType": 0,
+                        "Rights": 256,
+                        "IdentityReference": "S-1-1-0",
+                        "IdentityName": "Everyone",
+                        "InheritanceFlags": 0,
+                        "IsInherited": false
+                    },
+                    {
+                        "ControlType": 0,
+                        "Rights": 48,
+                        "IdentityReference": "S-1-5-10",
+                        "IdentityName": "SELF",
+                        "InheritanceFlags": 0,
+                        "IsInherited": false
+                    },
+                    {
+                        "ControlType": 0,
+                        "Rights": 48,
+                        "IdentityReference": "S-1-5-10",
+                        "IdentityName": "SELF",
+                        "InheritanceFlags": 0,
+                        "IsInherited": false
+                    },
+                    {
+                        "ControlType": 0,
+                        "Rights": 48,
+                        "IdentityReference": "S-1-5-10",
+                        "IdentityName": "SELF",
+                        "InheritanceFlags": 0,
+                        "IsInherited": false
+                    },
+                    {
+                        "ControlType": 0,
+                        "Rights": 256,
+                        "IdentityReference": "S-1-5-10",
+                        "IdentityName": "SELF",
+                        "InheritanceFlags": 0,
+                        "IsInherited": false
+                    },
+                    {
+                        "ControlType": 0,
+                        "Rights": 256,
+                        "IdentityReference": "S-1-5-10",
+                        "IdentityName": "SELF",
+                        "InheritanceFlags": 0,
+                        "IsInherited": false
+                    },
+                    {
+                        "ControlType": 0,
+                        "Rights": 256,
+                        "IdentityReference": "S-1-5-10",
+                        "IdentityName": "SELF",
+                        "InheritanceFlags": 0,
+                        "IsInherited": false
+                    },
+                    {
+                        "ControlType": 0,
+                        "Rights": 16,
+                        "IdentityReference": "S-1-5-11",
+                        "IdentityName": "Authenticated Users",
+                        "InheritanceFlags": 0,
+                        "IsInherited": false
+                    },
+                    {
+                        "ControlType": 0,
+                        "Rights": 16,
+                        "IdentityReference": "S-1-5-11",
+                        "IdentityName": "Authenticated Users",
+                        "InheritanceFlags": 0,
+                        "IsInherited": false
+                    },
+                    {
+                        "ControlType": 0,
+                        "Rights": 16,
+                        "IdentityReference": "S-1-5-11",
+                        "IdentityName": "Authenticated Users",
+                        "InheritanceFlags": 0,
+                        "IsInherited": false
+                    },
+                    {
+                        "ControlType": 0,
+                        "Rights": 16,
+                        "IdentityReference": "S-1-5-11",
+                        "IdentityName": "Authenticated Users",
+                        "InheritanceFlags": 0,
+                        "IsInherited": false
+                    },
+                    {
+                        "ControlType": 0,
+                        "Rights": 16,
+                        "IdentityReference": "S-1-5-32-560",
+                        "IdentityName": "Windows Authorization Access Group",
+                        "InheritanceFlags": 0,
+                        "IsInherited": false
+                    },
+                    {
+                        "ControlType": 0,
+                        "Rights": 48,
+                        "IdentityReference": "S-1-5-32-561",
+                        "IdentityName": "Terminal Server License Servers",
+                        "InheritanceFlags": 0,
+                        "IsInherited": false
+                    },
+                    {
+                        "ControlType": 0,
+                        "Rights": 48,
+                        "IdentityReference": "S-1-5-32-561",
+                        "IdentityName": "Terminal Server License Servers",
+                        "InheritanceFlags": 0,
+                        "IsInherited": false
+                    },
+                    {
+                        "ControlType": 0,
+                        "Rights": 48,
+                        "IdentityReference": "S-1-5-21-4054027134-3251639354-3875066094-517",
+                        "IdentityName": "Cert Publishers",
+                        "InheritanceFlags": 0,
+                        "IsInherited": false
+                    },
+                    {
+                        "ControlType": 0,
+                        "Rights": 16,
+                        "IdentityReference": "S-1-5-21-4054027134-3251639354-3875066094-553",
+                        "IdentityName": "RAS and IAS Servers",
+                        "InheritanceFlags": 0,
+                        "IsInherited": false
+                    },
+                    {
+                        "ControlType": 0,
+                        "Rights": 16,
+                        "IdentityReference": "S-1-5-21-4054027134-3251639354-3875066094-553",
+                        "IdentityName": "RAS and IAS Servers",
+                        "InheritanceFlags": 0,
+                        "IsInherited": false
+                    },
+                    {
+                        "ControlType": 0,
+                        "Rights": 16,
+                        "IdentityReference": "S-1-5-21-4054027134-3251639354-3875066094-553",
+                        "IdentityName": "RAS and IAS Servers",
+                        "InheritanceFlags": 0,
+                        "IsInherited": false
+                    },
+                    {
+                        "ControlType": 0,
+                        "Rights": 16,
+                        "IdentityReference": "S-1-5-21-4054027134-3251639354-3875066094-553",
+                        "IdentityName": "RAS and IAS Servers",
+                        "InheritanceFlags": 0,
+                        "IsInherited": false
+                    },
+                    {
+                        "ControlType": 0,
+                        "Rights": 16,
+                        "IdentityReference": "S-1-5-32-554",
+                        "IdentityName": "Pre-Windows 2000 Compatible Access",
+                        "InheritanceFlags": 1,
+                        "IsInherited": true
+                    },
+                    {
+                        "ControlType": 0,
+                        "Rights": 16,
+                        "IdentityReference": "S-1-5-32-554",
+                        "IdentityName": "Pre-Windows 2000 Compatible Access",
+                        "InheritanceFlags": 1,
+                        "IsInherited": true
+                    },
+                    {
+                        "ControlType": 0,
+                        "Rights": 16,
+                        "IdentityReference": "S-1-5-32-554",
+                        "IdentityName": "Pre-Windows 2000 Compatible Access",
+                        "InheritanceFlags": 1,
+                        "IsInherited": true
+                    },
+                    {
+                        "ControlType": 0,
+                        "Rights": 16,
+                        "IdentityReference": "S-1-5-32-554",
+                        "IdentityName": "Pre-Windows 2000 Compatible Access",
+                        "InheritanceFlags": 1,
+                        "IsInherited": true
+                    },
+                    {
+                        "ControlType": 0,
+                        "Rights": 16,
+                        "IdentityReference": "S-1-5-32-554",
+                        "IdentityName": "Pre-Windows 2000 Compatible Access",
+                        "InheritanceFlags": 1,
+                        "IsInherited": true
+                    },
+                    {
+                        "ControlType": 0,
+                        "Rights": 16,
+                        "IdentityReference": "S-1-5-32-554",
+                        "IdentityName": "Pre-Windows 2000 Compatible Access",
+                        "InheritanceFlags": 1,
+                        "IsInherited": true
+                    },
+                    {
+                        "ControlType": 0,
+                        "Rights": 16,
+                        "IdentityReference": "S-1-5-32-554",
+                        "IdentityName": "Pre-Windows 2000 Compatible Access",
+                        "InheritanceFlags": 1,
+                        "IsInherited": true
+                    },
+                    {
+                        "ControlType": 0,
+                        "Rights": 16,
+                        "IdentityReference": "S-1-5-32-554",
+                        "IdentityName": "Pre-Windows 2000 Compatible Access",
+                        "InheritanceFlags": 1,
+                        "IsInherited": true
+                    },
+                    {
+                        "ControlType": 0,
+                        "Rights": 16,
+                        "IdentityReference": "S-1-5-32-554",
+                        "IdentityName": "Pre-Windows 2000 Compatible Access",
+                        "InheritanceFlags": 1,
+                        "IsInherited": true
+                    },
+                    {
+                        "ControlType": 0,
+                        "Rights": 16,
+                        "IdentityReference": "S-1-5-32-554",
+                        "IdentityName": "Pre-Windows 2000 Compatible Access",
+                        "InheritanceFlags": 1,
+                        "IsInherited": true
+                    },
+                    {
+                        "ControlType": 0,
+                        "Rights": 48,
+                        "IdentityReference": "S-1-5-21-4054027134-3251639354-3875066094-526",
+                        "IdentityName": "Key Admins",
+                        "InheritanceFlags": 1,
+                        "IsInherited": true
+                    },
+                    {
+                        "ControlType": 0,
+                        "Rights": 48,
+                        "IdentityReference": "S-1-5-21-4054027134-3251639354-3875066094-527",
+                        "IdentityName": "Enterprise Key Admins",
+                        "InheritanceFlags": 1,
+                        "IsInherited": true
+                    },
+                    {
+                        "ControlType": 0,
+                        "Rights": 8,
+                        "IdentityReference": "S-1-3-0",
+                        "IdentityName": "CREATOR OWNER",
+                        "InheritanceFlags": 1,
+                        "IsInherited": true
+                    },
+                    {
+                        "ControlType": 0,
+                        "Rights": 8,
+                        "IdentityReference": "S-1-5-10",
+                        "IdentityName": "SELF",
+                        "InheritanceFlags": 1,
+                        "IsInherited": true
+                    },
+                    {
+                        "ControlType": 0,
+                        "Rights": 16,
+                        "IdentityReference": "S-1-5-9",
+                        "IdentityName": "ENTERPRISE DOMAIN CONTROLLERS",
+                        "InheritanceFlags": 1,
+                        "IsInherited": true
+                    },
+                    {
+                        "ControlType": 0,
+                        "Rights": 16,
+                        "IdentityReference": "S-1-5-9",
+                        "IdentityName": "ENTERPRISE DOMAIN CONTROLLERS",
+                        "InheritanceFlags": 1,
+                        "IsInherited": true
+                    },
+                    {
+                        "ControlType": 0,
+                        "Rights": 16,
+                        "IdentityReference": "S-1-5-9",
+                        "IdentityName": "ENTERPRISE DOMAIN CONTROLLERS",
+                        "InheritanceFlags": 1,
+                        "IsInherited": true
+                    },
+                    {
+                        "ControlType": 0,
+                        "Rights": 32,
+                        "IdentityReference": "S-1-5-10",
+                        "IdentityName": "SELF",
+                        "InheritanceFlags": 1,
+                        "IsInherited": true
+                    },
+                    {
+                        "ControlType": 0,
+                        "Rights": 131220,
+                        "IdentityReference": "S-1-5-32-554",
+                        "IdentityName": "Pre-Windows 2000 Compatible Access",
+                        "InheritanceFlags": 1,
+                        "IsInherited": true
+                    },
+                    {
+                        "ControlType": 0,
+                        "Rights": 131220,
+                        "IdentityReference": "S-1-5-32-554",
+                        "IdentityName": "Pre-Windows 2000 Compatible Access",
+                        "InheritanceFlags": 1,
+                        "IsInherited": true
+                    },
+                    {
+                        "ControlType": 0,
+                        "Rights": 131220,
+                        "IdentityReference": "S-1-5-32-554",
+                        "IdentityName": "Pre-Windows 2000 Compatible Access",
+                        "InheritanceFlags": 1,
+                        "IsInherited": true
+                    },
+                    {
+                        "ControlType": 0,
+                        "Rights": 48,
+                        "IdentityReference": "S-1-5-10",
+                        "IdentityName": "SELF",
+                        "InheritanceFlags": 3,
+                        "IsInherited": true
+                    },
+                    {
+                        "ControlType": 0,
+                        "Rights": 304,
+                        "IdentityReference": "S-1-5-10",
+                        "IdentityName": "SELF",
+                        "InheritanceFlags": 1,
+                        "IsInherited": true
+                    },
+                    {
+                        "ControlType": 0,
+                        "Rights": 983551,
+                        "IdentityReference": "S-1-5-21-4054027134-3251639354-3875066094-519",
+                        "IdentityName": "Enterprise Admins",
+                        "InheritanceFlags": 1,
+                        "IsInherited": true
+                    },
+                    {
+                        "ControlType": 0,
+                        "Rights": 4,
+                        "IdentityReference": "S-1-5-32-554",
+                        "IdentityName": "Pre-Windows 2000 Compatible Access",
+                        "InheritanceFlags": 1,
+                        "IsInherited": true
+                    },
+                    {
+                        "ControlType": 0,
+                        "Rights": 983485,
+                        "IdentityReference": "S-1-5-32-544",
+                        "IdentityName": "Administrators",
+                        "InheritanceFlags": 1,
+                        "IsInherited": true
+                    }
+                ]
+            },
+            "Group": null,
+            "OrganizationalUnit": null
+        }
+    ]
+}
+````
+
+---
+### PurgeAccessRules on Group
+
+**Requests**
+
+````
+{{protocol}}://{{host}}:{{port}}/ad/accessrule/group/FamousActors/mfox/  (By Name)
+{{protocol}}://{{host}}:{{port}}/ad/group/CN=FamousActors,OU=Synapse,DC=sandbox,DC=local/CN=mfox,OU=Synapse,DC=sandbox,DC=local  (By Distinguished Name)
+{{protocol}}://{{host}}:{{port}}/ad/group/S-1-5-21-4054027134-3251639354-3875066094-1835/S-1-5-21-4054027134-3251639354-3875066094-1773  (By Sid)
+{{protocol}}://{{host}}:{{port}}/ad/group/72e11fd9-10f4-4c27-acb4-08dd30c78b8f/1722b838-57e1-4058-a394-338882af9e2f  (By Guid)
+{{protocol}}://{{host}}:{{port}}/ad/group/FamousActors/mfox  (By SamAccountName)
+````
+
+**Response**
+
+````
+{
+    "Results": [
+        {
+            "Statuses": [
+                {
+                    "Status": 1,
+                    "Message": "Success",
+                    "Action": 12
+                }
+            ],
+            "Type": 2,
+            "Identity": "FamousActors",
+            "User": null,
+            "Group": {
+                "GroupScope": 2,
+                "IsSecurityGroup": true,
+                "Members": null,
+                "Properties": {
+                    "objectClass": [
+                        "top",
+                        "group"
+                    ],
+                    "cn": [
+                        "FamousActors"
+                    ],
+                    "distinguishedName": [
+                        "CN=FamousActors,OU=Synapse,DC=sandbox,DC=local"
+                    ],
+                    "instanceType": [
+                        "4"
+                    ],
+                    "whenCreated": [
+                        "10/3/2017 6:19:31 PM"
+                    ],
+                    "whenChanged": [
+                        "10/3/2017 6:37:02 PM"
+                    ],
+                    "uSNCreated": [],
+                    "uSNChanged": [],
+                    "nTSecurityDescriptor": [],
+                    "name": [
+                        "FamousActors"
+                    ],
+                    "objectGUID": [
+                        "72e11fd9-10f4-4c27-acb4-08dd30c78b8f"
+                    ],
+                    "objectSid": [
+                        "S-1-5-21-4054027134-3251639354-3875066094-1835"
+                    ],
+                    "sAMAccountName": [
+                        "FamousActors"
+                    ],
+                    "sAMAccountType": [
+                        "268435456"
+                    ],
+                    "groupType": [
+                        "-2147483640"
+                    ],
+                    "objectCategory": [
+                        "CN=Group,CN=Schema,CN=Configuration,DC=sandbox,DC=local"
+                    ],
+                    "dSCorePropagationData": [
+                        "10/3/2017 6:37:02 PM",
+                        "10/3/2017 6:22:01 PM",
+                        "1/1/1601 12:00:00 AM"
+                    ]
+                },
+                "ContextType": 1,
+                "Description": null,
+                "DisplayName": null,
+                "DistinguishedName": "CN=FamousActors,OU=Synapse,DC=sandbox,DC=local",
+                "Guid": "72e11fd9-10f4-4c27-acb4-08dd30c78b8f",
+                "Name": "FamousActors",
+                "SamAccountName": "FamousActors",
+                "Sid": "S-1-5-21-4054027134-3251639354-3875066094-1835",
+                "StructuralObjectClass": "group",
+                "UserPrincipalName": null,
+                "Groups": null,
+                "AccessRules": [
+                    {
+                        "ControlType": 0,
+                        "Rights": 131220,
+                        "IdentityReference": "S-1-5-10",
+                        "IdentityName": "SELF",
+                        "InheritanceFlags": 0,
+                        "IsInherited": false
+                    },
+                    {
+                        "ControlType": 0,
+                        "Rights": 131220,
+                        "IdentityReference": "S-1-5-11",
+                        "IdentityName": "Authenticated Users",
+                        "InheritanceFlags": 0,
+                        "IsInherited": false
+                    },
+                    {
+                        "ControlType": 0,
+                        "Rights": 983551,
+                        "IdentityReference": "S-1-5-18",
+                        "IdentityName": "SYSTEM",
+                        "InheritanceFlags": 0,
+                        "IsInherited": false
+                    },
+                    {
+                        "ControlType": 0,
+                        "Rights": 983551,
+                        "IdentityReference": "S-1-5-32-548",
+                        "IdentityName": "Account Operators",
+                        "InheritanceFlags": 0,
+                        "IsInherited": false
+                    },
+                    {
+                        "ControlType": 0,
+                        "Rights": 983551,
+                        "IdentityReference": "S-1-5-21-4054027134-3251639354-3875066094-512",
+                        "IdentityName": "Domain Admins",
+                        "InheritanceFlags": 0,
+                        "IsInherited": false
+                    },
+                    {
+                        "ControlType": 0,
+                        "Rights": 256,
+                        "IdentityReference": "S-1-5-11",
+                        "IdentityName": "Authenticated Users",
+                        "InheritanceFlags": 0,
+                        "IsInherited": false
+                    },
+                    {
+                        "ControlType": 0,
+                        "Rights": 16,
+                        "IdentityReference": "S-1-5-32-560",
+                        "IdentityName": "Windows Authorization Access Group",
+                        "InheritanceFlags": 0,
+                        "IsInherited": false
+                    },
+                    {
+                        "ControlType": 0,
+                        "Rights": 16,
+                        "IdentityReference": "S-1-5-32-554",
+                        "IdentityName": "Pre-Windows 2000 Compatible Access",
+                        "InheritanceFlags": 1,
+                        "IsInherited": true
+                    },
+                    {
+                        "ControlType": 0,
+                        "Rights": 16,
+                        "IdentityReference": "S-1-5-32-554",
+                        "IdentityName": "Pre-Windows 2000 Compatible Access",
+                        "InheritanceFlags": 1,
+                        "IsInherited": true
+                    },
+                    {
+                        "ControlType": 0,
+                        "Rights": 16,
+                        "IdentityReference": "S-1-5-32-554",
+                        "IdentityName": "Pre-Windows 2000 Compatible Access",
+                        "InheritanceFlags": 1,
+                        "IsInherited": true
+                    },
+                    {
+                        "ControlType": 0,
+                        "Rights": 16,
+                        "IdentityReference": "S-1-5-32-554",
+                        "IdentityName": "Pre-Windows 2000 Compatible Access",
+                        "InheritanceFlags": 1,
+                        "IsInherited": true
+                    },
+                    {
+                        "ControlType": 0,
+                        "Rights": 16,
+                        "IdentityReference": "S-1-5-32-554",
+                        "IdentityName": "Pre-Windows 2000 Compatible Access",
+                        "InheritanceFlags": 1,
+                        "IsInherited": true
+                    },
+                    {
+                        "ControlType": 0,
+                        "Rights": 16,
+                        "IdentityReference": "S-1-5-32-554",
+                        "IdentityName": "Pre-Windows 2000 Compatible Access",
+                        "InheritanceFlags": 1,
+                        "IsInherited": true
+                    },
+                    {
+                        "ControlType": 0,
+                        "Rights": 16,
+                        "IdentityReference": "S-1-5-32-554",
+                        "IdentityName": "Pre-Windows 2000 Compatible Access",
+                        "InheritanceFlags": 1,
+                        "IsInherited": true
+                    },
+                    {
+                        "ControlType": 0,
+                        "Rights": 16,
+                        "IdentityReference": "S-1-5-32-554",
+                        "IdentityName": "Pre-Windows 2000 Compatible Access",
+                        "InheritanceFlags": 1,
+                        "IsInherited": true
+                    },
+                    {
+                        "ControlType": 0,
+                        "Rights": 16,
+                        "IdentityReference": "S-1-5-32-554",
+                        "IdentityName": "Pre-Windows 2000 Compatible Access",
+                        "InheritanceFlags": 1,
+                        "IsInherited": true
+                    },
+                    {
+                        "ControlType": 0,
+                        "Rights": 16,
+                        "IdentityReference": "S-1-5-32-554",
+                        "IdentityName": "Pre-Windows 2000 Compatible Access",
+                        "InheritanceFlags": 1,
+                        "IsInherited": true
+                    },
+                    {
+                        "ControlType": 0,
+                        "Rights": 48,
+                        "IdentityReference": "S-1-5-21-4054027134-3251639354-3875066094-526",
+                        "IdentityName": "Key Admins",
+                        "InheritanceFlags": 1,
+                        "IsInherited": true
+                    },
+                    {
+                        "ControlType": 0,
+                        "Rights": 48,
+                        "IdentityReference": "S-1-5-21-4054027134-3251639354-3875066094-527",
+                        "IdentityName": "Enterprise Key Admins",
+                        "InheritanceFlags": 1,
+                        "IsInherited": true
+                    },
+                    {
+                        "ControlType": 0,
+                        "Rights": 8,
+                        "IdentityReference": "S-1-3-0",
+                        "IdentityName": "CREATOR OWNER",
+                        "InheritanceFlags": 1,
+                        "IsInherited": true
+                    },
+                    {
+                        "ControlType": 0,
+                        "Rights": 8,
+                        "IdentityReference": "S-1-5-10",
+                        "IdentityName": "SELF",
+                        "InheritanceFlags": 1,
+                        "IsInherited": true
+                    },
+                    {
+                        "ControlType": 0,
+                        "Rights": 16,
+                        "IdentityReference": "S-1-5-9",
+                        "IdentityName": "ENTERPRISE DOMAIN CONTROLLERS",
+                        "InheritanceFlags": 1,
+                        "IsInherited": true
+                    },
+                    {
+                        "ControlType": 0,
+                        "Rights": 16,
+                        "IdentityReference": "S-1-5-9",
+                        "IdentityName": "ENTERPRISE DOMAIN CONTROLLERS",
+                        "InheritanceFlags": 1,
+                        "IsInherited": true
+                    },
+                    {
+                        "ControlType": 0,
+                        "Rights": 16,
+                        "IdentityReference": "S-1-5-9",
+                        "IdentityName": "ENTERPRISE DOMAIN CONTROLLERS",
+                        "InheritanceFlags": 1,
+                        "IsInherited": true
+                    },
+                    {
+                        "ControlType": 0,
+                        "Rights": 32,
+                        "IdentityReference": "S-1-5-10",
+                        "IdentityName": "SELF",
+                        "InheritanceFlags": 1,
+                        "IsInherited": true
+                    },
+                    {
+                        "ControlType": 0,
+                        "Rights": 131220,
+                        "IdentityReference": "S-1-5-32-554",
+                        "IdentityName": "Pre-Windows 2000 Compatible Access",
+                        "InheritanceFlags": 1,
+                        "IsInherited": true
+                    },
+                    {
+                        "ControlType": 0,
+                        "Rights": 131220,
+                        "IdentityReference": "S-1-5-32-554",
+                        "IdentityName": "Pre-Windows 2000 Compatible Access",
+                        "InheritanceFlags": 1,
+                        "IsInherited": true
+                    },
+                    {
+                        "ControlType": 0,
+                        "Rights": 131220,
+                        "IdentityReference": "S-1-5-32-554",
+                        "IdentityName": "Pre-Windows 2000 Compatible Access",
+                        "InheritanceFlags": 1,
+                        "IsInherited": true
+                    },
+                    {
+                        "ControlType": 0,
+                        "Rights": 48,
+                        "IdentityReference": "S-1-5-10",
+                        "IdentityName": "SELF",
+                        "InheritanceFlags": 3,
+                        "IsInherited": true
+                    },
+                    {
+                        "ControlType": 0,
+                        "Rights": 304,
+                        "IdentityReference": "S-1-5-10",
+                        "IdentityName": "SELF",
+                        "InheritanceFlags": 1,
+                        "IsInherited": true
+                    },
+                    {
+                        "ControlType": 0,
+                        "Rights": 983551,
+                        "IdentityReference": "S-1-5-21-4054027134-3251639354-3875066094-519",
+                        "IdentityName": "Enterprise Admins",
+                        "InheritanceFlags": 1,
+                        "IsInherited": true
+                    },
+                    {
+                        "ControlType": 0,
+                        "Rights": 4,
+                        "IdentityReference": "S-1-5-32-554",
+                        "IdentityName": "Pre-Windows 2000 Compatible Access",
+                        "InheritanceFlags": 1,
+                        "IsInherited": true
+                    },
+                    {
+                        "ControlType": 0,
+                        "Rights": 983485,
+                        "IdentityReference": "S-1-5-32-544",
+                        "IdentityName": "Administrators",
+                        "InheritanceFlags": 1,
+                        "IsInherited": true
+                    }
+                ]
+            },
+            "OrganizationalUnit": null
+        }
+    ]
+}
+````
+
+---
+### PurgeAccessRules on Organizational Unit
+
+**Requests**
+
+````
+{{protocol}}://{{host}}:{{port}}/ad/accessrule/group/AmericanActors/FamousActors/  (By Name)
+{{protocol}}://{{host}}:{{port}}/ad/group/CN=AmericanActors,OU=Synapse,DC=sandbox,DC=local/CN=FamousActors,OU=Synapse,DC=sandbox,DC=local  (By Distinguished Name)
+{{protocol}}://{{host}}:{{port}}/ad/group/768d8062-c1d2-4d67-9ad6-57c73cc3982b/72e11fd9-10f4-4c27-acb4-08dd30c78b8f  (By Guid)
+````
+
+**Response**
+
+````
+{
+    "Results": [
+        {
+            "Statuses": [
+                {
+                    "Status": 1,
+                    "Message": "Success",
+                    "Action": 12
+                }
+            ],
+            "Type": 4,
+            "Identity": "AmericanActors",
+            "User": null,
+            "Group": null,
+            "OrganizationalUnit": {
+                "DistinguishedName": "OU=AmericanActors,OU=Synapse,DC=sandbox,DC=local",
+                "Guid": "768d8062-c1d2-4d67-9ad6-57c73cc3982b",
+                "Name": "OU=AmericanActors",
+                "NativeGuid": "62808d76d2c1674d9ad657c73cc3982b",
+                "Parent": {
+                    "Guid": "4322bb5f-01d8-445c-86ea-b021fe21609b",
+                    "Name": "OU=Synapse",
+                    "NativeGuid": "5fbb2243d8015c4486eab021fe21609b",
+                    "Parent": null,
+                    "Path": "LDAP://OU=Synapse,DC=sandbox,DC=local",
+                    "Properties": null,
+                    "SchemaClassName": "organizationalUnit",
+                    "SchemaEntry": null,
+                    "UsePropertyCache": true,
+                    "Username": null,
+                    "AccessRules": null
+                },
+                "Path": "LDAP://OU=AmericanActors,OU=Synapse,DC=sandbox,DC=local",
+                "Properties": {
+                    "objectClass": [
+                        "top",
+                        "organizationalUnit"
+                    ],
+                    "ou": [
+                        "AmericanActors"
+                    ],
+                    "description": [
+                        "Hello World"
+                    ],
+                    "postalCode": [
+                        "90210"
+                    ],
+                    "distinguishedName": [
+                        "OU=AmericanActors,OU=Synapse,DC=sandbox,DC=local"
+                    ],
+                    "instanceType": [
+                        "4"
+                    ],
+                    "whenCreated": [
+                        "10/3/2017 6:27:26 PM"
+                    ],
+                    "whenChanged": [
+                        "10/3/2017 6:41:31 PM"
+                    ],
+                    "uSNCreated": [],
+                    "uSNChanged": [],
+                    "nTSecurityDescriptor": [],
+                    "name": [
+                        "AmericanActors"
+                    ],
+                    "objectGUID": [
+                        "768d8062-c1d2-4d67-9ad6-57c73cc3982b"
+                    ],
+                    "managedBy": [
+                        "CN=mfox,OU=Synapse,DC=sandbox,DC=local"
+                    ],
+                    "objectCategory": [
+                        "CN=Organizational-Unit,CN=Schema,CN=Configuration,DC=sandbox,DC=local"
+                    ],
+                    "dSCorePropagationData": [
+                        "10/3/2017 6:41:31 PM",
+                        "10/3/2017 6:27:58 PM",
+                        "1/1/1601 12:00:00 AM"
+                    ]
+                },
+                "SchemaClassName": "organizationalUnit",
+                "SchemaEntry": {
+                    "Guid": "228d9a87-c302-11cf-9aa4-00aa004a5691",
+                    "Name": "organizationalUnit",
+                    "NativeGuid": "{228D9A87-C302-11CF-9AA4-00AA004A5691}",
+                    "Parent": null,
+                    "Path": "LDAP://schema/organizationalUnit",
+                    "Properties": null,
+                    "SchemaClassName": "Class",
+                    "SchemaEntry": null,
+                    "UsePropertyCache": true,
+                    "Username": null,
+                    "AccessRules": null
+                },
+                "UsePropertyCache": true,
+                "Username": null,
+                "AccessRules": [
+                    {
+                        "ControlType": 0,
+                        "Rights": 131220,
+                        "IdentityReference": "S-1-5-9",
+                        "IdentityName": "ENTERPRISE DOMAIN CONTROLLERS",
+                        "InheritanceFlags": 0,
+                        "IsInherited": false
+                    },
+                    {
+                        "ControlType": 0,
+                        "Rights": 131220,
+                        "IdentityReference": "S-1-5-11",
+                        "IdentityName": "Authenticated Users",
+                        "InheritanceFlags": 0,
+                        "IsInherited": false
+                    },
+                    {
+                        "ControlType": 0,
+                        "Rights": 983551,
+                        "IdentityReference": "S-1-5-18",
+                        "IdentityName": "SYSTEM",
+                        "InheritanceFlags": 0,
+                        "IsInherited": false
+                    },
+                    {
+                        "ControlType": 0,
+                        "Rights": 983551,
+                        "IdentityReference": "S-1-5-21-4054027134-3251639354-3875066094-512",
+                        "IdentityName": "Domain Admins",
+                        "InheritanceFlags": 0,
+                        "IsInherited": false
+                    },
+                    {
+                        "ControlType": 0,
+                        "Rights": 3,
+                        "IdentityReference": "S-1-5-32-548",
+                        "IdentityName": "Account Operators",
+                        "InheritanceFlags": 0,
+                        "IsInherited": false
+                    },
+                    {
+                        "ControlType": 0,
+                        "Rights": 3,
+                        "IdentityReference": "S-1-5-32-548",
+                        "IdentityName": "Account Operators",
+                        "InheritanceFlags": 0,
+                        "IsInherited": false
+                    },
+                    {
+                        "ControlType": 0,
+                        "Rights": 3,
+                        "IdentityReference": "S-1-5-32-548",
+                        "IdentityName": "Account Operators",
+                        "InheritanceFlags": 0,
+                        "IsInherited": false
+                    },
+                    {
+                        "ControlType": 0,
+                        "Rights": 3,
+                        "IdentityReference": "S-1-5-32-548",
+                        "IdentityName": "Account Operators",
+                        "InheritanceFlags": 0,
+                        "IsInherited": false
+                    },
+                    {
+                        "ControlType": 0,
+                        "Rights": 3,
+                        "IdentityReference": "S-1-5-32-550",
+                        "IdentityName": "Print Operators",
+                        "InheritanceFlags": 0,
+                        "IsInherited": false
+                    },
+                    {
+                        "ControlType": 0,
+                        "Rights": 16,
+                        "IdentityReference": "S-1-5-32-554",
+                        "IdentityName": "Pre-Windows 2000 Compatible Access",
+                        "InheritanceFlags": 1,
+                        "IsInherited": true
+                    },
+                    {
+                        "ControlType": 0,
+                        "Rights": 16,
+                        "IdentityReference": "S-1-5-32-554",
+                        "IdentityName": "Pre-Windows 2000 Compatible Access",
+                        "InheritanceFlags": 1,
+                        "IsInherited": true
+                    },
+                    {
+                        "ControlType": 0,
+                        "Rights": 16,
+                        "IdentityReference": "S-1-5-32-554",
+                        "IdentityName": "Pre-Windows 2000 Compatible Access",
+                        "InheritanceFlags": 1,
+                        "IsInherited": true
+                    },
+                    {
+                        "ControlType": 0,
+                        "Rights": 16,
+                        "IdentityReference": "S-1-5-32-554",
+                        "IdentityName": "Pre-Windows 2000 Compatible Access",
+                        "InheritanceFlags": 1,
+                        "IsInherited": true
+                    },
+                    {
+                        "ControlType": 0,
+                        "Rights": 16,
+                        "IdentityReference": "S-1-5-32-554",
+                        "IdentityName": "Pre-Windows 2000 Compatible Access",
+                        "InheritanceFlags": 1,
+                        "IsInherited": true
+                    },
+                    {
+                        "ControlType": 0,
+                        "Rights": 16,
+                        "IdentityReference": "S-1-5-32-554",
+                        "IdentityName": "Pre-Windows 2000 Compatible Access",
+                        "InheritanceFlags": 1,
+                        "IsInherited": true
+                    },
+                    {
+                        "ControlType": 0,
+                        "Rights": 16,
+                        "IdentityReference": "S-1-5-32-554",
+                        "IdentityName": "Pre-Windows 2000 Compatible Access",
+                        "InheritanceFlags": 1,
+                        "IsInherited": true
+                    },
+                    {
+                        "ControlType": 0,
+                        "Rights": 16,
+                        "IdentityReference": "S-1-5-32-554",
+                        "IdentityName": "Pre-Windows 2000 Compatible Access",
+                        "InheritanceFlags": 1,
+                        "IsInherited": true
+                    },
+                    {
+                        "ControlType": 0,
+                        "Rights": 16,
+                        "IdentityReference": "S-1-5-32-554",
+                        "IdentityName": "Pre-Windows 2000 Compatible Access",
+                        "InheritanceFlags": 1,
+                        "IsInherited": true
+                    },
+                    {
+                        "ControlType": 0,
+                        "Rights": 16,
+                        "IdentityReference": "S-1-5-32-554",
+                        "IdentityName": "Pre-Windows 2000 Compatible Access",
+                        "InheritanceFlags": 1,
+                        "IsInherited": true
+                    },
+                    {
+                        "ControlType": 0,
+                        "Rights": 48,
+                        "IdentityReference": "S-1-5-21-4054027134-3251639354-3875066094-526",
+                        "IdentityName": "Key Admins",
+                        "InheritanceFlags": 1,
+                        "IsInherited": true
+                    },
+                    {
+                        "ControlType": 0,
+                        "Rights": 48,
+                        "IdentityReference": "S-1-5-21-4054027134-3251639354-3875066094-527",
+                        "IdentityName": "Enterprise Key Admins",
+                        "InheritanceFlags": 1,
+                        "IsInherited": true
+                    },
+                    {
+                        "ControlType": 0,
+                        "Rights": 8,
+                        "IdentityReference": "S-1-3-0",
+                        "IdentityName": "CREATOR OWNER",
+                        "InheritanceFlags": 1,
+                        "IsInherited": true
+                    },
+                    {
+                        "ControlType": 0,
+                        "Rights": 8,
+                        "IdentityReference": "S-1-5-10",
+                        "IdentityName": "SELF",
+                        "InheritanceFlags": 1,
+                        "IsInherited": true
+                    },
+                    {
+                        "ControlType": 0,
+                        "Rights": 16,
+                        "IdentityReference": "S-1-5-9",
+                        "IdentityName": "ENTERPRISE DOMAIN CONTROLLERS",
+                        "InheritanceFlags": 1,
+                        "IsInherited": true
+                    },
+                    {
+                        "ControlType": 0,
+                        "Rights": 16,
+                        "IdentityReference": "S-1-5-9",
+                        "IdentityName": "ENTERPRISE DOMAIN CONTROLLERS",
+                        "InheritanceFlags": 1,
+                        "IsInherited": true
+                    },
+                    {
+                        "ControlType": 0,
+                        "Rights": 16,
+                        "IdentityReference": "S-1-5-9",
+                        "IdentityName": "ENTERPRISE DOMAIN CONTROLLERS",
+                        "InheritanceFlags": 1,
+                        "IsInherited": true
+                    },
+                    {
+                        "ControlType": 0,
+                        "Rights": 32,
+                        "IdentityReference": "S-1-5-10",
+                        "IdentityName": "SELF",
+                        "InheritanceFlags": 1,
+                        "IsInherited": true
+                    },
+                    {
+                        "ControlType": 0,
+                        "Rights": 131220,
+                        "IdentityReference": "S-1-5-32-554",
+                        "IdentityName": "Pre-Windows 2000 Compatible Access",
+                        "InheritanceFlags": 1,
+                        "IsInherited": true
+                    },
+                    {
+                        "ControlType": 0,
+                        "Rights": 131220,
+                        "IdentityReference": "S-1-5-32-554",
+                        "IdentityName": "Pre-Windows 2000 Compatible Access",
+                        "InheritanceFlags": 1,
+                        "IsInherited": true
+                    },
+                    {
+                        "ControlType": 0,
+                        "Rights": 131220,
+                        "IdentityReference": "S-1-5-32-554",
+                        "IdentityName": "Pre-Windows 2000 Compatible Access",
+                        "InheritanceFlags": 1,
+                        "IsInherited": true
+                    },
+                    {
+                        "ControlType": 0,
+                        "Rights": 48,
+                        "IdentityReference": "S-1-5-10",
+                        "IdentityName": "SELF",
+                        "InheritanceFlags": 3,
+                        "IsInherited": true
+                    },
+                    {
+                        "ControlType": 0,
+                        "Rights": 304,
+                        "IdentityReference": "S-1-5-10",
+                        "IdentityName": "SELF",
+                        "InheritanceFlags": 1,
+                        "IsInherited": true
+                    },
+                    {
+                        "ControlType": 0,
+                        "Rights": 983551,
+                        "IdentityReference": "S-1-5-21-4054027134-3251639354-3875066094-519",
+                        "IdentityName": "Enterprise Admins",
+                        "InheritanceFlags": 1,
+                        "IsInherited": true
+                    },
+                    {
+                        "ControlType": 0,
+                        "Rights": 4,
+                        "IdentityReference": "S-1-5-32-554",
+                        "IdentityName": "Pre-Windows 2000 Compatible Access",
+                        "InheritanceFlags": 1,
+                        "IsInherited": true
+                    },
+                    {
+                        "ControlType": 0,
+                        "Rights": 983485,
+                        "IdentityReference": "S-1-5-32-544",
+                        "IdentityName": "Administrators",
+                        "InheritanceFlags": 1,
+                        "IsInherited": true
+                    }
+                ]
+            }
         }
     ]
 }
