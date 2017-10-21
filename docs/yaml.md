@@ -14,7 +14,7 @@ Actions:
 - Name: Sample Action
   Description: Sample Action friendly description.
   Proxy: 'Future-use: http://host:port/synapse/node'
-  ExecuteCase: 2688
+  ExecuteCase: Any
   Handler:
     Type: Synapse.Handlers.CommandLine:CommandHandler
     Config:
