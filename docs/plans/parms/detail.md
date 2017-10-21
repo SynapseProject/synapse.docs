@@ -95,7 +95,24 @@ Locally declared values within a Plan.  Local `Values` are suitable for Plan-lev
 ```
 
 #### Dynamic
-Name/Path pairs which are provided dynamically at runtime, such as through CLI or URL parameters.  Paths are declared in XPath for XML serialization and colon-separated lists (root:node0:node1:...) for YAML/JSON.
+Name/Path pairs which are provided dynamically at runtime, such as through CLI or URL parameters.  Paths are declared in XPath for XML serialization and colon-separated lists (root:node0:node1:...) for YAML/JSON.  If the destination path exists in the child data, the value updated.  If the destination path does not exist, it will be created and seeded.  Of particular interest, YAML/JSON structures arriving as strings may optionally be Parsed and integrated into the Parameters Values structure iteslf.
+
+|Name|Type/Value|Required|Description
+|-|-|-|-
+|Name|String|Yes|The key name of the value in the dynamic values key-value pair collection.
+|Path|String|Yes|The path the target location to add/update the value/structure.
+|Parse|Boolean|No|Tries to parse the Source value as YAML/JSON and integrate the result into the Parameters Values structure.
+|Replace|String|No|Performs a Regular Expression replacement of the Destination value with the value from Source, subject to the Regex pattern.
+|Encoding|[Enum](#encodingtype-values)|No|Specifies how to encode the ReplaceWith string before replacement.  Click [here](#encodingtype-values) for valid values.  (Default = None)
+
+### EncodingType Values
+
+Tells the CommandHandler how the values should be encoded when replaced.
+
+|Value|Description
+|-----|-----------
+|None|No Encoding Used.
+|Base64|Encodes value as Base64 string.
 
 - **YAML Example:**
     - A variable named `pnode0Dynamic` will replace the existing value for `PNode0`
@@ -165,6 +182,103 @@ Name/Path pairs which are provided dynamically at runtime, such as through CLI o
             </CNode3>
         </CXmlDoc>
 ```
+
+#### ParentExitData
+Passing data from a parent Action to its children it accomplished with the ParentExitData section, which is an array of Source/Destination pairs (see detail below).  If the Destination path exists in the child data, the value updated.  If the Destination path does not exist, it will be created and seeded.  As with Dynamic values, YAML/JSON structures arriving as strings may optionally be Parsed and integrated into the Parameters Values structure iteslf.
+
+|Name|Type/Value|Required|Description
+|-|-|-|-
+|Source|String|Yes|The path to value/structure from the parent Action's ExitData.
+|Destination|String|Yes|The path the target location to add/update the value/structure.
+|Parse|Boolean|No|Tries to parse the Source value as YAML/JSON and integrate the result into the Parameters Values structure.
+|Replace|String|No|Performs a Regular Expression replacement of the Destination value with the value from Source, subject to the Regex pattern.
+|Encoding|[Enum](#encodingtype-values)|No|Specifies how to encode the ReplaceWith string before replacement.  Click [here](#encodingtype-values) for valid values.  (Default = None)
+
+### EncodingType Values
+
+Tells the CommandHandler how the values should be encoded when replaced.
+
+|Value|Description
+|-----|-----------
+|None|No Encoding Used.
+|Base64|Encodes value as Base64 string.
+
+
+- **YAML Example:**
+
+```yaml
+Name: ParentExitDataTest
+DefaultHandlerType: Synapse.Core:EmptyHandler
+Actions:
+- Name: Parent
+  Parameters:
+    Values:
+      SleepMilliseconds: 1000
+      ReturnStatus: Complete
+      ExitData:
+        Something:
+          Wonderful:
+            Stars: 2001
+        Foo:
+          Bar: Tombstoned
+        ListMember: [1,2,3]
+  Actions:
+  - Name: Child
+    Parameters:
+      ParentExitData:
+      - Source: Something:Wonderful:Stars
+        Destination: SleepMilliseconds
+      - Source: Foo:Bar
+        Destination: ReturnStatus
+      - Source: ListMember
+        Destination: ExitData
+        Parse: True
+```
+
+- **XML Example:**
+
+```xml
+Name: ParentExitDataTest
+DefaultHandlerType: Synapse.Core:EmptyHandler
+Actions:
+- Name: Parent
+  Parameters:
+    Type: Xml
+    Values:
+      <EmptyHandlerParameters>
+        <SleepMilliseconds>1000</SleepMilliseconds>
+        <ReturnStatus>Complete</ReturnStatus>
+        <ExitData>
+          <Something>
+            <Wonderful>
+              <Stars>2001</Stars>
+            </Wonderful>
+            <Foo>
+              <Bar>Tombstoned</Bar>
+            </Foo>
+            <ListMember>
+              <Servers>
+                <Server>localhost0</Server>
+                <Server>localhost1</Server>
+                <Server>localhost2</Server>
+              </Servers>
+            </ListMember>
+          </Something>
+        </ExitData>
+      </EmptyHandlerParameters>
+  Actions:
+  - Name: Child
+    Parameters:
+      Type: Xml
+      ParentExitData:
+      - Source: /Something/Wonderful/Stars
+        Destination: /EmptyHandlerParameters/SleepMilliseconds[1]
+      - Source: /Something/Foo/Bar
+        Destination: /EmptyHandlerParameters/ReturnStatus
+      - Source: /Something/ListMember
+        Destination: /EmptyHandlerParameters/ExitData
+```
+
 
 #### ForEach
 ForEach blocks calculate the cartesian product of the declared Path/Values and expands the Action into a set of Actions for each result item. ActionGroup and child Actions relationships are maintained and will be executed per result item, as well. Of note, as both Action.Handler.Config and Action.Parameters can be declared with ForEach blocks, the total execution iterations for an Action is the carstesian product of the expanded Config and expanded Parameters.
@@ -253,7 +367,8 @@ A ParameterInfo block will fetch and resolve values, in order, as follows:
 |2.|Uri|Will read the value set from the URI location.  If InheritFrom was declared, URI values will be merged on top of any existing values from InheritFrom as: Result = InheritFrom + Uri.
 |3.|Values|Any directly declared data values will be merged on top of existing values as: Result = InheritFrom + Uri + Values, or: Result = Result + Values.
 |4.|Dynamic|Any dynamically provided values will be merged on top of existing values as: Result = InheritFrom + Uri + Values + Dynamic, or: Result = Result + Dynamic.
-|5.|ForEach|Substitutes specified values into the resultant ParameterInfo block from above steps, calculating: ForEachValues( Result ).
+|5.|ParentExitData|Any values mapped from the Parent Action's ExitData will be merged on top of existing values as: Result = InheritFrom + Uri + Values + Dynamic + ParentExitData, or: Result = Result + ParentExitData.
+|6.|ForEach|Substitutes specified values into the resultant ParameterInfo block from above steps, calculating: ForEachValues( Result ).
 
 
 ## Tying it Together
