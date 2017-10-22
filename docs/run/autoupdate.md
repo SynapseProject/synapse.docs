@@ -37,7 +37,9 @@ StartServicesAfterInstall: false
 |IsMandatory|Boolean|No|Not applicable; the AutoUpdater treats all patches as mandatory, installing only when invoked.
 |LastMandatoryVersion|String|Yes|Not applicable; the AutoUpdater treats all patches as mandatory, installing only when invoked.
 |PatchUri|String|Yes|URL or UNC path to the update patch zip file.
-|PatchSizeBytes|Integer|Yes|The size of the update patch zip file, in bytes.  Note: this the 'Size' property, not the 'Size on Disk'.
+|PatchSizeBytes|Integer|Yes|The size of the update patch zip file, in bytes.  Note: this is the 'Size' property, not the 'Size on Disk'.
+
+Note: When running the Controller/Node from a single folder, the Synapse.Server zip file from GitHub (<a href="https://github.com/SynapseProject/synapse.server.net/releases" target="_blank">https://github.com/SynapseProject/synapse.server.net/releases</a>) may be used as-is.  If running the Controller and Node in separate folders, it may be useful to purge unnecessary files from the zip before listing as an available patch.
 
 #### Example Update Config File
 
