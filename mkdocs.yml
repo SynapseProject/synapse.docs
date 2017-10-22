@@ -25,6 +25,7 @@ pages:
     - Controller: run/controller.md
     - Node: run/node.md
     - Swagger: run/swagger.md
+    - AutoUpdate: run/autoupdate.md
   - CommandLines:
     - Core: cli/core.md
     - Controller: cli/controller.md

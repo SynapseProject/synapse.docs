@@ -10,16 +10,24 @@ The Synapse Controller URI is: http://{host:port}/synapse/execute.  For detailed
 |-|-|-
 |get|/synapse/execute/hello|Returns "Hello, World!"  Does not invoke RBAC or DAL, but does require authentication.
 |get|/synapse/execute/hello/whoami|Returns a string of the authenticated user context.  Does not invoke RBAC or DAL.
+|get|/synapse/execute/hello/about|Returns the server configuration (`synapse.server.config.yaml`) and an inventory of files for this server instance.
+|get|/synapse/execute/{planUniqueName}/item|Returns a Plan by PlanUniqueName.
 |get|/synapse/execute|Returns a list of Plans.
 |get|/synapse/execute/{planUniqueName}|Returns a list of Plan Instance Ids.
 |get|/synapse/execute/{planUniqueName}/start|Execute a Plan using the URI querystring for dynamic parameters. Returns planInstanceId.
 |post|/synapse/execute/{planUniqueName}/start|Execute a Plan with an http post, where dynamic parameters are specified in the http body. Returns planInstanceId.
+|get|/synapse/execute/{planUniqueName}/start/sync|Execute a Plan using the URI querystring for dynamic parameters and polls for completion at the server.  Includes an embedded call to `/part/` and, by default, returns `Actions[0]:Result:ExitData`.  Ssee [_Using the Part Interface_](#using-the-part-interface) below for more information.
+|post|/synapse/execute/{planUniqueName}/start/sync|Execute a Plan with an http post, where dynamic parameters  are specified in the http body and polls for completion at the server.  Includes an embedded call to `/part/` and, by default, returns `Actions[0]:Result:ExitData`.  Ssee [_Using the Part Interface_](#using-the-part-interface) below for more information.
 |delete|/synapse/execute/{planUniqueName}/{planInstanceId}|Cancel a Plan by planInstanceId.
 |get|/synapse/execute/{planUniqueName}/{planInstanceId}|Get the status of a Plan by planInstanceId.
 |post|/synapse/execute/{planUniqueName}/{planInstanceId}|Update the status of the entire Plan, by planInstanceId.
 |post|/synapse/execute/{planUniqueName}/{planInstanceId}/action|Update the status of an individual Action within a Plan, by planInstanceId.
 |get|/synapse/execute/{planUniqueName}/{planInstanceId}/part|Select an individual element from within a Plan, specifing the desired return data serialization format.  See [Using the Part Interface] below for details.
 |post|/synapse/execute/{planUniqueName}/{planInstanceId}/part|Select one or more individual elements from within a Plan, specifing the desired return data serialization format.  See [Part] below for details.
+|get|/synapse/execute/update|Invokes AutoUpdate, which will stop the server, refresh the binaries, and then optionally restart the server.
+|get|/synapse/execute/update/logs|Fetches a list of AutoUpdate logs.
+|get|/synapse/execute/update/logs/{name}|Fetches a specific AutoUpdate log.
+
 
 
 ## Using the Part Interface
