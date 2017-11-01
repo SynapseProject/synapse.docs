@@ -11,7 +11,7 @@ The general format for the rest URL is above, using HTTP Verbs to indicate what 
 
 |Action|Verb|Url Format
 |------|----|----------
-|Query|GET|&lt;protocol&gt;://&lt;host&gt;:&lt;port&gt;/ad/&lt;object&gt;/&lt;identity&gt;
+|Get|GET|&lt;protocol&gt;://&lt;host&gt;:&lt;port&gt;/ad/&lt;object&gt;/&lt;identity&gt;
 |Create|POST|&lt;protocol&gt;://&lt;host&gt;:&lt;port&gt;/ad/&lt;object&gt;/&lt;identity&gt;
 |Modify|PUT|&lt;protocol&gt;://&lt;host&gt;:&lt;port&gt;/ad/&lt;object&gt;/&lt;identity&gt;
 |Delete|DELETE|&lt;protocol&gt;://&lt;host&gt;:&lt;port&gt;/ad/&lt;object&gt;/&lt;identity&gt;
@@ -29,7 +29,7 @@ The query string is used to control how the output from the rest call will be fo
 
 |Parameter|Type/Value|Default Value|Description
 |---------|----------|-------------|-----------
-|querygroupmembership|boolean|false|Returns a list of groups the User or Group is a member of.
+|returngroupmembership|boolean|false|Returns a list of groups the User or Group is a member of.
 |returnobjects|boolean|true|Returns the object along with the status of the action.
 |returnobjectproperties|boolean|true|Returns the raw DirectoryEntry properties associated with the object.
 |returnaccessrules|boolean|false|Returns all the access rules associated with the object.
@@ -89,7 +89,7 @@ The AdApi returns a list of "Results".  Each result starts with a "Statuses" blo
 |Value|Description
 |-----|-----------
 |0|None
-|1|Query
+|1|Get
 |2|Create
 |3|Modify
 |4|Delete
@@ -603,14 +603,14 @@ Body:
 }
 ````
 
-## Query (HTTP GET) or Delete (HTTP DELETE)
+## Get (HTTP GET) or Delete (HTTP DELETE)
 
-The format for the URL is identical for a Query and a Delete action.  The only differences would be :
+The format for the URL is identical for a Get and a Delete action.  The only differences would be :
 * On Delete, no object will be returned (kinda obvious)
-* The "Statuses > Action" field would reflect either "Query" or "Delete", depending on which was called.
+* The "Statuses > Action" field would reflect either "Get" or "Delete", depending on which was called.
 
 ---
-### Query/Delete User
+### Get/Delete User
 
 **Requests**
 
@@ -789,7 +789,7 @@ The format for the URL is identical for a Query and a Delete action.  The only d
 ````
 
 ---
-### Query/Delete Group
+### Get/Delete Group
 
 **Request**
 
@@ -897,7 +897,7 @@ The format for the URL is identical for a Query and a Delete action.  The only d
 ````
 
 ---
-### Query/Delete Organizational Unit
+### Get/Delete Organizational Unit
 
 **Request**
 
