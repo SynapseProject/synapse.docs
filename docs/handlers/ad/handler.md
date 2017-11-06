@@ -20,7 +20,7 @@ Below is a list of supported actions that can be performed on ActiveDirectory ob
 
 |**Action**|Description|Order of Operations
 |----------|-----------|-------------------
-|**Query**|Retrieves a single ActiveDirectory object by its [identity](#activedirectory-objects-and-identities).|Users<br>Groups<br>Organizational Units
+|**Get**|Retrieves a single ActiveDirectory object by its [identity](#activedirectory-objects-and-identities).|Users<br>Groups<br>Organizational Units
 |**Create**|Creates a single ActiveDirectory object by its distinguished name only. (2)|Organizational Units<br>Groups<br>Users
 |**Modify**|Modifies a single ActiveDirectory object by its [identity](#activedirectory-objects-and-identities). (2)|Organizational Units<br>Groups<br>Users
 |**Delete**|Deletes a single ActiveDirectory object by its [identity](#activedirectory-objects-and-identities)|Users<br>Groups<br>Organizational Units
@@ -48,7 +48,7 @@ The config section of the plan specifies the action to perform against that AD i
       Values:
         Action: Create
         RunSequential: true
-        QueryGroupMembership: false
+        ReturnGroupMembership: false
         ReturnObjects: true
         ReturnObjectProperties: true
         ReturnAccessRules: false
@@ -60,9 +60,9 @@ The config section of the plan specifies the action to perform against that AD i
 
 |Element|Type/Value|Required|Description
 |-------|----------|--------|-----------
-|Action|"Query"<br>"Create"<br>"Modify"<br>"Delete"<br>"AddToGroup"<br>"RemoveFromGroup"|Yes|Specifies the action that will be executed against the active directory instance.
+|Action|"Get"<br>"Create"<br>"Modify"<br>"Delete"<br>"AddToGroup"<br>"RemoveFromGroup"|Yes|Specifies the action that will be executed against the active directory instance.
 |RunSequential|boolean|No|Tells the adapter how to process the objects in the plan.  If set to "true", objects will be acted upon in the order they appear in the plan.  (Defualt = "false")
-|QueryGroupMembership|boolean|No|Tells the adapter to return a list of groups that the User or Group is a member of.  (Default = "true")
+|ReturnGroupMembership|boolean|No|Tells the adapter to return a list of groups that the User or Group is a member of.  (Default = "true")
 |ReturnObjects|boolean|No|Tells the adapter to return the ActiveDirectory object along with the status of the action.  (Default = "true")
 |ReturnObjectProperties|boolean|No|Tells the adapter to return the raw, DirectoryEntry properties associated with an ActiveDirectory object (Default = "true").
 |ReturnAccessRules|boolean|No|Tells the adatper to return all the Access Rules associated with the object along with the status of the action (Default = "false")
@@ -77,7 +77,7 @@ The config section of the plan specifies the action to perform against that AD i
 The parameters section of the plan is simply a list of each type of object you wish to perform the action on.  Every object must contain an [identity](#activedirectory-objects-and-identities), but depending on the action, other fields might be required.  Below are examples of each action and object type with the required fields.
 
 ---
-### Action: Query and Delete, Object Type: All
+### Action: Get and Delete, Object Type: All
 ````yaml
   Parameters:
     Type: Yaml
@@ -102,7 +102,7 @@ The parameters section of the plan is simply a list of each type of object you w
 
 ````
 
-For Query and Delete actions, the only field required for every ActiveDirectory object is its identity.  The example above shows each object type with every possible way it can be queried or deleted.
+For Get and Delete actions, the only field required for every ActiveDirectory object is its identity.  The example above shows each object type with every possible way it can be queried or deleted.
 
 ---
 ### Action: AddToGroup and RemoveFromGroup, Object Type: Users and Groups
