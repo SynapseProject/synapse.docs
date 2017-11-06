@@ -11,7 +11,7 @@ When initiating an autoupdate, Synapse.Server.AutoUpdater.exe follows this workf
 4. Following the update, services are (optionally) restarted.
 
 <p align="center">
-<img alt="Synapse AutoUpdater Process" src="../img/syn_autoupdater.png" />
+<img alt="Synapse AutoUpdater Process" src="/img/syn_autoupdater.png" />
 </p>
 
 ## Configuring the AutoUpdater
