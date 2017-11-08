@@ -5,7 +5,7 @@ Use the AutoUpdater to provide built-in server updates.  Invoking the AutoUpdate
 ## Overview of the AutoUpdater Process
 
 When initiating an autoupdate, Synapse.Server.AutoUpdater.exe follows this workflow:
-0. Creates a shadow copy of itself in a nested folder of the current path, called `.shadow`.
+0. Creates a shadow copy of itself in a nested folder of the current path, called `.shadow`, and then re-launches the update from the shadow copy continuing with Step 1.
 1. Reads `Synapse.Server.AutoUpdater.yaml` and stops associated services.
 2. Reads the `UpdateConfig.xml` sepcified at the `UpdateConfigUri`, gets the version for the current update, and compares to the version on the specified `AutoUpdater.RuntimeExe`.
 3. If the `AutoUpdater.RuntimeExe` version is less than `UpdateConfig.CurrentVersion`, the file located at `UpdateConfig.PatchUri` is downloaded and extracted locally.
