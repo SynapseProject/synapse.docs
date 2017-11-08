@@ -5,6 +5,7 @@ Use the AutoUpdater to provide built-in server updates.  Invoking the AutoUpdate
 ## Overview of the AutoUpdater Process
 
 When initiating an autoupdate, Synapse.Server.AutoUpdater.exe follows this workflow:
+0. Creates a shadow copy of itself in a nested folder of the current path, called `.shadow`.
 1. Reads `Synapse.Server.AutoUpdater.yaml` and stops associated services.
 2. Reads the `UpdateConfig.xml` sepcified at the `UpdateConfigUri`, gets the version for the current update, and compares to the version on the specified `AutoUpdater.RuntimeExe`.
 3. If the `AutoUpdater.RuntimeExe` version is less than `UpdateConfig.CurrentVersion`, the file located at `UpdateConfig.PatchUri` is downloaded and extracted locally.
@@ -22,9 +23,9 @@ When initiating an autoupdate, Synapse.Server.AutoUpdater.exe follows this workf
 
 |Name|Type/Value|Required|Description
 |-|-|-|-
-|ServiceConfigs|Array of Strings|No|By default, the AutoUpdater will look for `..\Synapse.Server.config.yaml` to discover server settings.  If the server instance is Configured to use an alternately named configuration file, or if the server is executing in more than instance, list the paths to the config files in this setting.
+|ServiceConfigs|Array of Strings|No|By default, the AutoUpdater will look for `..\..\Synapse.Server.config.yaml` to discover server settings.  If the server instance is Configured to use an alternately named configuration file, or if the server is executing in more than instance, list the paths to the config files in this setting.
 |UpdateConfigUri|String|Yes|URL or UNC path to the update configuration file.  See [Update Config File](#update-config-file) below for more information.
-|RuntimeExe|String|Yes|Path the runtime process.  The required value is `..\Synapse.Server.exe`.
+|RuntimeExe|String|Yes|Path the runtime process.  The required value is `..\..\Synapse.Server.exe`.
 |DownloadFolder|String|Yes|The path where the update files are cached during the update process.
 |WaitForExitMillseconds|Integer|Yes|The maximum number of milliseconds to wait before terminating the AutoUpdater.
 |StartServicesAfterInstall|Boolean|Yes|Indicates whether to restart the server after AutoUpdate is complete.
@@ -33,9 +34,9 @@ When initiating an autoupdate, Synapse.Server.AutoUpdater.exe follows this workf
 
 ```yaml
 ServiceConfigs:
-- ..\Synapse.Server.config.yaml
+- ..\..\Synapse.Server.config.yaml
 UpdateConfigUri:  http:\\ [or] \\UNC\path\to\updates\updateconfig.xml
-RuntimeExe: ..\Synapse.Server.exe
+RuntimeExe: ..\..\Synapse.Server.exe
 DownloadFolder: patches
 WaitForExitMillseconds: 30000
 StartServicesAfterInstall: false
