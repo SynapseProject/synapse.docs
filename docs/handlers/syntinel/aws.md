@@ -93,7 +93,7 @@ $body = @{
 $result = Invoke-RestMethod http://localhost:20000/synapse/execute/ec2-matching-filters/start/sync -body $body -ContentType "application/json" -Method "post" -UseDefaultCredentials
 
 ````
-Refer to [Complete EC2 Filter List](http://docs.aws.amazon.com/cli/latest/reference/ec2/describe-instances.html) for filter options available.
+Refer to <a href="http://docs.aws.amazon.com/cli/latest/reference/ec2/describe-instances.html" target="_blank">EC2 Filter List</a> for options available.
 
 ## Handler Exit Data Response
 ### Raw Response
