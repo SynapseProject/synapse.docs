@@ -46,6 +46,8 @@ pages:
   - Active Directory:
     - Handler: handlers/ad/handler.md
     - Api: handlers/ad/api.md
+  - Syntinel:
+    - AWS Handler: handlers/syntinel/aws.md
 - Releases: releases.md
 - Roadmap: roadmap.md
 - Support: support.md
