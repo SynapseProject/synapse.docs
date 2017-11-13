@@ -17,14 +17,14 @@ The Config section of the plan specifies the one-to-one matching relationship be
     Config:
       Values:
         AwsEnvironmentProfile:
-          EU_Customer_Production: XXXXXX
-          EU_Customer_Test: XXXXXX
-          EU_Customer_Development: XXXXXX
+          profile_name_1: XXXXXX
+          profile_name_2: XXXXXX
+          profile_name_3: XXXXXX
 ````
 
 |Element|Type/Value|Required|Description
 |-------|----------|--------|-----------
-|AwsEnvironmentProfile|Key-value pairs string array|Yes|Specify the exact matching of the AWS environment passed in from client request and the corresponding credential to access AWS resources.
+|AwsEnvironmentProfile|Key-value pairs string array|Yes|Specify the exact matching of the AWS profile name passed in from client request and the corresponding credential to access AWS resources.
 
 ### Parameters
 The Parameter section specifies what a client should send in during run-time.
@@ -39,12 +39,12 @@ The Parameter section specifies what a client should send in during run-time.
     Uri: 
     Values:
       Region: eu-west-1
-      CloudEnvironment: EU_Customer_Production
+      CloudEnvironment: profile_name_0
       Action: none
       Filters:
-      - Name: tag:cloud-environment
+      - Name: tag:Cost Code
         Values:
-        - WE1-P3-CS01
+        - xxxxxx
       - Name: tag:Patch Group
         Values:
         - Quarterly
@@ -67,12 +67,12 @@ The Parameter section specifies what a client should send in during run-time.
     Uri: 
     Values:
       Region: eu-west-1
-      CloudEnvironment: EU_Customer_Production
+      CloudEnvironment: profile_name_0
       Action: none
       Filters:
-      - Name: tag:cloud-environment
+      - Name: tag:Cost Code
         Values:
-        - WE1-P3-CS01
+        - xxxxxx
       - Name: tag:Patch Group
         Values:
         - Quarterly
@@ -100,7 +100,7 @@ The Parameter section specifies what a client should send in during run-time.
 |Element|Type/Value|Required|Description
 |-------|----------|--------|-----------
 |Region|String|Yes|Specify the region AWS resources are located, e.g. eu-west-1, us-east-2.
-|CloudEnvironment|String|Yes|Specify the cloud environment, which is a tag value, the resources are tagged to.
+|CloudEnvironment|String|Yes|Specify the AWS environment value which must match one of the values in AwsEnvironmentProfile from the Config section.
 |Action|String|No|Specify the action to be performed against the matching resources. Valid value supported is "none" at the moment.
 |Filters|Key-value pairs string array|Yes|Specify the filters used to search for the resources. Refer to <a href="http://docs.aws.amazon.com/cli/latest/reference/ec2/describe-instances.html" target="_blank">EC2 Filter List</a> for options available.
 |ReturnFormat|string|Yes|Dynamic parameter. Valid values are "json", "xml" or "yaml".
@@ -126,7 +126,7 @@ $xslt = @"
 "@
 
 $filters = @(
-	@{ "Name" = "tag:cloud-environment"; "Values" = @("xxxxxx") }
+	@{ "Name" = "tag:Cost Code"; "Values" = @("xxxxxx") }
 	@{ "Name" = "tag:Patch Group"; "Values" = @("Quarterly") }
 	@{ "Name" = "instance-type"; "Values" = @("t2.medium") }
 	@{ "Name" = "instance-state-name"; "Values" = @("running") }
@@ -135,7 +135,7 @@ $filters = @(
 $body = @{
 	DynamicParameters  = @{
 		"region"               = "eu-west-1"
-		"cloudenvironment"     = "EU_Customer_Production" # Must match the config
+		"cloudenvironment"     = "profile_name_0" # Must match the config
 		"action"               = "none"
 		"xslt"                 = $xslt
 		"filters"              = $filters | ConvertTo-Json -Compress
@@ -156,7 +156,7 @@ Handler response without any transformation contained in the `$result` PowerShel
             <Architecture>x86_64</Architecture>
             <AvailabilityZone>eu-west-1c</AvailabilityZone>
             <CloudEnvironment>xxxxxx</CloudEnvironment>
-            <CostCentre />
+            <CostCentre>xxxxxx<CostCentre> 
             <InstanceId>i-xxxxxx</InstanceId>
             <InstanceState>running</InstanceState>
             <InstanceType>t2.medium</InstanceType>
@@ -169,7 +169,7 @@ Handler response without any transformation contained in the `$result` PowerShel
             <Architecture>x86_64</Architecture>
             <AvailabilityZone>eu-west-1c</AvailabilityZone>
             <CloudEnvironment>xxxxxx</CloudEnvironment>
-            <CostCentre/>
+            <CostCentre>xxxxxx<CostCentre> 
             <InstanceId>i-xxxxxx</InstanceId>
             <InstanceState>running</InstanceState>
             <InstanceType>t2.medium</InstanceType>
