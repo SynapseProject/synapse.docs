@@ -1,10 +1,10 @@
 # Overview
 The Amazon Web Services (AWS) Handler provides a simple and programmatic way to interact with AWS resources.
 
-At a high level, the flow of actions is:
-1. Initialize - It will read the AWS environment details from the Action Config values in the Synapse plan.
-2. Execute - It will parse the incoming Action Parameter data, validate and interact with AWS accordingly. Result plan is returned upon completion. If a valid Extensible Stylesheet Language Transformation (XSLT) document is supplied, a transformed result will be returned instead.
-3. Progress - It will advertise the run-time status.
+At a high level, the flow of actions is:  
+1. Initialize - It will read the AWS environment details from the Action Config values in the Synapse plan.  
+2. Execute - It will parse the incoming Action Parameter data, validate and interact with AWS accordingly. Result plan is returned upon completion. If a valid Extensible Stylesheet Language Transformation (XSLT) document is supplied, a transformed result will be returned instead.  
+3. Progress - It will advertise the run-time status.  
 
 ## Plan Details
 ### Config
@@ -57,6 +57,7 @@ The Parameter section specifies what a client should send in during run-time.
       ReturnFormat: xml
       Xslt: ''
 ````
+
 ````yaml
   Parameters:
     Name: 
