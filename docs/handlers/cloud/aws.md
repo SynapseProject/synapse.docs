@@ -11,16 +11,6 @@ At a high level, the flow of actions is:
 The Config section of the plan specifies the one-to-one matching relationship between the user-friendly profile names and actual AWS profiles.
 
 ### Sample
-````yaml
-  Handler:
-    Type: Synapse.Handlers.Aws:Ec2Handler
-    Config:
-      Values:
-        AwsEnvironmentProfile:
-          AdminProfile: XXXXXX
-          DeveloperProfile: XXXXXX
-          TesterProfile: XXXXXX
-````
 <script src="https://gist.github.com/SynapseGists/d8b12857398f46eb5fc945e7328b5295.js"></script>
 
 |Element|Type/Value|Required|Description
@@ -31,75 +21,9 @@ The Config section of the plan specifies the one-to-one matching relationship be
 The Parameter section specifies what a client should send in during run-time.
 
 ### Sample
-````yaml
-  Parameters:
-    Name: 
-    Type: Yaml
-    ForEach: 
-    InheritFrom: 
-    Uri: 
-    Values:
-      Region: eu-west-1
-      AwsEnvironmentProfile: DeveloperProfile
-      Action: none
-      Filters:
-      - Name: tag:Cost Code
-        Values:
-        - xxxxxx
-        - yyyyyy
-      - Name: tag:Patch Group
-        Values:
-        - Quarterly
-      - Name: instance-type
-        Values:
-        - t2.medium
-      - Name: instance-state-name
-        Values:
-        - running
-      ReturnFormat: xml
-      Xslt: ''
-````
+<script src="https://gist.github.com/SynapseGists/80b41c5dc82fcb0b091b8ce5140187fd.js"></script>
 
-````yaml
-  Parameters:
-    Name: 
-    Type: Yaml
-    ForEach: 
-    InheritFrom: 
-    Uri: 
-    Values:
-      Region: eu-west-1
-      AwsEnvironmentProfile: DeveloperProfile
-      Action: none
-      Filters:
-      - Name: tag:Cost Code
-        Values:
-        - xxxxxx
-        - yyyyyy
-      - Name: tag:Patch Group
-        Values:
-        - Quarterly
-      - Name: instance-type
-        Values:
-        - t2.medium
-      - Name: instance-state-name
-        Values:
-        - running
-      ReturnFormat: json
-      Xslt: >-
-        <?xml version="1.0" encoding="UTF-8"?>
-        <xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" version="1.0">
-            <xsl:template match="/">
-                <Servers>
-                    <xsl:for-each select="/Ec2Response/Ec2Instances/Ec2Instance">
-                        <Server>
-                            <xsl:value-of select="PrivateDnsName" />
-                        </Server>
-                    </xsl:for-each>
-                </Servers>
-            </xsl:template>
-        </xsl:stylesheet>
-````
+<script src="https://gist.github.com/SynapseGists/3cba0895c9d1d8aab9be27c78186eb0f.js"></script>
 |Element|Type/Value|Required|Description
 |-------|----------|--------|-----------
 |Region|String|Yes|Specify the region AWS resources are located, e.g. eu-west-1, us-east-2.
@@ -111,106 +35,16 @@ The Parameter section specifies what a client should send in during run-time.
 
 ## Sample Execution
 This test script can be modified to simulate a test request sent from client to Synapse to invoke the handler.
-
-````powershell
-$xslt = @"
-<?xml version="1.0" encoding="UTF-8"?>
-<xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" version="1.0">
-    <xsl:template match="/">
-        <Servers>
-            <xsl:for-each select="/Ec2Response/Ec2Instances/Ec2Instance">
-                <Server>
-                    <xsl:value-of select="PrivateDnsName" />
-                </Server>
-            </xsl:for-each>
-        </Servers>
-    </xsl:template>
-</xsl:stylesheet>
-"@
-
-$filters = @(
-	@{ "Name" = "tag:Cost Code"; "Values" = @("xxxxxx", "yyyyyy") }
-	@{ "Name" = "tag:Patch Group"; "Values" = @("Quarterly") }
-	@{ "Name" = "instance-type"; "Values" = @("t2.medium") }
-	@{ "Name" = "instance-state-name"; "Values" = @("running") }
-)
-
-$body = @{
-	DynamicParameters  = @{
-		"region"               = "eu-west-1"
-		"cloudenvironment"     = "DeveloperProfile" # Must match the config
-		"action"               = "none"
-		"xslt"                 = $xslt
-		"filters"              = $filters | ConvertTo-Json -Compress
-		"returnformat"         = "json" # Can be json, xml or yaml
-	}
-} | ConvertTo-Json -Compress
-
-$result = Invoke-RestMethod http://localhost:20000/synapse/execute/ec2-matching-filters/start/sync -body $body -ContentType "application/json" -Method "post" -UseDefaultCredentials
-````
+<script src="https://gist.github.com/SynapseGists/5401ad6dc00353155d8f0c085ba0300a.js"></script>
 
 Handler response without any transformation contained in the `$result` PowerShell variable  may look like this in "xml" format.
-````xml
-<?xml version="1.0" encoding="utf-8"?>
-<Ec2Response>
-    <Count>5</Count>
-    <Ec2Instances>
-        <Ec2Instance>
-            <Architecture>x86_64</Architecture>
-            <AvailabilityZone>eu-west-1c</AvailabilityZone>
-            <CloudEnvironment>xxxxxx</CloudEnvironment>
-            <CostCentre>xxxxxx<CostCentre> 
-            <InstanceId>i-xxxxxx</InstanceId>
-            <InstanceState>running</InstanceState>
-            <InstanceType>t2.medium</InstanceType>
-            <LaunchTime>2016-08-11T09:17:29-04:00</LaunchTime>
-            <Name>xxxxxx</Name>
-            <PrivateDnsName>xxxxxx</PrivateDnsName>
-            <PrivateIpAddress>xxx.xxx.xxx.xxx</PrivateIpAddress>
-        </Ec2Instance>
-        <Ec2Instance>
-            <Architecture>x86_64</Architecture>
-            <AvailabilityZone>eu-west-1c</AvailabilityZone>
-            <CloudEnvironment>xxxxxx</CloudEnvironment>
-            <CostCentre>yyyyyy<CostCentre> 
-            <InstanceId>i-xxxxxx</InstanceId>
-            <InstanceState>running</InstanceState>
-            <InstanceType>t2.medium</InstanceType>
-            <LaunchTime>2017-10-17T07:10:18-04:00</LaunchTime>
-            <Name>xxxxxx</Name>
-            <PrivateDnsName>xxxxxx</PrivateDnsName>
-            <PrivateIpAddress>xxx.xxx.xxx.xxx</PrivateIpAddress>
-        </Ec2Instance>
-    </Ec2Instances>
-    <ExitCode>0</ExitCode>
-    <Summary>Querying against AWS has been processed.</Summary>
-</Ec2Response>
-
-````
+<script src="https://gist.github.com/SynapseGists/7d370891bee0c99b863747f066d78902.js"></script>
 
 After the raw response is transformed using the specified "xslt", it may look like this in "xml".
-````xml
-<?xml version="1.0" encoding="utf-8"?>
-<Servers>
-    <Server>xxxxxx</Server>
-    <Server>xxxxxx</Server>
-</Servers>
-````
+<script src="https://gist.github.com/SynapseGists/0d0b8115c046608a86f002676a9f1d88.js"></script>
+
 Or like this in "json".
-````json
-{
-   "Servers":{
-      "Server":[
-         "xxxxxx",
-         "xxxxxx"
-      ]
-   }
-}
-````
+<script src="https://gist.github.com/SynapseGists/6edd4919d73b9fc2d2104f4a8d544871.js"></script>
+
 Or like this in "yaml"
-````yaml
-Servers:
-  Server:
-    - xxxxxx
-    - xxxxxx
-````
+<script src="https://gist.github.com/SynapseGists/abf3247b54c1078c742cda89a78748a8.js"></script>
