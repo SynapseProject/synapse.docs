@@ -8,7 +8,7 @@ At a high level, the flow of actions is:
 
 ## Plan Details
 ### Config
-The Config section of the plan specifies the one-to-one matching relationship between the user-friendly profile names and actual AWS profiles.
+The Config section of the plan specifies the one-to-one matching relationship between user-friendly profile names and actual AWS profiles.
 
 ### Sample
 <script src="https://gist.github.com/SynapseGists/d8b12857398f46eb5fc945e7328b5295.js"></script>
@@ -26,10 +26,10 @@ The Parameter section specifies what a client should send in during run-time.
 <script src="https://gist.github.com/SynapseGists/3cba0895c9d1d8aab9be27c78186eb0f.js"></script>
 |Element|Type/Value|Required|Description
 |-------|----------|--------|-----------
-|Region|String|Yes|Specify the region AWS resources are located, e.g. eu-west-1, us-east-2.
+|Region|String|Yes|Specify the region AWS resources are located, e.g. eu-west-1, us-east-2. See <a href="http://docs.aws.amazon.com/general/latest/gr/rande.html" target="_blank">AWS Regions and Endpoints</a> for more information.
 |AwsEnvironmentProfile|String|Yes|Specify the AWS environment profile which must match one of the key names in AwsEnvironmentProfile from the Config section.
 |Action|String|No|Specify the action to be performed against the matching resources. Valid value supported is "none" at the moment.
-|Filters|Key-value pairs string array|Yes|Specify the filters used to search for the resources. Refer to <a href="http://docs.aws.amazon.com/cli/latest/reference/ec2/describe-instances.html" target="_blank">EC2 Filter List</a> for options available. Note that it is *AND* logic for all the filters but *OR* logic for each value in a filter. For example, the above examples instructs the handler to find all matching EC2s, which have tag "Cost Code" of value "xxxxxx" *OR* "yyyyyy" *AND* tag "Patch Group" of value "Quarterly" *AND* "instance-type" of value "t2.medium" *AND* "instance-state-name" of value "running".
+|Filters|Key-value pairs string array|Yes|Specify the filters used to search for the resources. Refer to <a href="http://docs.aws.amazon.com/cli/latest/reference/ec2/describe-instances.html" target="_blank">EC2 Filter List</a> for options available. Note that it is **AND** logic for all the filters but **OR** logic for each value in a filter. For example, the above examples instructs the handler to find all matching EC2s, which have tag "Cost Code" of value "xxxxxx" **OR** "yyyyyy" **AND** tag "Patch Group" of value "Quarterly" **AND** "instance-type" of value "t2.medium" **AND** "instance-state-name" of value "running".
 |ReturnFormat|string|Yes|Dynamic parameter. Valid values are "json", "xml" or "yaml".
 |Xslt|string|No|Specify the v1.0 XSLT to transform the raw handler response. Response will not be transformed if the value is null or empty.
 
