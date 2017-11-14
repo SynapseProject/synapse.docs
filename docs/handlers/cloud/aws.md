@@ -8,7 +8,7 @@ At a high level, the flow of actions is:
 
 ## Plan Details
 ### Config
-The Config section of the plan specifies the one-to-one matching relationship between the cloud environment and the AWS credentials.
+The Config section of the plan specifies the one-to-one matching relationship between the user-friendly profile names and actual AWS profiles.
 
 ### Sample
 ````yaml
@@ -17,14 +17,15 @@ The Config section of the plan specifies the one-to-one matching relationship be
     Config:
       Values:
         AwsEnvironmentProfile:
-          profile_name_1: XXXXXX
-          profile_name_2: XXXXXX
-          profile_name_3: XXXXXX
+          AdminProfile: XXXXXX
+          DeveloperProfile: XXXXXX
+          TesterProfile: XXXXXX
 ````
+<script src="https://gist.github.com/SynapseGists/d8b12857398f46eb5fc945e7328b5295.js"></script>
 
 |Element|Type/Value|Required|Description
 |-------|----------|--------|-----------
-|AwsEnvironmentProfile|Key-value pairs string array|Yes|Specify the exact matching of the AWS profile name passed in from client request and the corresponding credential to access AWS resources.
+|AwsEnvironmentProfile|Key-value pairs string array|Yes|The key name can be anything. The corresponding value must be an existing AWS profile handler has access to. Each AWS profile has its access id and secret key. See <a href="http://docs.aws.amazon.com/cli/latest/userguide/cli-multiple-profiles.html" target="_blank">AWS Named Profiles</a> for more information.
 
 ### Parameters
 The Parameter section specifies what a client should send in during run-time.
@@ -39,12 +40,13 @@ The Parameter section specifies what a client should send in during run-time.
     Uri: 
     Values:
       Region: eu-west-1
-      CloudEnvironment: profile_name_0
+      AwsEnvironmentProfile: DeveloperProfile
       Action: none
       Filters:
       - Name: tag:Cost Code
         Values:
         - xxxxxx
+        - yyyyyy
       - Name: tag:Patch Group
         Values:
         - Quarterly
@@ -67,12 +69,13 @@ The Parameter section specifies what a client should send in during run-time.
     Uri: 
     Values:
       Region: eu-west-1
-      CloudEnvironment: profile_name_0
+      AwsEnvironmentProfile: DeveloperProfile
       Action: none
       Filters:
       - Name: tag:Cost Code
         Values:
         - xxxxxx
+        - yyyyyy
       - Name: tag:Patch Group
         Values:
         - Quarterly
@@ -100,9 +103,9 @@ The Parameter section specifies what a client should send in during run-time.
 |Element|Type/Value|Required|Description
 |-------|----------|--------|-----------
 |Region|String|Yes|Specify the region AWS resources are located, e.g. eu-west-1, us-east-2.
-|CloudEnvironment|String|Yes|Specify the AWS environment value which must match one of the values in AwsEnvironmentProfile from the Config section.
+|AwsEnvironmentProfile|String|Yes|Specify the AWS environment profile which must match one of the key names in AwsEnvironmentProfile from the Config section.
 |Action|String|No|Specify the action to be performed against the matching resources. Valid value supported is "none" at the moment.
-|Filters|Key-value pairs string array|Yes|Specify the filters used to search for the resources. Refer to <a href="http://docs.aws.amazon.com/cli/latest/reference/ec2/describe-instances.html" target="_blank">EC2 Filter List</a> for options available.
+|Filters|Key-value pairs string array|Yes|Specify the filters used to search for the resources. Refer to <a href="http://docs.aws.amazon.com/cli/latest/reference/ec2/describe-instances.html" target="_blank">EC2 Filter List</a> for options available. Note that it is *AND* logic for all the filters but *OR* logic for each value in a filter. For example, the above examples instructs the handler to find all matching EC2s, which have tag "Cost Code" of value "xxxxxx" *OR* "yyyyyy" *AND* tag "Patch Group" of value "Quarterly" *AND* "instance-type" of value "t2.medium" *AND* "instance-state-name" of value "running".
 |ReturnFormat|string|Yes|Dynamic parameter. Valid values are "json", "xml" or "yaml".
 |Xslt|string|No|Specify the v1.0 XSLT to transform the raw handler response. Response will not be transformed if the value is null or empty.
 
@@ -126,7 +129,7 @@ $xslt = @"
 "@
 
 $filters = @(
-	@{ "Name" = "tag:Cost Code"; "Values" = @("xxxxxx") }
+	@{ "Name" = "tag:Cost Code"; "Values" = @("xxxxxx", "yyyyyy") }
 	@{ "Name" = "tag:Patch Group"; "Values" = @("Quarterly") }
 	@{ "Name" = "instance-type"; "Values" = @("t2.medium") }
 	@{ "Name" = "instance-state-name"; "Values" = @("running") }
@@ -135,7 +138,7 @@ $filters = @(
 $body = @{
 	DynamicParameters  = @{
 		"region"               = "eu-west-1"
-		"cloudenvironment"     = "profile_name_0" # Must match the config
+		"cloudenvironment"     = "DeveloperProfile" # Must match the config
 		"action"               = "none"
 		"xslt"                 = $xslt
 		"filters"              = $filters | ConvertTo-Json -Compress
@@ -169,7 +172,7 @@ Handler response without any transformation contained in the `$result` PowerShel
             <Architecture>x86_64</Architecture>
             <AvailabilityZone>eu-west-1c</AvailabilityZone>
             <CloudEnvironment>xxxxxx</CloudEnvironment>
-            <CostCentre>xxxxxx<CostCentre> 
+            <CostCentre>yyyyyy<CostCentre> 
             <InstanceId>i-xxxxxx</InstanceId>
             <InstanceState>running</InstanceState>
             <InstanceType>t2.medium</InstanceType>
