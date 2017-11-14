@@ -21,6 +21,10 @@ The general format for the rest URL is above, using HTTP Verbs to indicate what 
 |RemoveAccessRule|DELETE|&lt;protocol&gt;://&lt;host&gt;:&lt;port&gt;/ad/accessrule/&lt;object&gt;/&lt;identity&gt;/&lt;principal&gt;/&lt;type&gt;/&lt;rights&gt;
 |SetAccessRule|PUT|&lt;protocol&gt;://&lt;host&gt;:&lt;port&gt;/ad/accessrule/&lt;object&gt;/&lt;identity&gt;/&lt;principal&gt;/&lt;type&gt;/&lt;rights&gt;
 |PurgeAccessRules|DELETE|&lt;protocol&gt;://&lt;host&gt;:&lt;port&gt;/ad/accessrule/&lt;object&gt;/&lt;identity&gt;/&lt;principal&gt;
+|Search|POST|&lt;protocol&gt;://&lt;host&gt;:&lt;port&gt;/ad/search
+|[Search (Custom)](#custom-searches)|POST|&lt;protocol&gt;://&lt;host&gt;:&lt;port&gt;/ad/search/&lt;planname&gt;
+|AddRole|POST|&lt;protocol&gt;://&lt;host&gt;:&lt;port&gt;/ad/role/&lt;object&gt;/&lt;identity&gt;/&lt;principal&gt;/&lt;role&gt;
+|RemoveRole|POST|&lt;protocol&gt;://&lt;host&gt;:&lt;port&gt;/ad/role/&lt;object&gt;/&lt;identity&gt;/&lt;principal&gt;/&lt;role&gt;
 
 
 ## Query String
@@ -91,11 +95,19 @@ The AdApi returns a list of "Results".  Each result starts with a "Statuses" blo
 |0|None
 |1|Get
 |2|Create
-|3|Modify
-|4|Delete
-|5|AddToGroup
-|6|RemoveFromGroup
-
+|4|Modify
+|8|Delete
+|16|Rename (Not Yet Implemented)
+|32|Move (Not Yet Implemented)
+|64|AddToGroup
+|128|RemoveFromGroup
+|256|Search
+|512|AddAccessRule
+|1024|RemoveAccessRule
+|2048|SetAccessRule
+|4096|PurgeAccessRules
+|8192|AddRole
+]16384|RemoveRole
 
 The rest of the request message tell information about the original request (Type and Identity) and then contains a list of each ActiveDirectory object that could be returned.  The "Type" field indicates which type of object is being returned, so all other AD Object lists should be null.   The numberic "Type" field is mapped below :
 
@@ -335,6 +347,7 @@ Body :
 
 ````
 {{protocol}}://{{host}}:{{port}}/ad/group/cn=FamousActors,ou=Synapse,dc=sandbox,dc=local
+
 Body:
 {
   Description: "Famous Actors and Actresses",
@@ -4111,6 +4124,454 @@ The format for the URL is identical for the AddAccessRule, RemoveAccessRule and 
                     }
                 ]
             }
+        }
+    ]
+}
+````
+
+---
+## Search
+
+The "Search" action takes in a filter string, search base and a list of attributes to return, and returns the attributes for all DirectoryEntry objects that matches the filter string, assuming the requesting user has the rights to see that object in the first place.
+
+**Requests**
+
+````
+{{protocol}}://{{host}}:{{port}}/ad/search
+
+Body:
+{
+  "Filter": "(objectClass=User)",
+  "SearchBase": "ou=Synapse,dc=sandbox,dc=local",
+  "ReturnAttributes": [
+    "name",
+    "objectGUID",
+    "objectSid",
+    "distinguishedName",
+    "dSCorePropagationData"
+  ]
+}
+````
+
+**Response**
+
+````
+{
+    "Results": [
+        {
+            "Statuses": [
+                {
+                    "Status": 1,
+                    "Message": "Success",
+                    "Action": 256
+                }
+            ],
+            "Type": 0,
+            "Identity": null,
+            "User": null,
+            "Group": null,
+            "OrganizationalUnit": null,
+            "SearchResults": {
+                "Results": [
+                    {
+                        "Path": "LDAP://CN=mfox,OU=Synapse,DC=sandbox,DC=local",
+                        "Properties": {
+                            "name": [
+                                "mfox"
+                            ],
+                            "objectGUID": [
+                                "49517710-7432-4450-bd6a-cfd4d6b7e0f5"
+                            ],
+                            "objectSid": [
+                                "S-1-5-21-4054027134-3251639354-3875066094-1834"
+                            ],
+                            "distinguishedName": [
+                                "CN=mfox,OU=Synapse,DC=sandbox,DC=local"
+                            ],
+                            "dSCorePropagationData": [
+                                "11/13/2017 8:20:12 PM",
+                                "11/13/2017 8:19:00 PM",
+                                "11/13/2017 7:39:32 PM",
+                                "11/13/2017 4:36:09 PM",
+                                "7/14/1601 10:36:49 PM"
+                            ]
+                        }
+                    },
+                    {
+                        "Path": "LDAP://CN=TestUser001,OU=Synapse,DC=sandbox,DC=local",
+                        "Properties": {
+                            "name": [
+                                "TestUser001"
+                            ],
+                            "objectGUID": [
+                                "521192c2-0659-4b47-8ca1-08063f5a1ddc"
+                            ],
+                            "objectSid": [
+                                "S-1-5-21-4054027134-3251639354-3875066094-2101"
+                            ],
+                            "distinguishedName": [
+                                "CN=TestUser001,OU=Synapse,DC=sandbox,DC=local"
+                            ],
+                            "dSCorePropagationData": [
+                                "11/13/2017 8:20:12 PM",
+                                "11/13/2017 8:19:00 PM",
+                                "11/13/2017 7:39:32 PM",
+                                "11/13/2017 4:36:09 PM",
+                                "7/14/1601 10:36:49 PM"
+                            ]
+                        }
+                    },
+                    {
+                        "Path": "LDAP://CN=SomeUser001,OU=Synapse,DC=sandbox,DC=local",
+                        "Properties": {
+                            "name": [
+                                "SomeUser001"
+                            ],
+                            "objectGUID": [
+                                "5bf5fb03-062a-4e23-93e9-9ae09d11870d"
+                            ],
+                            "objectSid": [
+                                "S-1-5-21-4054027134-3251639354-3875066094-2130"
+                            ],
+                            "distinguishedName": [
+                                "CN=SomeUser001,OU=Synapse,DC=sandbox,DC=local"
+                            ],
+                            "dSCorePropagationData": [
+                                "11/13/2017 8:20:12 PM",
+                                "11/13/2017 8:19:00 PM",
+                                "11/13/2017 7:39:32 PM",
+                                "11/13/2017 4:36:09 PM",
+                                "7/14/1601 10:36:49 PM"
+                            ]
+                        }
+                    }
+                ]
+            }
+        }
+    ]
+}
+````
+
+
+### Custom Searches
+
+The ActiveDirectory Api allows for you to write a "custom search" as a plan and call it from the Api.  This can be used for common AD queries or reporting where the requestor might not necessarily want or need to know the raw Search Filter String.   The example below "GetAllGroups" returns all groups a principal (user or group) is a member of, either directly or through inheritance.  This plan is included with the set of standard plans as an example.
+
+Note: For custom searches, the EXACT name of the dynamic parameter ("distinguishedname" in this example) must be passed in on the body of the message.
+
+#### Plan
+
+````yaml
+Name: SearchGetAllGroups
+Description: Get All Groups For A Security Principal
+IsActive: true
+Actions:
+- Name: GetAllGroups
+  Handler:
+    Type: Synapse.Handlers.ActiveDirectory:ActiveDirectoryHandler
+    Config:
+      Type: Yaml
+      Values:
+        Action: Search
+        RunSequential: false
+        ReturnObjects: true
+        OutputType: Yaml
+        PrettyPrint: true
+        SuppressOutput: false
+  Parameters:
+    Type: Yaml
+    Values:
+      SearchRequests:
+      - Filter: "(|(member:1.2.840.113556.1.4.1941:=~~distinguishedname~~)(distinguishedName=~~distinguishedname~~))"
+        Parameters:
+        - Find: ~~distinguishedname~~
+          ReplaceWith: xxxxxxxx
+        ReturnAttributes: 
+        - name
+        - displayName
+        - userPrincipalName
+        - sAMAccountName
+        - objectGUID
+        - objectSid
+    Dynamic:
+    - Name: distinguishedname
+      Path: SearchRequests[0]:Parameters[0]:ReplaceWith
+````
+
+#### Request
+
+````
+{{protocol}}://{{host}}:{{port}}/ad/search/GetAllGroups
+
+Body:
+{
+  "distinguishedname": "cn=TestUser001,ou=Synapse,dc=sandbox,dc=local"
+}
+````
+
+#### Response
+
+````
+{
+    "Results": [
+        {
+            "Statuses": [
+                {
+                    "Status": 1,
+                    "Message": "Success",
+                    "Action": 256
+                }
+            ],
+            "Type": 0,
+            "Identity": null,
+            "User": null,
+            "Group": null,
+            "OrganizationalUnit": null,
+            "SearchResults": {
+                "Results": [
+                    {
+                        "Path": "LDAP://CN=ParentGroup,OU=Synapse,DC=sandbox,DC=local",
+                        "Properties": {
+                            "name": [
+                                "ParentGroup"
+                            ],
+                            "displayName": null,
+                            "userPrincipalName": null,
+                            "sAMAccountName": [
+                                "ParentGroup"
+                            ],
+                            "objectGUID": [
+                                "7dcf5155-7f00-4379-8e49-5356e12979c1"
+                            ],
+                            "objectSid": [
+                                "S-1-5-21-4054027134-3251639354-3875066094-1831"
+                            ]
+                        }
+                    },
+                    {
+                        "Path": "LDAP://CN=FamousActors,OU=Synapse,DC=sandbox,DC=local",
+                        "Properties": {
+                            "name": [
+                                "FamousActors"
+                            ],
+                            "displayName": null,
+                            "userPrincipalName": null,
+                            "sAMAccountName": [
+                                "FamousActors"
+                            ],
+                            "objectGUID": [
+                                "72e11fd9-10f4-4c27-acb4-08dd30c78b8f"
+                            ],
+                            "objectSid": [
+                                "S-1-5-21-4054027134-3251639354-3875066094-1835"
+                            ]
+                        }
+                    },
+                    {
+                        "Path": "LDAP://CN=TestUser001,OU=Synapse,DC=sandbox,DC=local",
+                        "Properties": {
+                            "name": [
+                                "TestUser001"
+                            ],
+                            "displayName": [
+                                "Test User"
+                            ],
+                            "userPrincipalName": [
+                                "TestUser001@sandbox.local"
+                            ],
+                            "sAMAccountName": [
+                                "TestUser001"
+                            ],
+                            "objectGUID": [
+                                "521192c2-0659-4b47-8ca1-08063f5a1ddc"
+                            ],
+                            "objectSid": [
+                                "S-1-5-21-4054027134-3251639354-3875066094-2101"
+                            ]
+                        }
+                    }
+                ]
+            }
+        }
+    ]
+}
+````
+
+## AddRole (HTTP POST) or RemoveRole (HTTP DELETE)
+
+### Requests
+
+````
+{{protocol}}://{{host}}:{{controllerPort}}/ad/role/<object-type>/<identity>/<principal>/<role>
+
+{{protocol}}://{{host}}:{{controllerPort}}/ad/role/user/TestUser001/NewUser001/AdOwner
+````
+
+### Response
+
+````
+{
+    "Results": [
+        {
+            "Statuses": [
+                {
+                    "Status": 1,
+                    "Message": "Success",
+                    "Action": 8192
+                }
+            ],
+            "Type": 1,
+            "Identity": "TestUser001",
+            "User": {
+                "EmailAddress": "test.user@gmail.com",
+                "EmployeeId": "42",
+                "GivenName": "Test",
+                "MiddleName": null,
+                "Surname": "User",
+                "VoiceTelephoneNumber": "1-800-555-1212",
+                "Properties": {
+                    "objectClass": [
+                        "top",
+                        "person",
+                        "organizationalPerson",
+                        "user"
+                    ],
+                    "cn": [
+                        "TestUser001"
+                    ],
+                    "sn": [
+                        "User"
+                    ],
+                    "description": [
+                        "The Greatest"
+                    ],
+                    "telephoneNumber": [
+                        "1-800-555-1212"
+                    ],
+                    "givenName": [
+                        "Test"
+                    ],
+                    "distinguishedName": [
+                        "CN=TestUser001,OU=Synapse,DC=sandbox,DC=local"
+                    ],
+                    "instanceType": [
+                        "4"
+                    ],
+                    "whenCreated": [
+                        "10/12/2017 6:29:20 PM"
+                    ],
+                    "whenChanged": [
+                        "11/14/2017 9:40:42 PM"
+                    ],
+                    "displayName": [
+                        "Test User"
+                    ],
+                    "uSNCreated": [],
+                    "memberOf": [
+                        "CN=FamousActors,OU=Synapse,DC=sandbox,DC=local"
+                    ],
+                    "uSNChanged": [],
+                    "nTSecurityDescriptor": [],
+                    "name": [
+                        "TestUser001"
+                    ],
+                    "objectGUID": [
+                        "521192c2-0659-4b47-8ca1-08063f5a1ddc"
+                    ],
+                    "userAccountControl": [
+                        "328320"
+                    ],
+                    "badPwdCount": [
+                        "0"
+                    ],
+                    "codePage": [
+                        "0"
+                    ],
+                    "countryCode": [
+                        "0"
+                    ],
+                    "employeeID": [
+                        "42"
+                    ],
+                    "homeDirectory": [
+                        "C:\\Temp"
+                    ],
+                    "homeDrive": [
+                        "C"
+                    ],
+                    "badPasswordTime": [],
+                    "lastLogoff": [],
+                    "lastLogon": [],
+                    "scriptPath": [
+                        "C:\\Temp\\Scripts"
+                    ],
+                    "pwdLastSet": [],
+                    "primaryGroupID": [
+                        "513"
+                    ],
+                    "objectSid": [
+                        "S-1-5-21-4054027134-3251639354-3875066094-2101"
+                    ],
+                    "accountExpires": [],
+                    "logonCount": [
+                        "0"
+                    ],
+                    "sAMAccountName": [
+                        "TestUser001"
+                    ],
+                    "sAMAccountType": [
+                        "805306368"
+                    ],
+                    "userPrincipalName": [
+                        "TestUser001@sandbox.local"
+                    ],
+                    "objectCategory": [
+                        "CN=Person,CN=Schema,CN=Configuration,DC=sandbox,DC=local"
+                    ],
+                    "dSCorePropagationData": [
+                        "11/14/2017 9:40:42 PM",
+                        "11/13/2017 8:20:12 PM",
+                        "11/13/2017 8:19:00 PM",
+                        "11/13/2017 7:39:32 PM",
+                        "7/14/1601 10:36:48 PM"
+                    ],
+                    "mail": [
+                        "test.user@gmail.com"
+                    ]
+                },
+                "AccountExpirationDate": "2017-10-10T11:35:46-05:00",
+                "AccountLockoutTime": null,
+                "AllowReversiblePasswordEncryption": true,
+                "BadLogonCount": 0,
+                "DelegationPermitted": true,
+                "Enabled": true,
+                "HomeDirectory": "C:\\Temp",
+                "HomeDrive": "C",
+                "LastBadPasswordAttempt": null,
+                "LastLogon": null,
+                "LastPasswordSet": "2017-10-12T13:29:20.7372767-05:00",
+                "PasswordNeverExpires": true,
+                "PasswordNotRequired": false,
+                "PermittedLogonTimes": null,
+                "ScriptPath": "C:\\Temp\\Scripts",
+                "SmartcardLogonRequired": true,
+                "UserCannotChangePassword": false,
+                "ContextType": 1,
+                "Description": "The Greatest",
+                "DisplayName": "Test User",
+                "DistinguishedName": "CN=TestUser001,OU=Synapse,DC=sandbox,DC=local",
+                "Guid": "521192c2-0659-4b47-8ca1-08063f5a1ddc",
+                "Name": "TestUser001",
+                "SamAccountName": "TestUser001",
+                "Sid": "S-1-5-21-4054027134-3251639354-3875066094-2101",
+                "StructuralObjectClass": "user",
+                "UserPrincipalName": "TestUser001@sandbox.local",
+                "Groups": null,
+                "AccessRules": null
+            },
+            "Group": null,
+            "OrganizationalUnit": null,
+            "SearchResults": null
         }
     ]
 }

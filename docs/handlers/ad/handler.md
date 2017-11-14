@@ -30,9 +30,86 @@ Below is a list of supported actions that can be performed on ActiveDirectory ob
 |**RemoveAccessRule**|Removes Access Rights from an ActiveDirectory object for a given Principal (User or Group)|Users<br>Groups<br>Organizational Units
 |**SetAccessRule**|Sets Access Rights on an ActiveDirectory object for a given Principal (User or Group), clearing out any existing rights that might exist.|Users<br>Groups<br>Organizational Units
 |**PurgeAccessRules**|Removes All Access Rights to an ActiveDirectory object for a given Principal (User or Group)|Users<br>Groups<br>Organizational Units
+|**AddRole**|Adds a role to an ActiveDirectory object for a given Principal (User or Group)|Users<br>Groups<br>Organizational Units
+|**RemoveRole**|Removes a role from an ActiveDirectory object for a given Principal (User or Group)|Users<br>Groups<br>Organizational Units
+|**Search**|Searches for ActiveDirectory objects based on standard LDAP Filter String syntax|Not Applicable
 
 
 (2) - When the "UseUpsert" config is set, calling "Create" on an existing object can be done using its [identity](#activedirectory-objects-and-identities).  Calling "Modify" on an object that does not exist will only create the object if called using a distinguished name.
+
+# Role Manager
+
+The role manager implements an RBAC (Role-Based Access Control) to control access to ActiveDirectory objects.  The interface provides Role Administration functionality (Adding and Removing roles) as well as answers a very simple question... Does User or Group X have permission to perform action Y on ActiveDirectory object Z?
+
+## Handler Config File
+
+The ActiveDirectory Handler takes a configuration file that specifies which RoleManager (if any) should be used as well as any relevant configuration needed by that RoleManager to execute its job.   The RoleManager is loaded by the handler at the time of execution.  The ActiveDirectory handler loads the config information from the file "Synapse.Handlers.ActiveDirectory.config.yaml" which should be located in the same location as the RoleManager DLL.  If no config file is present, or no RoleManager is specified, the "[DefaultRoleManager](#defaultrolemanager)" will be used.  Below is the format of the config file:
+
+````yaml
+RoleManager:
+  Name: Synapse.ActiveDirectory.MyRoleManager:MyCustomRoleManager
+  Config: 
+    Custom: Config Structure
+    For: The RoleManager Implementation
+````
+
+## Known Implementations
+
+### DefaultRoleManager
+
+The DefaultRoleManager implements no role management at all.   The "AddRole" and "RemoveRole" actions will throw "NotImplemented" errors, and the "CanPerformAction" method always returns true.   It takes NO custom configuration at all.
+
+#### Sample Config
+
+````yaml
+RoleManager:
+  Name: Synapse.ActiveDirectory.Core:DefaultRoleManager
+  Config: 
+````
+
+### DaclRoleManager
+
+The DaclRoleManager implements role management based on the native Security (Dacl's) associated with each ActiveDirectory object.  Each role defined in the configuration file (see below) includes a set of actions that anyone with this role are allowed to perform, and what "AccessRights" determine whether or not a prinpipal belongs to a role.
+
+The "ExtendsRoles" option defines inheritance.  Thus in the example below, the "AdReadWrite" role also has the same allowed actions and AdRights as the "AdReadOnly" role, but adds more actions and AdRights to that role.
+
+Finally since the action "Search" has no single associated object with it, the roles for this action are stored on the "SearchBase" itself.  Thus if you are going to limit your search to say "ou=Synapse,dc=sandbox,dc=local", the user must have the associated rights on that OU to perform the action.
+
+#### Sample Config
+
+````yaml
+RoleManager:
+  Name: Synapse.ActiveDirectory.DaclRoleManager:DaclRoleManager
+  Config: 
+    Roles:
+    - Name: AdReadOnly
+      AllowedActions: Get, Search
+      AdRights: GenericRead
+    - Name: AdReadWrite
+      AllowedActions: Create, Modify, Delete, Rename, Move
+      AdRights: GenericWrite
+      ExtendsRoles:
+      - AdReadOnly
+    - Name: AdGroupManagement
+      AllowedActions: AddToGroup, RemoveFromGroup
+      AdRights: GenericExecute
+      ExtendsRoles:
+      - AdReadOnly
+    - Name: AdAccessRights
+      AllowedActions: AddAccessRule, RemoveAccessRule, SetAccessRule, PurgeAccessRules
+      AdRights: WriteDacl
+      ExtendsRoles:
+      - AdReadOnly
+    - Name: AdRoleDelegate
+      AllowedActions: AddRole, RemoveRole
+      AdRights: WriteDacl, WriteOwner
+      ExtendsRoles:
+      - AdReadOnly
+      - CrapRole
+    - Name: AdOwner
+      AllowedActions: All
+      AdRights: GenericAll
+````
 
 # Plan Details
 ## Config
@@ -352,6 +429,8 @@ The "AccessRules" section creates AccessRules to allow or deny rights on the obj
 
 #### ActiveDirectoryRights Enumeration
 
+The valid values for the list of rights assignable in an access rule are based on the C# enumeration "ActiveDirectoryRights" in the System.DirectoryServices namespace.  Below are the valid values at the time this document was created.  For a more detailed view, see the [Microsoft documentation site](https://msdn.microsoft.com/en-us/library/system.directoryservices.activedirectoryrights(v=vs.110).aspx). 
+
 |Right|Description
 |-----|-----------
 |AccessSystemSecurity|The right to get or set the SACL in the object security descriptor.
@@ -374,6 +453,46 @@ The "AccessRules" section creates AccessRules to allow or deny rights on the obj
 |WriteOwner|The right to assume ownership of the object. The user must be an object trustee. The user cannot transfer the ownership to other users.
 |WriteProperty|The right to write properties of the object.
 
+### Action: AddRole or Remove Role, Object Type: All
+
+````yaml
+  Parameters:
+    Type: Yaml
+    Values:
+      Users:
+      - Identity: SomeUser001
+        Roles:
+        - Name: AdOwner
+          Principal: TestUser001
+      Groups:
+      - Identity: SomeGroup001
+        Roles:
+        - Name: AdReadWrite
+          Principal: TestUser001
+      OrganizationalUnits:
+      - Identity: ou=Synapse,dc=sandbox,dc=local
+        Roles:
+        - Name: AdSomeOtherRole
+          Principal: TestUser001
+````
+
+The "Roles" element defines the role "name" and to which principal (user or group) the role should be applied or removed from.  See the [Role Manager](#rolemanager) section above for details on how to define roles.
+
+### Action: Search, Object Type : Not Applicable
+
+````yaml
+  Parameters:
+    Type: Yaml
+    Values:
+      SearchRequests:
+      - Filter: (objectClass=User)
+        SearchBase: ou=Synapse,dc=sandbox,dc=local
+        ReturnAttributes:
+        - Name
+        - objectGUID
+````
+
+The "Search" action doesn't apply to any single object, rather it takes a [Search Filter](https://msdn.microsoft.com/en-us/library/aa746475(v=vs.85).aspx) and a SearchBase and returns the defined "ReturnAttributes" for each DirectoryEntry that matches the filter.
 
 # Important Notes
 
