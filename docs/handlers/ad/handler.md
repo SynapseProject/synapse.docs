@@ -33,6 +33,9 @@ Below is a list of supported actions that can be performed on ActiveDirectory ob
 |**AddRole**|Adds a role to an ActiveDirectory object for a given Principal (User or Group)|Users<br>Groups<br>Organizational Units
 |**RemoveRole**|Removes a role from an ActiveDirectory object for a given Principal (User or Group)|Users<br>Groups<br>Organizational Units
 |**Search**|Searches for ActiveDirectory objects based on standard LDAP Filter String syntax|Not Applicable
+|**None**|Used only for assignment of actions to roles in the [RoleManager](#role-manager).  This can not be used in plan execution.|N/A
+|**All**|Used only for assignment of actions to roles in the [RoleManager](#role-manager).  This can not be used in plan execution.|N/A
+
 
 
 (2) - When the "UseUpsert" config is set, calling "Create" on an existing object can be done using its [identity](#activedirectory-objects-and-identities).  Calling "Modify" on an object that does not exist will only create the object if called using a distinguished name.
@@ -43,7 +46,7 @@ The role manager implements an RBAC (Role-Based Access Control) to control acces
 
 ## Handler Config File
 
-The ActiveDirectory Handler takes a configuration file that specifies which RoleManager (if any) should be used as well as any relevant configuration needed by that RoleManager to execute its job.   The RoleManager is loaded by the handler at the time of execution.  The ActiveDirectory handler loads the config information from the file "Synapse.Handlers.ActiveDirectory.config.yaml" which should be located in the same location as the RoleManager DLL.  If no config file is present, or no RoleManager is specified, the "[DefaultRoleManager](#defaultrolemanager)" will be used.  Below is the format of the config file:
+The ActiveDirectory Handler takes a configuration file that specifies which RoleManager (if any) should be used as well as any relevant configuration needed by that RoleManager to execute its job.   The RoleManager is loaded by the handler at the time of execution.  The ActiveDirectory handler loads the config information from the file "Synapse.Handlers.ActiveDirectory.config.yaml" which should be located in the same location as the RoleManager DLL.  If no config file is present, or no RoleManager is specified, the "[DefaultRoleManager](rolemanager.md#defaultrolemanager)" will be used.  Below is the format of the config file:
 
 ````yaml
 RoleManager:
@@ -53,63 +56,7 @@ RoleManager:
     For: The RoleManager Implementation
 ````
 
-## Known Implementations
-
-### DefaultRoleManager
-
-The DefaultRoleManager implements no role management at all.   The "AddRole" and "RemoveRole" actions will throw "NotImplemented" errors, and the "CanPerformAction" method always returns true.   It takes NO custom configuration at all.
-
-#### Sample Config
-
-````yaml
-RoleManager:
-  Name: Synapse.ActiveDirectory.Core:DefaultRoleManager
-  Config: 
-````
-
-### DaclRoleManager
-
-The DaclRoleManager implements role management based on the native Security (Dacl's) associated with each ActiveDirectory object.  Each role defined in the configuration file (see below) includes a set of actions that anyone with this role are allowed to perform, and what "AccessRights" determine whether or not a prinpipal belongs to a role.
-
-The "ExtendsRoles" option defines inheritance.  Thus in the example below, the "AdReadWrite" role also has the same allowed actions and AdRights as the "AdReadOnly" role, but adds more actions and AdRights to that role.
-
-Finally since the action "Search" has no single associated object with it, the roles for this action are stored on the "SearchBase" itself.  Thus if you are going to limit your search to say "ou=Synapse,dc=sandbox,dc=local", the user must have the associated rights on that OU to perform the action.
-
-#### Sample Config
-
-````yaml
-RoleManager:
-  Name: Synapse.ActiveDirectory.DaclRoleManager:DaclRoleManager
-  Config: 
-    Roles:
-    - Name: AdReadOnly
-      AllowedActions: Get, Search
-      AdRights: GenericRead
-    - Name: AdReadWrite
-      AllowedActions: Create, Modify, Delete, Rename, Move
-      AdRights: GenericWrite
-      ExtendsRoles:
-      - AdReadOnly
-    - Name: AdGroupManagement
-      AllowedActions: AddToGroup, RemoveFromGroup
-      AdRights: GenericExecute
-      ExtendsRoles:
-      - AdReadOnly
-    - Name: AdAccessRights
-      AllowedActions: AddAccessRule, RemoveAccessRule, SetAccessRule, PurgeAccessRules
-      AdRights: WriteDacl
-      ExtendsRoles:
-      - AdReadOnly
-    - Name: AdRoleDelegate
-      AllowedActions: AddRole, RemoveRole
-      AdRights: WriteDacl, WriteOwner
-      ExtendsRoles:
-      - AdReadOnly
-      - CrapRole
-    - Name: AdOwner
-      AllowedActions: All
-      AdRights: GenericAll
-````
+For more details about which RoleManagers are available and how they work, see the [Role Manager](rolemanager.md) page.
 
 # Plan Details
 ## Config
@@ -147,7 +94,6 @@ The config section of the plan specifies the action to perform against that AD i
 |UseUpsert|boolean|No|Tells the adapter to perform a "Modify" action when a "Create" action is called and the object exists, and to perform a "Create" action when a "Modify" action is called and the object does not exist.  (Default = "true")
 |OutputType|"Json"<br>"Xml"<br>"Yaml"|No|Tells the adapter how to format the returned status from the action.  (Default = "Json")
 |PrettyPrint|boolean|No|Tells the adapter whether to indent and add newlines to the returned output.  (Default = "true")
-
 
 ## Parameters
 

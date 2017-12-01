@@ -46,6 +46,7 @@ pages:
   - Active Directory:
     - Handler: handlers/ad/handler.md
     - Api: handlers/ad/api.md
+    - Role Managers: handlers/ad/rolemanager.md
   - Cloud:
     - AWS Handler: handlers/cloud/aws.md
 - Releases: releases.md
