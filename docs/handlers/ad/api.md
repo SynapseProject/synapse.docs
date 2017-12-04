@@ -45,6 +45,10 @@ The query string is used to control how the output from the rest call will be fo
 
 # Result Object / Error Messages
 
+## General Structure
+
+The AdApi returns a list of "Results".  Each result starts with a "Statuses" block, which contains information about the success or failure of the action requested.  
+
 ````
 {
     "Results": [
@@ -64,7 +68,7 @@ The query string is used to control how the output from the rest call will be fo
 }
 ````
 
-The AdApi returns a list of "Results".  Each result starts with a "Statuses" block, which contains information about the success or failure of the action requested.  Statuses is an array of statuses because a single request could results in multiple action (Create a user and add him to 3 groups).  Inside each individual status is a status code, a message, and the action performed.  The numeric values are mapped below : 
+Statuses is an array of statuses because a single request could results in multiple action (Create a user and add him to 3 groups).  Inside each individual status is a status code, a message, and the action performed.  The numeric values are mapped below : 
 
 **Status**
 
@@ -121,10 +125,460 @@ The rest of the request message tell information about the original request (Typ
 |5|GroupPolicy (Not Yet Implemented)|????
 |6|Search|SearchResultsObject
 
+## Object Field Structure
+
+The object field varies both on the type of object returned, and the [query string](#query-string) flags that indicate what to return.  In fact, returning the object itself is even optional (see [returnobjects](#query-string) query variable).  The sections below illustrate the structure of the return objects.
+
+### Common Sections
+
+These are the parts of the "Object" property that all ActiveDirectory objects can return (if requested). 
+
+#### Properties
+
+**Applies To:** All Objects
+
+In come cases, roperties can contain more than one value.  Thus, the properties are turned as an array of values with the property name being the "key".
+
+````yaml
+"Object": {
+
+    <CLIPPED>
+
+    "Properties": {
+        "objectClass": [
+            "top",
+            "person",
+            "organizationalPerson",
+            "user"
+        ],
+        "cn": [
+            "mfox"
+        ],
+        "sn": [
+            "Fox"
+        ],
+        "c": [
+            "us"
+        ],
+        "l": [
+            "Houston"
+        ],
+        "st": [
+            "Texas"
+        ],
+        "title": [
+            "Mr. McFly"
+        ],
+        "description": [
+            "Time Traveler"
+        ],
+
+    <CLIPPED>
+
+    }
+}
+````
+
+#### Groups (Group Membership)
+
+**Applies To:** : Users and Groups
+
+This section details all group a Principal is a member of.  It has the same return structure as the "GroupPrincipalObject" described below, without the "Groups" and "AccessRules" returned.
+
+````yaml
+"Object": {
+
+    <CLIPPED>
+
+    "Groups": [
+        {
+            "ContextType": "Domain",
+            "Description": "All domain users",
+            "DisplayName": null,
+            "DistinguishedName": "CN=Domain Users,CN=Users,DC=sandbox,DC=local",
+            "Guid": "b9c132e5-198a-4b08-b52f-6eef92445374",
+            "Name": "Domain Users",
+            "SamAccountName": "Domain Users",
+            "Sid": "S-1-5-21-4054027134-3251639354-3875066094-513",
+            "StructuralObjectClass": "group",
+            "UserPrincipalName": null,
+            "Groups": null,
+            "AccessRules": null
+        },
+        {
+            "ContextType": "Domain",
+            "Description": "Dummy CoreServices Group",
+            "DisplayName": "CoreServicesDisplayName",
+            "DistinguishedName": "CN=CoreServices,OU=Synapse,DC=sandbox,DC=local",
+            "Guid": "b7675317-8233-4b41-b324-fb848227eb03",
+            "Name": "CoreServices",
+            "SamAccountName": "CoreServicesSam",
+            "Sid": "S-1-5-21-4054027134-3251639354-3875066094-2120",
+            "StructuralObjectClass": "group",
+            "UserPrincipalName": null,
+            "Groups": null,
+            "AccessRules": null
+        }
+    ],
+
+    <CLIPPED>
+
+    }
+}
+````
+
+#### AccessRules
+
+**Applies To** : Users, Groups and Organizational Units
+
+The "AccessRules" section reports all Access Rules associated with an object.  These include both ones directly applied to the object, and those applied through inheritance.
+
+````yaml
+"Object": {
+
+    <CLIPPED>
+
+    "AccessRules": [
+        {
+            "ControlType": "Allow",
+            "Rights": "GenericRead",
+            "IdentityReference": "S-1-5-10",
+            "IdentityName": "SELF",
+            "InheritanceFlags": "None",
+            "IsInherited": "false"
+        },
+        {
+            "ControlType": "Allow",
+            "Rights": "ReadControl",
+            "IdentityReference": "S-1-5-11",
+            "IdentityName": "Authenticated Users",
+            "InheritanceFlags": "None",
+            "IsInherited": "false"
+        },
+        {
+            "ControlType": "Allow",
+            "Rights": "GenericAll",
+            "IdentityReference": "S-1-5-18",
+            "IdentityName": "SYSTEM",
+            "InheritanceFlags": "None",
+            "IsInherited": "false"
+        },
+        {
+            "ControlType": "Allow",
+            "Rights": "GenericAll",
+            "IdentityReference": "S-1-5-32-548",
+            "IdentityName": "Account Operators",
+            "InheritanceFlags": "None",
+            "IsInherited": "false"
+        },
+        {
+            "ControlType": "Allow",
+            "Rights": "ReadProperty, WriteProperty",
+            "IdentityReference": "S-1-5-10",
+            "IdentityName": "SELF",
+            "InheritanceFlags": "None",
+            "IsInherited": "false"
+        },
+        {
+            "ControlType": "Allow",
+            "Rights": "ExtendedRight",
+            "IdentityReference": "S-1-5-10",
+            "IdentityName": "SELF",
+            "InheritanceFlags": "None",
+            "IsInherited": "false"
+        },
+        {
+            "ControlType": "Allow",
+            "Rights": "ReadProperty, WriteProperty",
+            "IdentityReference": "S-1-5-10",
+            "IdentityName": "SELF",
+            "InheritanceFlags": "None",
+            "IsInherited": "false"
+        },
+        {
+            "ControlType": "Allow",
+            "Rights": "CreateChild, Self, WriteProperty, ExtendedRight, Delete, GenericRead, WriteDacl, WriteOwner",
+            "IdentityReference": "S-1-5-32-544",
+            "IdentityName": "Administrators",
+            "InheritanceFlags": "ContainerInherit",
+            "IsInherited": "true"
+        }
+    ]
+
+    <CLIPPED>
+
+    }
+}
+````
+
+### Users (UserPrincipalObject)
+
+Below is an example of a UserPrincipalObject being returned in the Object field.  In this example, the Properties, Groups and AccessRules were not requested, and are thus "null".
+
+````yaml
+"Object": {
+    "EmailAddress": "mfox@company.com",
+    "EmployeeId": "42",
+    "GivenName": "Michael",
+    "MiddleName": null,
+    "Surname": "Fox",
+    "VoiceTelephoneNumber": "1-800-555-1212",
+    "Properties": null,
+    "AccountExpirationDate": "2017-10-10T16:35:46.0000000Z",
+    "AccountLockoutTime": null,
+    "AllowReversiblePasswordEncryption": "true",
+    "BadLogonCount": "0",
+    "DelegationPermitted": "true",
+    "Enabled": "true",
+    "HomeDirectory": "C:\\Temp",
+    "HomeDrive": "F:",
+    "LastBadPasswordAttempt": null,
+    "LastLogon": null,
+    "LastPasswordSet": "2017-10-03T18:11:40.9300291Z",
+    "PasswordNeverExpires": "true",
+    "PasswordNotRequired": "false",
+    "PermittedLogonTimes": null,
+    "ScriptPath": "C:\\Temp\\Scripts",
+    "SmartcardLogonRequired": "true",
+    "UserCannotChangePassword": "false",
+    "ContextType": "Domain",
+    "Description": "American Actor, Back to the Future.",
+    "DisplayName": "Michael J. Fox",
+    "DistinguishedName": "CN=mfox,OU=Synapse,DC=sandbox,DC=local",
+    "Guid": "49517710-7432-4450-bd6a-cfd4d6b7e0f5",
+    "Name": "mfox",
+    "SamAccountName": "mfox",
+    "Sid": "S-1-5-21-4054027134-3251639354-3875066094-1834",
+    "StructuralObjectClass": "user",
+    "UserPrincipalName": "mfox@sandbox.local",
+    "Groups": null,
+    "AccessRules": null
+}
+````
+
+### Groups (GroupPrincipalObject)
+
+Below is an example of a GroupPrincipalObject being returned in the Object field.  The "Members" field is a list of current members (PrincipalObject class) that are in the group.  In this example, the Properties, Groups and AccessRules were not requested, and are thus "null".
+
+````yaml
+"Object": {
+    "GroupScope": "Universal",
+    "IsSecurityGroup": "true",
+    "Members": [
+        {
+            "ContextType": "Domain",
+            "Description": "The Greatest",
+            "DisplayName": "Test User",
+            "DistinguishedName": "CN=TestUser001,OU=Synapse,DC=sandbox,DC=local",
+            "Guid": "521192c2-0659-4b47-8ca1-08063f5a1ddc",
+            "Name": "TestUser001",
+            "SamAccountName": "TestUser001",
+            "Sid": "S-1-5-21-4054027134-3251639354-3875066094-2101",
+            "StructuralObjectClass": "user",
+            "UserPrincipalName": "TestUser001@sandbox.local",
+            "Groups": null,
+            "AccessRules": null
+        }
+    ],
+    "Properties": null,
+    "ContextType": "Domain",
+    "Description": null,
+    "DisplayName": null,
+    "DistinguishedName": "CN=FamousActors,OU=Synapse,DC=sandbox,DC=local",
+    "Guid": "72e11fd9-10f4-4c27-acb4-08dd30c78b8f",
+    "Name": "FamousActors",
+    "SamAccountName": "FamousActors",
+    "Sid": "S-1-5-21-4054027134-3251639354-3875066094-1835",
+    "StructuralObjectClass": "group",
+    "UserPrincipalName": null,
+    "Groups": null,
+    "AccessRules": null
+}
+````
+
+### Organizational Units (OrganizationalUnitObject)
+
+Below is an example of a OrganizationalUnitObject being returned in the Object field.  In this example, the Properties, Groups and AccessRules were not requested, and are thus "null".
+
+````yaml
+"Object": {
+    "DistinguishedName": "OU=DeleteMe,OU=Synapse,DC=sandbox,DC=local",
+    "Guid": "fb93e890-6889-41b7-8bb2-54a90ed27ba2",
+    "Name": "OU=DeleteMe",
+    "NativeGuid": "90e893fb8968b7418bb254a90ed27ba2",
+    "Parent": {
+        "Guid": "4322bb5f-01d8-445c-86ea-b021fe21609b",
+        "Name": "OU=Synapse",
+        "NativeGuid": "5fbb2243d8015c4486eab021fe21609b",
+        "Parent": null,
+        "Path": "LDAP://OU=Synapse,DC=sandbox,DC=local",
+        "Properties": null,
+        "SchemaClassName": "organizationalUnit",
+        "SchemaEntry": null,
+        "UsePropertyCache": "true",
+        "Username": null,
+        "AccessRules": null
+    },
+    "Path": "LDAP://OU=DeleteMe,OU=Synapse,DC=sandbox,DC=local",
+    "Properties": null,
+    "SchemaClassName": "organizationalUnit",
+    "SchemaEntry": {
+        "Guid": "228d9a87-c302-11cf-9aa4-00aa004a5691",
+        "Name": "organizationalUnit",
+        "NativeGuid": "{228D9A87-C302-11CF-9AA4-00AA004A5691}",
+        "Parent": {
+            "Guid": "228d9a86-c302-11cf-9aa4-00aa004a5691",
+            "Name": "schema",
+            "NativeGuid": "{228D9A86-C302-11CF-9AA4-00AA004A5691}",
+            "Parent": null,
+            "Path": "LDAP://schema",
+            "Properties": null,
+            "SchemaClassName": "Schema",
+            "SchemaEntry": null,
+            "UsePropertyCache": "true",
+            "Username": null,
+            "AccessRules": null
+        },
+        "Path": "LDAP://schema/organizationalUnit",
+        "Properties": null,
+        "SchemaClassName": "Class",
+        "SchemaEntry": null,
+        "UsePropertyCache": "true",
+        "Username": null,
+        "AccessRules": null
+    },
+    "UsePropertyCache": "true",
+    "Username": null,
+    "AccessRules": null
+}
+````
+
+### SearchResults (SearchResultsObject)
+
+Below is an example of a SearchResultsObject being returned in the Object field.  The common objects "AccessRules" and "Groups" do not apply to this object type.   The example below returns all "Users" from the Base Search "OU=Synapse,DC=sandbox,DC=local".
+
+Request Body: 
+
+````yaml
+{
+  "Filter": "(objectClass=User)",
+  "SearchBase": "ou=Synapse,dc=sandbox,dc=local",
+  "ReturnAttributes": [
+    "name",
+    "objectGUID",
+    "objectSid",
+    "distinguishedName",
+    "dSCorePropagationData"
+  ]
+}
+````
+
+Response:
+
+````yaml
+"Object": {
+    "Results": [
+        {
+            "Path": "LDAP://CN=mfox,OU=Synapse,DC=sandbox,DC=local",
+            "Properties": {
+                "name": [
+                    "mfox"
+                ],
+                "objectGUID": [
+                    "49517710-7432-4450-bd6a-cfd4d6b7e0f5"
+                ],
+                "objectSid": [
+                    "S-1-5-21-4054027134-3251639354-3875066094-1834"
+                ],
+                "distinguishedName": [
+                    "CN=mfox,OU=Synapse,DC=sandbox,DC=local"
+                ],
+                "dSCorePropagationData": [
+                    "11/13/2017 8:20:12 PM",
+                    "11/13/2017 8:19:00 PM",
+                    "11/13/2017 7:39:32 PM",
+                    "11/13/2017 4:36:09 PM",
+                    "7/14/1601 10:36:49 PM"
+                ]
+            }
+        },
+        {
+            "Path": "LDAP://CN=TestUser001,OU=Synapse,DC=sandbox,DC=local",
+            "Properties": {
+                "name": [
+                    "TestUser001"
+                ],
+                "objectGUID": [
+                    "521192c2-0659-4b47-8ca1-08063f5a1ddc"
+                ],
+                "objectSid": [
+                    "S-1-5-21-4054027134-3251639354-3875066094-2101"
+                ],
+                "distinguishedName": [
+                    "CN=TestUser001,OU=Synapse,DC=sandbox,DC=local"
+                ],
+                "dSCorePropagationData": [
+                    "11/14/2017 9:40:42 PM",
+                    "11/13/2017 8:20:12 PM",
+                    "11/13/2017 8:19:00 PM",
+                    "11/13/2017 7:39:32 PM",
+                    "7/14/1601 10:36:48 PM"
+                ]
+            }
+        },
+        {
+            "Path": "LDAP://CN=SomeUser001,OU=Synapse,DC=sandbox,DC=local",
+            "Properties": {
+                "name": [
+                    "SomeUser001"
+                ],
+                "objectGUID": [
+                    "5bf5fb03-062a-4e23-93e9-9ae09d11870d"
+                ],
+                "objectSid": [
+                    "S-1-5-21-4054027134-3251639354-3875066094-2130"
+                ],
+                "distinguishedName": [
+                    "CN=SomeUser001,OU=Synapse,DC=sandbox,DC=local"
+                ],
+                "dSCorePropagationData": [
+                    "11/14/2017 10:41:30 PM",
+                    "11/14/2017 10:38:02 PM",
+                    "11/13/2017 8:20:12 PM",
+                    "11/13/2017 8:19:00 PM",
+                    "7/14/1601 10:32:32 PM"
+                ]
+            }
+        },
+        {
+            "Path": "LDAP://CN=CrappyUser001,OU=Synapse,DC=sandbox,DC=local",
+            "Properties": {
+                "name": [
+                    "CrappyUser001"
+                ],
+                "objectGUID": [
+                    "2ae96754-6856-4beb-a292-9ccb3315fcdd"
+                ],
+                "objectSid": [
+                    "S-1-5-21-4054027134-3251639354-3875066094-2294"
+                ],
+                "distinguishedName": [
+                    "CN=CrappyUser001,OU=Synapse,DC=sandbox,DC=local"
+                ],
+                "dSCorePropagationData": [
+                    "1/1/1601 12:00:00 AM"
+                ]
+            }
+        }
+    ]
+}
+````
+
 
 # Api Calls
 
-The sections below will show examples of each Api call available for every object type and action.  Each assumes no query string parameters are passed in (using default config files).  It also assumes an ActiveDirectory of "**sandbox.local**"
+The sections below show examples of each Api call available for every object type and action.  It also shows a sample body on requests that require one (POST or PUT).
+
 
 ## Create (HTTP POST) or Modify (HTTP PUT)
 
@@ -160,7 +614,11 @@ Body :
   PasswordNeverExpires: true,
   UserCannotChangePassword: false,
   AllowReversiblePasswordEncryption: true,
-  HomeDrive: "F:"
+  HomeDrive: "F",
+  Properties: {
+    "mobile": [ "713-867-5309" ],
+    "otherMobile": [ "281-867-5309", "832-867-5309" ],
+    "pager": [ "~null~" ]
 }
 ````
 
@@ -206,7 +664,8 @@ Body:
 ## Get (HTTP GET) or Delete (HTTP DELETE)
 
 The format for the URL is identical for a Get and a Delete action.  The only differences would be :
-* On Delete, no object will be returned (kinda obvious)
+
+* On Delete, no object will be returned (kinda obvious).
 * The "Statuses > Action" field would reflect either "Get" or "Delete", depending on which was called.
 
 ---
@@ -290,8 +749,6 @@ The format for the URL is identical for the AddAccessRule, RemoveAccessRule and 
 * On Delete, no object will be returned (kinda obvious)
 * The "Statuses > Action" field would reflect either "AddAccessRule", "RemoveAccessRule or "SetAccessRule", depending on which was called.  Valid values for permitted "rights" can be found [here](handler.md#activedirectoryrights-enumeration).
 
-**NOTE** : For this example, the query flag "returnaccessrules=true" was included to show the access rules being returned.
-
 ---
 ### AddAccessRule/RemoveAccessRule/SetAccessRule to User
 
@@ -335,8 +792,6 @@ The format for the URL is identical for the AddAccessRule, RemoveAccessRule and 
 ## PurgeAccessRules (HTTP DELETE)
 
 The format for the URL is identical for the AddAccessRule, RemoveAccessRule and SetAccessRule actions, except there is no need for a type or rights, since purge removes all rules (Allow and Deny) for the given principal (user or group).
-
-**NOTE** : For this example, the query flag "returnaccessrules=true" was included to show the access rules being returned.
 
 ---
 ### PurgeAccessRules on User
@@ -465,27 +920,27 @@ Roles are a way to assign a group of permissions to a User / Group that enforce 
 The details of how this is accomplished is detailed in the RoleManager implementation itself, but at a very high level, a "role" should represent a set of "actions" that can be assigned to a "principal" (user or group) on a given object or set of objects.
 
 ---
-## AddRole (HTTP POST) or RemoveRole (HTTP DELETE) To User
+### AddRole (HTTP POST) or RemoveRole (HTTP DELETE) To User
 
-### Requests
+#### Requests
 
 ````
 {{protocol}}://{{host}}:{{controllerPort}}/ad/role/user/<identity>/<principal>/<role>
 ````
 
 ---
-## AddRole (HTTP POST) or RemoveRole (HTTP DELETE) To Group
+### AddRole (HTTP POST) or RemoveRole (HTTP DELETE) To Group
 
-### Requests
+#### Requests
 
 ````
 {{protocol}}://{{host}}:{{controllerPort}}/ad/role/group/<identity>/<principal>/<role>
 ````
 
 ---
-## AddRole (HTTP POST) or RemoveRole (HTTP DELETE) To OrganizationalUnit
+### AddRole (HTTP POST) or RemoveRole (HTTP DELETE) To OrganizationalUnit
 
-### Requests
+#### Requests
 
 ````
 {{protocol}}://{{host}}:{{controllerPort}}/ad/role/ou/<identity>/<principal>/<role>
