@@ -59,7 +59,7 @@ Calling StartPlan on http://localhost:20000/synapse/execute
 
 [or]
 
- 3b. **Select the result** Use the "GetPlanElement" method to retrieve the result from the ResultPlan
+ 3b. **Select the result:** Use the "GetPlanElement" method to retrieve the result from the ResultPlan
 
 ```dos
 C:\synapse\Controller>synapse.controller.cli ge planUniqueName:myPlan
