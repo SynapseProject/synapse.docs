@@ -1,4 +1,4 @@
-﻿# Overview
+﻿## Overview
 The Domain Name System (DNS) Handler provides a simple and programmatic way to interact with designated DNS servers and update DNS records.
 
 The handler makes use of Windows Management Instrumentation (WMI) protocol to communicate with the DNS server. DNS administrator may need to grant the user, under which the handler runs, with sufficient permissions and do additional setup on the selected DNS server.
@@ -44,7 +44,7 @@ This test script can be modified to simulate a test request sent from client to 
 
 <script src="https://gist.github.com/SynapseGists/ef91ec47acfa55ffc96295100db157b7.js"></script>
 
-Handler response without any transformation contained in the `$result` PowerShell variable  may look like this in "json" format.
+Handler response contained in the `$result` PowerShell variable  may look like this in "json" format.
 
 <script src="https://gist.github.com/SynapseGists/a1908e4c6c5b8aab9e275b9c1a712772.js"></script>
 
