@@ -1,4 +1,4 @@
-﻿## Overview
+﻿## Handler Overview  
 The Domain Name System (DNS) Handler provides a simple and programmatic way to interact with designated DNS servers and update DNS records.
 
 The handler makes use of Windows Management Instrumentation (WMI) protocol to communicate with the DNS server. DNS administrator may need to grant the user, under which the handler runs, with sufficient permissions and do additional setup on the selected DNS server.
