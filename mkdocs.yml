@@ -49,6 +49,8 @@ pages:
     - Role Managers: handlers/ad/rolemanager.md
   - Cloud:
     - AWS Handler: handlers/cloud/aws.md
+  - DNS:
+    - DNS Handler: handlers/dns/dns.md    
 - Releases: releases.md
 - Roadmap: roadmap.md
 - Support: support.md
