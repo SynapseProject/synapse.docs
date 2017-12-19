@@ -50,7 +50,11 @@ pages:
   - Cloud:
     - AWS Handler: handlers/cloud/aws.md
   - DNS:
-    - DNS Handler: handlers/dns/dns.md    
+    - DNS Handler: handlers/dns/dns.md
+  - FileUtil:
+    - CopyFile Handler: handlers/fileutil/copyfile.md
+    - DeleteFile Handler: handlers/fileutil/deletefile.md
+    - ModifyFile Handler: handlers/fileutil/modifyfile.md
 - Releases: releases.md
 - Roadmap: roadmap.md
 - Support: support.md
