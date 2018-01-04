@@ -33,9 +33,9 @@ The config section of the plan specifies how the delete action should be perform
 
 |Element|Type/Value|Required|Description
 |-------|----------|--------|-----------
-|Recursive|Boolean|No|Should sub-directories be included in the action (Default = true)
+|Recursive|Boolean|No|Should sub-directories be included in the action.  If value is "false", directory MUST be empty, or an error will occur. (Default = true)
 |FailIfMissing|Boolean|No|Throws an exception if the file or directory to be deleted does not exist (Default = false)
-|Verbose|Boolean|No|Log details of each file / directory deleted. (Default = true)
+|Verbose|Boolean|No|Log details as each file / directory is deleted. It does NOT provide a list of directory contents on deletion. (Default = true)
 |Aws|[AwsConfig](#awsconfig)|No*|Details on how to connect to Amazon Web Services to access S3 Buckets.<br><br>* = Required if any endpoint is an S3 bucket.
 
 #### AwsConfig 
