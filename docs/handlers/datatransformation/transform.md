@@ -5,7 +5,7 @@ The TransformHandler allows you to take YAML, JSON, or XML data and reformat it,
 1. Take YAML, JSON, or XML input
 2. If YAML or JSON, convert input to XML
 3. Apply XSLT
-   - If `PreserveOutputAsIs = true`, return string output
+   - If `PreserveOutputAsIs = true`, return string output from transform, do convert back to original InputType.
    - If `PreserveOutputAsIs = false`, if InputType is YAML/JSON, convert XML-output to InputType
 
 <p align="center">
@@ -26,6 +26,22 @@ The config section of the plan specifies what
       Values:
         InputType: Json
         OutputType: Yaml
+````
+
+|Element|Type/Value|Required|Description
+|-------|----------|--------|-----------
+|InputType|None, YAML, **JSON**, XML|No|Indicates the serialization format of the Parameters.Data member.  Defaults to `JSON` if not specified.
+|OutputType|**None**, YAML, JSON, XML|No|Indicates the serialization format of the Handler ExitData.  Defaults to `None` if not specified.  A value of `None` assumes OutputType = InputType, meaning, return the ExitData in the same serialization format as the InputData.  If specifying a format different than InputType, then a format-type conversion will occur.
+
+## Plan Details
+### Config
+
+The config section of the plan specifies Input/Output type.  Can execute convert-only with no parms. 
+
+#### Sample
+````yaml
+  Handler:
+    Type: Synapse.Handlers.DataTransformation:TransformHandler
   Parameters:
     Values:
       Data: '{ "Valid": Data }'
@@ -37,5 +53,5 @@ The config section of the plan specifies what
 
 |Element|Type/Value|Required|Description
 |-------|----------|--------|-----------
-|InputType|"[Regex](#regex)"<br>"[XmlTransform](#xmltransform)"<br>"[XPath](#xpath)"<br>"[KeyValue](#keyvalue)"<br>"[INI](#ini)"|Yes|Indicates how the file will be transformed. Details of each type of transformation can be found [here](#transformation-types)
-|OutputType|Boolean|No|Creates a backup of the original file.  The backup file will have the same name as the original file with a timestamp appened. (Default = false)
+|Data|object|Yes|The data to transform
+|XslTransformations|List|No|
