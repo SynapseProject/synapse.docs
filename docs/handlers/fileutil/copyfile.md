@@ -37,7 +37,7 @@ The config section of the plan specifies the action to perform, as well as flags
 |-------|----------|--------|-----------
 |Action|"Copy"<br>"Move"|Yes|Indicates the action to take on the files / directories specified.
 |OverwriteExisting|Boolean|No|Whether or not to overwrite existing files / directories (Default = true)
-|Recursive|Boolean|No|Should sub-directories be included in the action.  Only applies to "Copy". (Default = true)
+|Recurse|Boolean|No|Should sub-directories be included in the action.  Only applies to "Copy". (Default = true)
 |PurgeDestination|Boolean|No|Should the destination file/directory be purged before beginning the action (Default = false)
 |Verbose|Boolean|No|Log details of each file / directory acted upon. (Default = true)
 |Aws|[AwsConfig](#awsconfig)|No*|Details on how to connect to Amazon Web Services to access S3 Buckets.<br><br>* = Required if any endpoint is an S3 bucket.
