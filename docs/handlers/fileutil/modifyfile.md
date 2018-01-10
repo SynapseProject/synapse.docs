@@ -25,6 +25,7 @@ The config section of the plan specifies what technique should be used to modify
         Type : INI
         BackupSource: false
         CreateSettingIfNotFound: true
+        StopOnError: true
         RunSequential: true
         Aws:
           AccessKey: xxxxxxxx
@@ -35,8 +36,9 @@ The config section of the plan specifies what technique should be used to modify
 |Element|Type/Value|Required|Description
 |-------|----------|--------|-----------
 |Type|"[Regex](#regex)"<br>"[XmlTransform](#xmltransform)"<br>"[XPath](#xpath)"<br>"[KeyValue](#keyvalue)"<br>"[INI](#ini)"|Yes|Indicates how the file will be transformed. Details of each type of transformation can be found [here](#transformation-types)
-|BackupSource|Boolean|No|Creates a backup of the original file.  The backup file will have the same name as the original file with a timestamp appened. (Default = false)
+|BackupSource|Boolean|No|Creates a backup of the original file.  The backup file will have the same name as the original file with a timestamp appened.  If "StopOnError" is false, failure to backup the source file will NOT stop the attempt to modify the file. (Default = false)
 |CreateSettingIfNotFound|Boolean|No|Creates a new setting in the destination file if the source file does not contain the setting already. (Default = false)
+|StopOnError|Boolean|No|Should Action Continue When An Error Is Encountered. (Default = true)
 |RunSequential|Boolean|No|Runs the files in the order they appear in the plan.  This is useful for chained dependencies between file modifications. (Default = false)
 |Aws|[AwsConfig](#awsconfig)|No*|Details on how to connect to Amazon Web Services to access S3 Buckets.<br><br>* = Required if any endpoint is an S3 bucket.
 
@@ -63,6 +65,7 @@ The Parameters section is a list of files to be transformed.  If no destination 
       Files:
       - Source: C:\Temp\FileMunge\input.ini
         Destination: s3://mybucket/Temp/FileMunge/output/output.ini
+        Type: INI
         SettingsFile: 
           Name: \\localhost\c$\Temp\FileMunge\initransform.csv
           HasEncryptedValues: true
@@ -78,12 +81,13 @@ The Parameters section is a list of files to be transformed.  If no destination 
 |-------|----|--------|-----------
 |Source|String|Yes|The source file to be transformed.
 |Destination|String|No|The destination for the transformed file.  If no value provided, the transformation will overwrite the source file (in-place transformation).
+|Type|"[Regex](#regex)"<br>"[XmlTransform](#xmltransform)"<br>"[XPath](#xpath)"<br>"[KeyValue](#keyvalue)"<br>"[INI](#ini)"|Yes|Overrides the default "Type" specified in the config section.  Applies ONLY to this file. Details of each type of transformation can be found [here](#transformation-types)
+|CreateSettingIfNotFound|Boolean|No|Same as the config-element of the same name, but applies only to this particular file transformation.  This is used to "override" the plan-level setting.
+|Settings|List of Key-Value Pairs|No|This is a list of settings that are to be applied to the transformation process.  These values are applied AFTER the SettingsFile has been applied, and are executed in the order they appear in the list.
 |**SettingsFile**
 |-Name|String|No|A file containing transformation information, either in CSV or XML format.  See individual [transformations](#transformation-types) for more details.
 |-HasEncryptedValues|Boolean|No|Tells the handler that the file contains one or more encrypted values, so attempt to decrypt all values using the Crypto information provided.  (Default = false)
 |-Crypto|CryptoProvider|No|Contains the information needed to decrypt any values in the file.  These values will override any Crypto details provided at the plan level and are only necessary here if the details used to encrypt the values are different from the plan level cryptography.  A more detailed description on plan cryptography can be found [here](/run/crypto/).
-|CreateSettingIfNotFound|Boolean|No|Same as the config-element of the same name, but applies only to this particular file transformation.  This is used to "override" the plan-level setting.
-|Settings|List of Key-Value Pairs|No|This is a list of settings that are to be applied to the transformation process.  These values are applied AFTER the SettingsFile has been applied, and are executed in the order they appear in the list.
 
 
 ## Transformation Types

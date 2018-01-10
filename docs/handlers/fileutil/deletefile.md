@@ -23,7 +23,7 @@ The config section of the plan specifies how the delete action should be perform
       Type: Yaml
       Values:
         Recursive : true
-        FailIfMissing: false
+        StopOnError: true
         Verbose: true
         Aws:
           AccessKey: xxxxxxxx

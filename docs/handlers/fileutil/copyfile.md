@@ -24,7 +24,8 @@ The config section of the plan specifies the action to perform, as well as flags
       Values:
         Action: Copy
         OverwriteExisting: true
-        IncludeSubdirectories : true
+        Recurse : true
+        StopOnError: true
         PurgeDestination: false
         Verbose: true
         Aws:
