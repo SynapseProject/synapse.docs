@@ -52,9 +52,9 @@ The Parameters section of the plan specifies the data to transform and the trans
 |Element|Type/Value|Required|Description
 |-------|----------|--------|-----------
 |Data|object|Yes|The data to transform.  Must match the data serialization format specified in Config.InputType.
-|XslTransformations|List|No|
-|RegexQueries|List|No|
-|JsonQueries|List|No|
+|XslTransformations|List|No|Executes XSLT against input data.
+|RegexQueries|List|No|Executes Regex against input data.
+|JsonQueries|List|No|Executes a JSON query against input data.
 
 ## XslTransformations Detail
 
