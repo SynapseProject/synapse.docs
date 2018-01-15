@@ -68,7 +68,7 @@ When using XSLT to transform data sets, all inbound data is first converted to X
    - If `PreserveOutputAsIs = false`, if InputType is YAML/JSON, autoconvert XML-output to original InputType
 
 <p align="center">
-<img alt="Synapse Concept" src="../../img/syn_transformHandler.png" />
+<img alt="Synapse Concept" src="../../img/syn_transformHandler_xml.png" />
 </p>
 
 ## RegexQueries Detail
@@ -83,3 +83,14 @@ Complete Subset Examples:
 ## JsonQueries Detail
 
 JsonQueries are executed via Json.net's SelectTokens capability.  For details on syntax, see [this article](https://www.newtonsoft.com/json/help/html/QueryJsonSelectTokenJsonPath.htm).  As with XSLT tranformations, JsonQueries require conversion of source data to JSON before processing the query expression, then the result may be optionally converted back to the original source format (set `PreserveOutputAsIs = true|false` accordingly).
+
+### Basic XSL Transformation Workflow
+1. Take YAML, JSON, or XML input
+2. If XML or JSON, convert input to JSON
+3. Execute JsonQuery
+   - If `PreserveOutputAsIs = true`, return string output from transform, do not execute autoconvert back to original InputType.
+   - If `PreserveOutputAsIs = false`, if InputType is XML/JSON, autoconvert JSON-output to original InputType
+
+<p align="center">
+<img alt="Synapse Concept" src="../../img/syn_transformHandler_json.png" />
+</p>
