@@ -1,8 +1,89 @@
 # Synapse Plans: ParameterInfo Blocks
 
-ParameterInfo blocks are configuration information used to initialize Handler modules and pass runtime invocation data to Handler methods.  Additionally, a ParameterInfo block declares the start-up configuration for SecurityContext modules.
+ParameterInfo blocks are configuration information used to initialize Handler modules (Handler->Config) and pass runtime invocation data to Handler methods (Action->Parameters).  Additionally, a ParameterInfo block declares the start-up configuration for SecurityContext modules (RunAs->Config).  For clarity, ParameterInfo block are used in the following contexts:
 
-## Example per SerializationType
+```yaml
+Name: SamplePlan
+Actions:
+- Name: SampleAction
+  Handler:
+    Config:
+      {ParameterInfo Block}
+  Parameters:
+    {ParameterInfo Block}
+  RunAs:
+    Config:
+      {ParameterInfo Block}
+```
+
+## Overview
+
+|Field | Description
+|-|-
+|`Name`|The name of the Config/Paramters block.  If supplied, the block will stored as a global variable.
+|`Type`|The serialization format of the `Values` section.
+|`InheritFrom`|References the `Name` of another, previously stored Config/Paramters block.  The inherited values are propagated to the current block.
+|`Uri`|Retrieves data from a URI; propagates values to `Parameters`->`Values`.
+|`Values`|A custom data structure as defined by the Handler.  All the other sections of a ParameterInfo block exist to define or modify the `Values` section, which is ultimated passed to the Handler->Execute method as runtime invocation data.
+|`Dynamic`|Retrieves named values (`Source`) from the cmdline or URL and substitutes them into `Values` at the `Target` location.  Use `Options` to provide a predetermined set of values.
+|`ParentExitData`|Retrieves the `Result`->`ExitData` from the parent Handler and propagates the values to `Parameters`->`Values`.  Use `TransformInPlace` for light data manipulation prior to `CopyToValues`.
+|`ForEach`|Iterates `ForEach`->`Values`, subsituting the current value into `Parameters`->`Values` at the given `Target`.  As ForEach is a list, multiple ForEach items will produce a Cartesian result acrss the `Values` sets.  Use `ParameterSource` to access the `ParentExitData` or another named Config/Parameters block's data, retrieving a list from the `Source` location to propagate to `Values`.
+|`Crypto`|As with other section, use to encrypt selected values with the local Config/Parameters block.
+
+
+```yaml
+  Parameters:
+    Name: NameSupportsInheritance
+    Type: Yaml
+    InheritFrom: APrecedingNamedParamInfo
+    Uri: http://host/path
+    Values: Custom values as defined by Handler/Provider
+    Dynamic:
+    - Source: URI parameter name
+      Target: Element:IndexedElement[0]:Element
+      Parse: true
+      Replace: Regex Expression
+      Encode: None | Base64
+      Options:
+      - Key: key
+        Value: value
+      - Key: key
+        Value: value
+    ParentExitData:
+    - TransformInPlace:
+        Source: Element:IndexedElement[0]:Element
+        Target: Element:IndexedElement[0]:Element
+        Parse: true
+        Replace: Regex Expression
+        Encode: None | Base64
+      CopyToValues:
+        Source: Element:IndexedElement[0]:Element
+        Target: Element:IndexedElement[0]:Element
+        Parse: true
+        Replace: Regex Expression
+        Encode: None | Base64
+    ForEach:
+    - ParameterSource:
+        Name: Named ParameterInfo Block
+        Source: Element:IndexedElement[0]:Element
+        Parse: false
+      Target: Element:IndexedElement[0]:Element
+      Replace: Regex Expression
+      Encode: None | Base64
+      Values:
+      - value0
+      - value1
+    Crypto:
+      Key:
+        Uri: Filepath to RSA key file; http support in future.
+        ContainerName: RSA=supported container name
+        CspFlags: NoFlags
+      Elements:
+      - Element:IndexedElement[0]:Element
+      - Element:IndexedElement[1]:Element
+```
+
+### Example per SerializationType
 
 |Serialization | Basic | ForEach
 |-|-|-
@@ -13,16 +94,16 @@ ParameterInfo blocks are configuration information used to initialize Handler mo
 
 ## Detailed Field Description
 
-#### Name
+### Name
 The friendly name of the current ParameterInfo block.  This name is recorded in a dictionary at runtime and is used when referenced by other ParameterInfo block's `InheritFrom` field.  A ParameterInfo block Name should be *unique within a Plan*, or successive blocks of the same name will *replace* the dictionary pointer.
 
-#### Type
+### Type
 Dictates the serialization language of the Uri, Values, Dynamic, and ForEach fields.  Options are SerializationType: Yaml, Json, Xml.  If Type is omitted, the runtime engine defaults to Yaml.
 
-#### InheritFrom
+### InheritFrom
 The name of another ParameterInfo block within the current Plan.  Inheritable ParameterInfo blocks must *precede* the current ParameterInfo block in the Plan execution cycle.
 
-#### Uri
+### Uri
 A file or http URI from which to fetch values.  URI-based values are suitable for storing commonly used, shared data sets and override any values gained from `InheritFrom`.  The format of the file/http payload should be just the plain value set (no Synapse Plan attributes), as in the following examples.
 
 - **YAML Example**
@@ -52,7 +133,7 @@ PNode2:
 </PXmlDoc>
 ```
 
-#### Values
+### Values
 Locally declared values within a Plan.  Local `Values` are suitable for Plan-level/Plan-specific usage and override any values gained from `InheritFrom` and `Uri`.
 
 - **YAML Example:**
@@ -94,8 +175,22 @@ Locally declared values within a Plan.  Local `Values` are suitable for Plan-lev
         </CXmlDoc>
 ```
 
-#### Dynamic
+### Dynamic
 Name/Path pairs which are provided dynamically at runtime, such as through CLI or URL parameters.  Paths are declared in XPath for XML serialization and colon-separated lists (root:node0:node1:...) for YAML/JSON.  If the destination path exists in the child data, the value updated.  If the destination path does not exist, it will be created and seeded.  Of particular interest, YAML/JSON structures arriving as strings may optionally be Parsed and integrated into the Parameters Values structure iteslf.
+
+```yaml
+Dynamic:
+- Name: URI parameter name
+  Path: Element:IndexedElement[0]:Element
+  Parse: true|false
+  Replace: Regex expression
+  Encode: None|Base64
+  Options:
+  - Key: key
+    Value: value
+  - Key: key
+    Value: value
+```
 
 |Name|Type/Value|Required|Description
 |-|-|-|-
@@ -105,7 +200,7 @@ Name/Path pairs which are provided dynamically at runtime, such as through CLI o
 |Replace|String|No|Performs a Regular Expression replacement of the Destination value with the value from Source, subject to the Regex pattern.
 |Encoding|[Enum](#encodingtype-values)|No|Specifies how to encode the ReplaceWith string before replacement.  Click [here](#encodingtype-values) for valid values.  (Default = None)
 
-### EncodingType Values
+#### EncodingType Values
 
 Tells the CommandHandler how the values should be encoded when replaced.
 
@@ -183,18 +278,33 @@ Tells the CommandHandler how the values should be encoded when replaced.
         </CXmlDoc>
 ```
 
-#### ParentExitData
+### ParentExitData
 Passing data from a parent Action to its children it accomplished with the ParentExitData section, which is an array of Source/Destination pairs (see detail below).  If the Destination path exists in the child data, the value updated.  If the Destination path does not exist, it will be created and seeded.  As with Dynamic values, YAML/JSON structures arriving as strings may optionally be Parsed and integrated into the Parameters Values structure iteslf.
+
+```yaml
+ParentExitData:
+- TransformSource: Element:IndexedElement[0]:Element
+  TransformDestination: Element:IndexedElement[0]:Element
+  Source: Element:IndexedElement[0]:Element
+  Destination: Element:IndexedElement[0]:Element
+  CastToForEachItems: true|false
+  Parse: true|false
+  Replace: Regex expression
+  Encode: None|Base64
+```
 
 |Name|Type/Value|Required|Description
 |-|-|-|-
-|Source|String|Yes|The path to value/structure from the parent Action's ExitData.
-|Destination|String|Yes|The path the target location to add/update the value/structure.
-|Parse|Boolean|No|Tries to parse the Source value as YAML/JSON and integrate the result into the Parameters Values structure.
+|TransformSource|String|No|The path to value/structure from the parent Action's ExitData.
+|TransformDestination|String|No*|The path to the target location to add/update the value/structure _within_ the parent Action's ExitData.  This field is required if specifying TransformationSource.
+|Source|String|Yes*|The path to value/structure from the parent Action's ExitData. -Note: When specifying TransformationSource/Destination, you may omit this Source setting if it is the same as TransformationDestinatoin; Source will default to the TransformationDestination.
+|Destination|String|Yes*|The path to the target location to add/update the value/structure in the current Action's Parameters Values.
+|CastToForEachItems|Boolean|No|If
+|Parse|Boolean|No|Tries to parse the source value as YAML/JSON and integrate the result into the Parameters Values structure.
 |Replace|String|No|Performs a Regular Expression replacement of the Destination value with the value from Source, subject to the Regex pattern.
 |Encoding|[Enum](#encodingtype-values)|No|Specifies how to encode the ReplaceWith string before replacement.  Click [here](#encodingtype-values) for valid values.  (Default = None)
 
-### EncodingType Values
+#### EncodingType Values
 
 Tells the CommandHandler how the values should be encoded when replaced.
 
@@ -280,7 +390,7 @@ Actions:
 ```
 
 
-#### ForEach
+### ForEach
 ForEach blocks calculate the cartesian product of the declared Path/Values and expands the Action into a set of Actions for each result item. ActionGroup and child Actions relationships are maintained and will be executed per result item, as well. Of note, as both Action.Handler.Config and Action.Parameters can be declared with ForEach blocks, the total execution iterations for an Action is the carstesian product of the expanded Config and expanded Parameters.
 
 - **YAML Example**

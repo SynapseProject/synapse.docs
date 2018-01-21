@@ -6,6 +6,9 @@ Synapse is a lightweight execution engine designed to take data from disparate, 
 <img alt="Synapse Concept" src="img/syn_concept.png" />
 </p>
 
+## Search this Site
+[Search!](search.html)
+
 ## Elements
 
 A Synapse workflow, called a `Plan`, is comprised of a hierarchy of Actions.  An `Action` is essentially the definition of a local or remote process and the parameters required to initiate it.  Plans are declared in YAML, as follows:
