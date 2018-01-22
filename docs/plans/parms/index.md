@@ -176,7 +176,7 @@ Locally declared values within a Plan.  Local `Values` are suitable for Plan-lev
 ```
 
 ### Dynamic
-Name/Path pairs which are provided dynamically at runtime, such as through CLI or URL parameters.  Paths are declared in XPath for XML serialization and colon-separated lists (root:node0:node1:...) for YAML/JSON.  If the destination path exists in the child data, the value updated.  If the destination path does not exist, it will be created and seeded.  Of particular interest, YAML/JSON structures arriving as strings may optionally be Parsed and integrated into the Parameters Values structure iteslf.
+Dynamic suppors values which are provided dynamically at runtime, such as through CLI or URL parameters, which can then be mapped to Parameters->Values via Source/Target pairs.  Sources are declared in XPath for XML serialization and colon-separated lists (root:node0:node1:...) for YAML/JSON.  If the target path exists in the child data, the value updated.  If the target path does not exist, it will be created and seeded.  Of particular interest, YAML/JSON structures arriving as strings may optionally be Parsed and integrated into the Parameters Values structure iteslf.
 
 ```yaml
 Dynamic:
@@ -194,11 +194,11 @@ Dynamic:
 
 |Name|Type/Value|Required|Description
 |-|-|-|-
-|Name|String|Yes|The key name of the value in the dynamic values key-value pair collection.
-|Path|String|Yes|The path the target location to add/update the value/structure.
-|Parse|Boolean|No|Tries to parse the Source value as YAML/JSON and integrate the result into the Parameters Values structure.
-|Replace|String|No|Performs a Regular Expression replacement of the Destination value with the value from Source, subject to the Regex pattern.
-|Encoding|[Enum](#encodingtype-values)|No|Specifies how to encode the ReplaceWith string before replacement.  Click [here](#encodingtype-values) for valid values.  (Default = None)
+|Source|String|Yes|The key name of the value in the dynamic values key-value pair collection.
+|Target|String|Yes|The path the target location to add/update the value/structure.
+|Parse|Boolean|No|Tries to parse the Source value as YAML/JSON and integrate the result into the Parameters Values structure.  This setting does not apply to XML data structures.
+|Replace|String|No|Performs a Regular Expression replacement of the Target value with the value from Source, subject to the Regex pattern.
+|Encoding|[Enum](#encodingtype-values)|No|Specifies how to encode the value before replacement.  Options are _**None**_ and *Base64*.
 
 #### EncodingType Values
 
@@ -279,30 +279,34 @@ Tells the CommandHandler how the values should be encoded when replaced.
 ```
 
 ### ParentExitData
-Passing data from a parent Action to its children it accomplished with the ParentExitData section, which is an array of Source/Destination pairs (see detail below).  If the Destination path exists in the child data, the value updated.  If the Destination path does not exist, it will be created and seeded.  As with Dynamic values, YAML/JSON structures arriving as strings may optionally be Parsed and integrated into the Parameters Values structure iteslf.
+Passing data from a parent Action to its children it accomplished with the ParentExitData section, which is an array of Source/Target pairs (see detail below).  If the Target path exists in the child data, the value updated.  If the Target path does not exist, it will be created and seeded.  As with Dynamic values, YAML/JSON structures arriving as strings may optionally be Parsed and integrated into the Parameters Values structure iteslf.
 
 ```yaml
-ParentExitData:
-- TransformSource: Element:IndexedElement[0]:Element
-  TransformDestination: Element:IndexedElement[0]:Element
-  Source: Element:IndexedElement[0]:Element
-  Target: Element:IndexedElement[0]:Element
-  CastToForEachItems: true|false
-  Parse: true|false
-  Replace: Regex expression
-  Encode: None|Base64
+  ParentExitData:
+  - TransformInPlace:
+      Source: Element:IndexedElement[0]:Element
+      Target: Element:IndexedElement[0]:Element
+      Parse: true
+      Replace: Regex Expression
+      Encode: None | Base64
+    CopyToValues:
+      Source: Element:IndexedElement[0]:Element
+      Target: Element:IndexedElement[0]:Element
+      Parse: true
+      Replace: Regex Expression
+      Encode: None | Base64
 ```
 
 |Name|Type/Value|Required|Description
 |-|-|-|-
 |TransformSource|String|No|The path to value/structure from the parent Action's ExitData.
 |TransformDestination|String|No*|The path to the target location to add/update the value/structure _within_ the parent Action's ExitData.  This field is required if specifying TransformationSource.
-|Source|String|Yes*|The path to value/structure from the parent Action's ExitData. -Note: When specifying TransformationSource/Destination, you may omit this Source setting if it is the same as TransformationDestinatoin; Source will default to the TransformationDestination.
-|Destination|String|Yes*|The path to the target location to add/update the value/structure in the current Action's Parameters Values.
+|Source|String|Yes*|The path to value/structure from the parent Action's ExitData. -Note: When specifying TransformationSource/Target, you may omit this Source setting if it is the same as TransformationDestinatoin; Source will default to the TransformationDestination.
+|Target|String|Yes*|The path to the target location to add/update the value/structure in the current Action's Parameters Values.
 |CastToForEachItems|Boolean|No|If
 |Parse|Boolean|No|Tries to parse the source value as YAML/JSON and integrate the result into the Parameters Values structure.
-|Replace|String|No|Performs a Regular Expression replacement of the Destination value with the value from Source, subject to the Regex pattern.
-|Encoding|[Enum](#encodingtype-values)|No|Specifies how to encode the ReplaceWith string before replacement.  Click [here](#encodingtype-values) for valid values.  (Default = None)
+|Replace|String|No|Performs a Regular Expression replacement of the Target value with the value from Source, subject to the Regex pattern.
+|Encoding|[Enum](#encodingtype-values)|No|Specifies how to encode the Replace string before replacement.  Click [here](#encodingtype-values) for valid values.  (Default = None)
 
 #### EncodingType Values
 
