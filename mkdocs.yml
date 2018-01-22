@@ -5,8 +5,8 @@ pages:
 - Quick Start: quickstart.md
 - Plans:
   - Overview: plans.md
-  - Actions: plans/actions/detail.md
-  - Parameters: plans/parms/detail.md
+  - Actions: plans/actions/index.md
+  - Parameters: plans/parms/index.md
   - Handlers: plans/handlers.md
   - RunAs: plans/runas.md
   - Examples:
@@ -47,14 +47,16 @@ pages:
     - Handler: handlers/ad/handler.md
     - Api: handlers/ad/api.md
     - Role Managers: handlers/ad/rolemanager.md
-  - Cloud:
-    - AWS Handler: handlers/cloud/aws.md
   - DNS:
     - DNS Handler: handlers/dns/dns.md
+  - Cloud:
+    - AWS Handler: handlers/cloud/aws.md
   - FileUtil:
     - CopyFile Handler: handlers/fileutil/copyfile.md
     - DeleteFile Handler: handlers/fileutil/deletefile.md
     - ModifyFile Handler: handlers/fileutil/modifyfile.md
+  - Data Transformation:
+    - Transform Handler: handlers/datatransformation/index.md
 - Releases: releases.md
 - Roadmap: roadmap.md
 - Support: support.md
