@@ -20,14 +20,14 @@ Actions:
 
 |Field | Description
 |-|-
-|`Name`|The name of the Config/Paramters block.  If supplied, the block will stored as a global variable.
+|`Name`|The name of the Config/Parameters block.  If supplied, the block will stored as a global variable.
 |`Type`|The serialization format of the `Values` section.
 |`InheritFrom`|References the `Name` of another, previously stored Config/Paramters block.  The inherited values are propagated to the current block.
 |`Uri`|Retrieves data from a URI; propagates values to `Parameters`->`Values`.
-|`Values`|A custom data structure as defined by the Handler.  All the other sections of a ParameterInfo block exist to define or modify the `Values` section, which is ultimated passed to the Handler->Execute method as runtime invocation data.
+|`Values`|A custom data structure as defined by the Handler.  All the other sections of a ParameterInfo block exist to define or modify the `Values` section, which is ultimately passed to the Handler->Execute method as runtime invocation data.
 |`Dynamic`|Retrieves named values (`Source`) from the cmdline or URL and substitutes them into `Values` at the `Target` location.  Use `Options` to provide a predetermined set of values.
 |`ParentExitData`|Retrieves the `Result`->`ExitData` from the parent Handler and propagates the values to `Parameters`->`Values`.  Use `TransformInPlace` for light data manipulation prior to `CopyToValues`.
-|`ForEach`|Iterates `ForEach`->`Values`, subsituting the current value into `Parameters`->`Values` at the given `Target`.  As ForEach is a list, multiple ForEach items will produce a Cartesian result acrss the `Values` sets.  Use `ParameterSource` to access the `ParentExitData` or another named Config/Parameters block's data, retrieving a list from the `Source` location to propagate to `Values`.
+|`ForEach`|Iterates `ForEach`->`Values`, substituting the current value into `Parameters`->`Values` at the given `Target`.  As ForEach is a list, multiple ForEach items will produce a Cartesian result across the `Values` sets.  Use `ParameterSource` to access the `ParentExitData` or another named Config/Parameters block's data, retrieving a list from the `Source` location to propagate to `Values`.
 |`Crypto`|As with other section, use to encrypt selected values with the local Config/Parameters block.
 
 
@@ -180,8 +180,8 @@ Name/Path pairs which are provided dynamically at runtime, such as through CLI o
 
 ```yaml
 Dynamic:
-- Name: URI parameter name
-  Path: Element:IndexedElement[0]:Element
+- Source: URI parameter name
+  Target: Element:IndexedElement[0]:Element
   Parse: true|false
   Replace: Regex expression
   Encode: None|Base64
@@ -221,12 +221,12 @@ Tells the CommandHandler how the values should be encoded when replaced.
         PNode3_1: PValue3_1_inline
         PNode3_2: PValue3_2_inline
     Dynamic:
-    - Name: pnode0Dynamic
-      Path: PNode0
-    - Name: pnode2_1Dynamic
-      Path: PNode2:PNode2_1
-    - Name: pnode3_1Dynamic
-      Path: PNode3:PNode3_1
+    - Source: pnode0Dynamic
+      Target: PNode0
+    - Source: pnode2_1Dynamic
+      Target: PNode2:PNode2_1
+    - Source: pnode3_1Dynamic
+      Target: PNode3:PNode3_1
 ```
 
   - Assuming: `pnode0Dynamic = 'new PNode0 value'` and `pnode3_1Dynamic = 'new PNode3_1 value'`, the resulting Values will be:
@@ -256,12 +256,12 @@ Tells the CommandHandler how the values should be encoded when replaced.
             </CNode3>
         </CXmlDoc>
       Dynamic:
-      - Name: cnode0Dynamic
-        Path: /CXmlDoc[1]/CNode0[1]
-      - Name: cnode2_1Dynamic
-        Path: /CXmlDoc[1]/CNode2[1]/CNode2_1[1]
-      - Name: cnode3_1Dynamic
-        Path: /CXmlDoc[1]/CNode3[1]/CNode3_1[1]/@CAttr3_1
+      - Source: cnode0Dynamic
+        Target: /CXmlDoc[1]/CNode0[1]
+      - Source: cnode2_1Dynamic
+        Target: /CXmlDoc[1]/CNode2[1]/CNode2_1[1]
+      - Source: cnode3_1Dynamic
+        Target: /CXmlDoc[1]/CNode3[1]/CNode3_1[1]/@CAttr3_1
 ```
 
 - Assuming: `cnode0Dynamic = 'new CNode0 value'` and `cnode3_1Dynamic = 'new CNode3_1 attr'`, the resulting Values will be:
@@ -286,7 +286,7 @@ ParentExitData:
 - TransformSource: Element:IndexedElement[0]:Element
   TransformDestination: Element:IndexedElement[0]:Element
   Source: Element:IndexedElement[0]:Element
-  Destination: Element:IndexedElement[0]:Element
+  Target: Element:IndexedElement[0]:Element
   CastToForEachItems: true|false
   Parse: true|false
   Replace: Regex expression
@@ -337,11 +337,11 @@ Actions:
     Parameters:
       ParentExitData:
       - Source: Something:Wonderful:Stars
-        Destination: SleepMilliseconds
+        Target: SleepMilliseconds
       - Source: Foo:Bar
-        Destination: ReturnStatus
+        Target: ReturnStatus
       - Source: ListMember
-        Destination: ExitData
+        Target: ExitData
         Parse: True
 ```
 
@@ -382,11 +382,11 @@ Actions:
       Type: Xml
       ParentExitData:
       - Source: /Something/Wonderful/Stars
-        Destination: /EmptyHandlerParameters/SleepMilliseconds[1]
+        Target: /EmptyHandlerParameters/SleepMilliseconds[1]
       - Source: /Something/Foo/Bar
-        Destination: /EmptyHandlerParameters/ReturnStatus
+        Target: /EmptyHandlerParameters/ReturnStatus
       - Source: /Something/ListMember
-        Destination: /EmptyHandlerParameters/ExitData
+        Target: /EmptyHandlerParameters/ExitData
 ```
 
 
@@ -406,11 +406,11 @@ ForEach blocks calculate the cartesian product of the declared Path/Values and e
         PNode3_1: PValue3_1_inline
         PNode3_2: PValue3_2_inline
     ForEach:
-    - Path: PNode1
+    - Target: PNode1
       Values:
       - PValue1_foreach_0
       - PValue1_foreach_1
-    - Path: PNode2:PNode2_1
+    - Target: PNode2:PNode2_1
       Values:
       - PValue2_2_foreach_0
       - PValue2_2_foreach_1
@@ -498,18 +498,18 @@ A complete example, showing Uri, Values, Dynamic, and ForEach processing follows
         PNode3_1: PValue3_1_inline
         PNode3_2: PValue3_2_inline
     Dynamic:
-    - Name: pnode0Dynamic
-      Path: PNode0
-    - Name: pnode2_1Dynamic
-      Path: PNode2:PNode2_1
-    - Name: pnode3_1Dynamic
-      Path: PNode3:PNode3_1
+    - Source: pnode0Dynamic
+      Target: PNode0
+    - Source: pnode2_1Dynamic
+      Target: PNode2:PNode2_1
+    - Source: pnode3_1Dynamic
+      Target: PNode3:PNode3_1
     ForEach:
-    - Path: PNode1
+    - Target: PNode1
       Values:
       - PValue1_foreach_0
       - PValue1_foreach_1
-    - Path: PNode2:PNode2_1
+    - Target: PNode2:PNode2_1
       Values:
       - PValue2_2_foreach_0
       - PValue2_2_foreach_1
