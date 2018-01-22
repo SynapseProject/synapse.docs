@@ -72,4 +72,7 @@ pages:
       - Basic: plans/parms/xml/basic.md
       - ForEach: plans/parms/xml/foreach.md
   - Complete YAML: yaml.md
+- UI:
+  - How To Use: ui/howtouse.md
+  - How To Contribute: ui/howtocontribute.md
 theme: readthedocs
