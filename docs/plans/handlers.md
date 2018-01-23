@@ -1,4 +1,4 @@
-#Synapse Plans: Action Handlers
+# Synapse Plans: Action Handlers
 
 ## Handlers
 
