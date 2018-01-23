@@ -54,7 +54,7 @@ pages:
   - FileUtil:
     - CopyFile Handler: handlers/fileutil/copyfile.md
     - DeleteFile Handler: handlers/fileutil/deletefile.md
-    - ModifyFile Handler: handlers/fileutil/modifyfile.md
+    - MungeFile Handler: handlers/fileutil/mungefile.md
   - Data Transformation:
     - Transform Handler: handlers/datatransformation/index.md
 - Releases: releases.md

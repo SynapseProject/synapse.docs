@@ -1,5 +1,5 @@
 # Overview
-The ModifyFileHandler allows you to modify the contents of a file.  The table below shows the destinations currently supported by the handler along with the expected format of files / directories in the plan.
+The MungeFileHandler allows you to modify the contents of a file.  The table below shows the destinations currently supported by the handler along with the expected format of files / directories in the plan.
 
 |Destination|File Format|Directory Format
 |-----------|-----------|----------------
@@ -18,7 +18,7 @@ The config section of the plan specifies what technique should be used to modify
 #### Sample
 ````yaml
   Handler:
-    Type: Synapse.Handlers.FileUtil:ModifyFileHandler
+    Type: Synapse.Handlers.FileUtil:MungeFileHandler
     Config:
       Type: Yaml
       Values:
