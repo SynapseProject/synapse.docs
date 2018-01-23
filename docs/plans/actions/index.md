@@ -112,8 +112,8 @@ Persists this Action's Result.ExitData as a global variable in the Plan, thus ma
 
 |Name|Type/Value|Required|Description
 |-|-|-|-
-|Source|String|No|The key name for ExitData values when persisted on the global Configs list.
-|Target|String|No|The key name for ExitData values when persisted on the global Parameters. list.
+|Config|String|No|The key name for ExitData values when persisted in the global Configs collection.
+|Parameters|String|No|The key name for ExitData values when persisted in the global Parameters collection.
 
 ### Handler
 Declares the library to support executing the Action.  Detailed information on Handlers can be found [here](/plans/handlers/ "Handlers").
