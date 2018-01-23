@@ -2,14 +2,14 @@
 
 ## Handlers
 
-A Handler declares the library to support executing the current Action.  A Handler declaration consists of naming the Handler Type and specifying its Config, which is a ParameterInfo block.
+A Handler declares the library to support executing the current Action.  A Handler declaration consists of naming the Handler Type and specifying its Config, which is a [ParameterInfo block](/plans/parms/ "Parameters").
 
 ### Fields
 
-|Name|Description
+|Name|Type|Required|Description
 |-|-
-|Type|Declares the library and class to support executing the current Action.
-|Parameters|Delares the ParameterInfo block used when invoking the current Action.
+|Type|string|Yes|Declares the library and class to support executing the current Action.
+|Config|[ParameterInfo](/plans/parms/ "Parameters")|No|Delares the ParameterInfo block used when invoking the current Action.
 
 ### Example YAML
 
@@ -55,4 +55,24 @@ Actions:
   Handler:
     Type: Empty
 - Name: NoHandlerSpecified-Use:Plan.DefaultHandlerType
+```
+
+## Discovering Handler Config/Parameters Layout
+Using [Synapse.Core CLI]](/cli/core/ "Synapse CLI") to discover Handler Config/Parameters is accomplished via the `sample` parameter, as follows:
+
+```dos
+ synapse.cli.exe sample:{handlerLib:handlerName,...} [out:{filePath}]
+   [verbose:true|false]
+
+  - Create a sample Plan with the specified Handler(s).
+
+  sample       - A csv list of handlerLib:handlerName pairs.
+  out          - filePath: Optional output filePath.
+               If [out] not specified, will output to screen.
+  verbose      - If true, adds example values for all Plan options.
+```
+
+### Example - Discovering Handler Config/Parameters
+```dos
+C:\synapse\>synapse.cli.exe sample:Synapse.Core:all out:mySample.yaml verbose:true
 ```

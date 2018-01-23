@@ -121,6 +121,26 @@ Declares the library to support executing the Action.  Detailed information on H
 ### Parameters
 Declares the ParameterInfo block used when invoking the Action.  Detailed information on Handlers can be found [here](/plans/parms/ "Parameters").
 
+#### Discovering Handler Config/Parameters Layout
+Using [Synapse.Core CLI]](/cli/core/ "Synapse CLI") to discover Handler Config/Parameters is accomplished via the `sample` parameter, as follows:
+
+```dos
+ synapse.cli.exe sample:{handlerLib:handlerName,...} [out:{filePath}]
+   [verbose:true|false]
+
+  - Create a sample Plan with the specified Handler(s).
+
+  sample       - A csv list of handlerLib:handlerName pairs.
+  out          - filePath: Optional output filePath.
+               If [out] not specified, will output to screen.
+  verbose      - If true, adds example values for all Plan options.
+```
+
+### Example - Discovering Handler Config/Parameters
+```dos
+C:\synapse\>synapse.cli.exe sample:Synapse.Core:all out:mySample.yaml verbose:true
+```
+
 ### ActionGroup
 A grouping mechanism for a child branch of Actions. For a given parent Action, its ActionGroup must complete before child Actions are executed; the ExecuteResult from ActionGroup will be used to filter child Actions.  ActionGroups provide a mechanism for ensuring a subset of actions complete before continuing to further descendent Actions.  Any Action, including the ActionGroup itself, can host an ActionGroup.
 
