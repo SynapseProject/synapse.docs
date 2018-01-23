@@ -130,7 +130,7 @@ In the graphic above, MyRoot hosts an ActionGroup named Group0.  The execution o
 The list of child Actions.  Sibling Action nodes are executed in parallel and carry independent status (node status).  The highest status value of a sibling set is propagated upward as the Result.BranchStatus.
 
 ### RunAs
-The Action-level SecurityContext, overrides Plan-level declaration.
+The Action-level SecurityContext, overrides Plan-level declaration.  Detailed information on RunAs can be found [here](/plans/runas/ "RunAs").
 
 ### Result
 Holds the post-execution result of the Action. Rolls-up child execution results to the highest StatusType. Includes runtime PId, Status, ExitData.
