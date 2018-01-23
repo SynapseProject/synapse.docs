@@ -24,21 +24,22 @@ Actions:
           CNode3_1: CValue3_1_inline
           CNode3_2: CValue3_2_inline
       Dynamic:
-      - Name: cnode0Dynamic
-        Path: CNode0
-      - Name: cnode2_1Dynamic
-        Path: CNode2:CNode2_1
-      - Name: cnode3_1Dynamic
-        Path: CNode3:CNode3_1
+      - Source: cnode0Dynamic
+        Target: CNode0
+      - Source: cnode2_1Dynamic
+        Target: CNode2:CNode2_1
+      - Source: cnode3_1Dynamic
+        Target: CNode3:CNode3_1
       ForEach:
-      - Path: CNode1
-        Values:
-        - CValue1_forach_0
-        - CValue1_forach_1
-      - Path: CNode2:CNode2_1
-        Values:
-        - CValue2_2_forach_0
-        - CValue2_2_forach_1
+      - CopyToValues:
+        - Target: CNode1
+          Values:
+          - CValue1_forach_0
+          - CValue1_forach_1
+        - Target: CNode2:CNode2_1
+          Values:
+          - CValue2_2_forach_0
+          - CValue2_2_forach_1
   Parameters:
     Name: ParamSet00
     Type: Yaml
@@ -50,21 +51,22 @@ Actions:
         PNode3_1: PValue3_1_inline
         PNode3_2: PValue3_2_inline
     Dynamic:
-    - Name: pnode0Dynamic
-      Path: PNode0
-    - Name: pnode2_1Dynamic
-      Path: PNode2:PNode2_1
-    - Name: pnode3_1Dynamic
-      Path: PNode3:PNode3_1
+    - Source: pnode0Dynamic
+      Target: PNode0
+    - Source: pnode2_1Dynamic
+      Target: PNode2:PNode2_1
+    - Source: pnode3_1Dynamic
+      Target: PNode3:PNode3_1
     ForEach:
-    - Path: PNode1
-      Values:
-      - PValue1_forach_0
-      - PValue1_forach_1
-    - Path: PNode2:PNode2_1
-      Values:
-      - PValue2_2_forach_0
-      - PValue2_2_forach_1
+    - CopyToValues:
+      - Target: PNode1
+        Values:
+        - PValue1_forach_0
+        - PValue1_forach_1
+      - Target: PNode2:PNode2_1
+        Values:
+        - PValue2_2_forach_0
+        - PValue2_2_forach_1
 ```
 
 ####Where: Config/yaml_in.yaml and Parms/yaml_in.yaml contain:

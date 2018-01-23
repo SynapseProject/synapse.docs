@@ -501,7 +501,7 @@ A ParameterInfo block will fetch and resolve values, in order, as follows:
 ||Field|Behavior
 |-|-|-
 |1.|InheritFrom|Will copy the named ParameterInfo block from the runtime dictionary.  Inheritable ParameterInfo blocks must precede the current ParameterInfo block in the Plan execution cycle.
-|2.|Uri|Will read the value set from the URI location.  If InheritFrom was declared, URI values will be merged on top of any existing values from InheritFrom as: Result = InheritFrom + Uri.
+|2.|Uri|Will read the value set from the URI location.  If InheritFrom is declared, URI values will be merged on top of any existing values from InheritFrom as: Result = InheritFrom + Uri.
 |3.|Values|Any directly declared data values will be merged on top of existing values as: Result = InheritFrom + Uri + Values, or: Result = Result + Values.
 |4.|Dynamic|Any dynamically provided values will be merged on top of existing values as: Result = InheritFrom + Uri + Values + Dynamic, or: Result = Result + Dynamic.
 |5.|ParentExitData|Any values mapped from the Parent Action's ExitData will be merged on top of existing values as: Result = InheritFrom + Uri + Values + Dynamic + ParentExitData, or: Result = Result + ParentExitData.
@@ -509,7 +509,7 @@ A ParameterInfo block will fetch and resolve values, in order, as follows:
 
 
 ## Tying it Together
-A complete example, showing Uri, Values, Dynamic, and ForEach processing follows below.
+An example showing Uri, Values, Dynamic, and ForEach processing follows below.
 
 - **YAML Example**
 

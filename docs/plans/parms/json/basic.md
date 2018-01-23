@@ -27,12 +27,12 @@ Actions:
           }
         }
       Dynamic:
-      - Name: cnode0Dynamic
-        Path: CNode0
-      - Name: cnode2_1Dynamic
-        Path: CNode2:CNode2_1
-      - Name: cnode3_1Dynamic
-        Path: CNode3:CNode3_1
+      - Source: cnode0Dynamic
+        Target: CNode0
+      - Source: cnode2_1Dynamic
+        Target: CNode2:CNode2_1
+      - Source: cnode3_1Dynamic
+        Target: CNode3:CNode3_1
   Parameters:
     Name: ParamSet00
     Type: Json
@@ -47,12 +47,12 @@ Actions:
         }
       }
     Dynamic:
-    - Name: pnode0Dynamic
-      Path: PNode0
-    - Name: pnode2_1Dynamic
-      Path: PNode2:PNode2_1
-    - Name: pnode3_1Dynamic
-      Path: PNode3:PNode3_1
+    - Source: pnode0Dynamic
+      Target: PNode0
+    - Source: pnode2_1Dynamic
+      Target: PNode2:PNode2_1
+    - Source: pnode3_1Dynamic
+      Target: PNode3:PNode3_1
   Actions:
   - Name: action1
     Handler:
