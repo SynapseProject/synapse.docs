@@ -7,7 +7,7 @@ A Handler declares the library to support executing the current Action.  A Handl
 ### Fields
 
 |Name|Type|Required|Description
-|-|-
+|-|-|-|-
 |Type|string|Yes|Declares the library and class to support executing the current Action.
 |Config|[ParameterInfo](/plans/parms/ "Parameters")|No|Delares the ParameterInfo block used when invoking the current Action.
 
@@ -58,7 +58,7 @@ Actions:
 ```
 
 ## Discovering Handler Config/Parameters Layout
-Using [Synapse.Core CLI]](/cli/core/ "Synapse CLI") to discover Handler Config/Parameters is accomplished via the `sample` parameter, as follows:
+Using [Synapse.Core CLI](/cli/core/ "Synapse CLI") to discover Handler Config/Parameters is accomplished via the `sample` parameter, as follows:
 
 ```dos
  synapse.cli.exe sample:{handlerLib:handlerName,...} [out:{filePath}]

@@ -122,7 +122,7 @@ Declares the library to support executing the Action.  Detailed information on H
 Declares the ParameterInfo block used when invoking the Action.  Detailed information on Handlers can be found [here](/plans/parms/ "Parameters").
 
 #### Discovering Handler Config/Parameters Layout
-Using [Synapse.Core CLI]](/cli/core/ "Synapse CLI") to discover Handler Config/Parameters is accomplished via the `sample` parameter, as follows:
+Using [Synapse.Core CLI](/cli/core/ "Synapse CLI") to discover Handler Config/Parameters is accomplished via the `sample` parameter, as follows:
 
 ```dos
  synapse.cli.exe sample:{handlerLib:handlerName,...} [out:{filePath}]
