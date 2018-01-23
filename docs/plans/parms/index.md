@@ -139,105 +139,98 @@ Locally declared values within a Plan.  Local `Values` are suitable for Plan-lev
 - **YAML Example:**
 
 ```yaml
-    Values:
-      PNode0: PValue0_inline
-      PNode1: PValue1_inline
-      PNode3:
-        PNode3_1: PValue3_1_inline
-        PNode3_2: PValue3_2_inline
+  Values:
+    PNode0: PValue0_inline
+    PNode1: PValue1_inline
+    PNode3:
+      PNode3_1: PValue3_1_inline
+      PNode3_2: PValue3_2_inline
 ```
 
 - **JSON Example:**
 
 ```json
-      Values:
-        {
-          "CNode0": "CValue0_inline",
-          "CNode1": "CValue1_inline",
-          "CNode3": {
-            "CNode3_1": "CValue3_1_inline",
-            "CNode3_2": "CValue3_2_inline",
-          }
-        }
+  Values:
+    {
+      "CNode0": "CValue0_inline",
+      "CNode1": "CValue1_inline",
+      "CNode3": {
+        "CNode3_1": "CValue3_1_inline",
+        "CNode3_2": "CValue3_2_inline",
+      }
+    }
 ```
 
 - **XML Example:**
 
 ```xml
-      Values:
-        <CXmlDoc>
-            <CNode0>CValue0_inline</CNode0>
-            <CNode1>CValue1_inline</CNode1>
-            <CNode3>
-                <CNode3_1 CAttr3_1="CAValue3_1_inline">CValue3_1_inline</CNode3_1>
-                <CNode3_2>CValue3_2_inline</CNode3_2>
-            </CNode3>
-        </CXmlDoc>
+  Values:
+    <CXmlDoc>
+        <CNode0>CValue0_inline</CNode0>
+        <CNode1>CValue1_inline</CNode1>
+        <CNode3>
+            <CNode3_1 CAttr3_1="CAValue3_1_inline">CValue3_1_inline</CNode3_1>
+            <CNode3_2>CValue3_2_inline</CNode3_2>
+        </CNode3>
+    </CXmlDoc>
 ```
 
 ### Dynamic
 Dynamic suppors values which are provided dynamically at runtime, such as through CLI or URL parameters, which can then be mapped to Parameters->Values via Source/Target pairs.  Sources are declared in XPath for XML serialization and colon-separated lists (root:node0:node1:...) for YAML/JSON.  If the target path exists in the child data, the value updated.  If the target path does not exist, it will be created and seeded.  Of particular interest, YAML/JSON structures arriving as strings may optionally be Parsed and integrated into the Parameters Values structure iteslf.
 
 ```yaml
-Dynamic:
-- Source: URI parameter name
-  Target: Element:IndexedElement[0]:Element
-  Parse: true|false
-  Replace: Regex expression
-  Encode: None|Base64
-  Options:
-  - Key: key
-    Value: value
-  - Key: key
-    Value: value
+  Dynamic:
+  - Source: URI parameter name
+    Target: Element:IndexedElement[0]:Element
+    Parse: true|false
+    Replace: Regex expression
+    Encode: None|Base64
+    Options:
+    - Key: key
+      Value: value
+    - Key: key
+      Value: value
 ```
 
 |Name|Type/Value|Required|Description
 |-|-|-|-
 |Source|String|Yes|The key name of the value in the dynamic values key-value pair collection.
-|Target|String|Yes|The path the target location to add/update the value/structure.
+|Target|String|Yes|The path the target location to add/update the value/structure. If the target path does not exist, it will be created and seeded.
 |Parse|Boolean|No|Tries to parse the Source value as YAML/JSON and integrate the result into the Parameters Values structure.  This setting does not apply to XML data structures.
 |Replace|String|No|Performs a Regular Expression replacement of the Target value with the value from Source, subject to the Regex pattern.
-|Encoding|[Enum](#encodingtype-values)|No|Specifies how to encode the value before replacement.  Options are _**None**_ and *Base64*.
+|Encoding|Enum|No|Specifies how to encode the value before replacement.  Options are _**None**_ and *Base64*.
 
-#### EncodingType Values
 
-Tells the CommandHandler how the values should be encoded when replaced.
-
-|Value|Description
-|-----|-----------
-|None|No Encoding Used.
-|Base64|Encodes value as Base64 string.
 
 - **YAML Example:**
     - A variable named `pnode0Dynamic` will replace the existing value for `PNode0`
     - A variable named `pnode3_1Dynamic` will replace the existing value for `PNode3` --> `PNode3_1`
 
 ```yaml
-    Values:
-      PNode0: PValue0_inline
-      PNode1: PValue1_inline
-      PNode3:
-        PNode3_1: PValue3_1_inline
-        PNode3_2: PValue3_2_inline
-    Dynamic:
-    - Source: pnode0Dynamic
-      Target: PNode0
-    - Source: pnode2_1Dynamic
-      Target: PNode2:PNode2_1
-    - Source: pnode3_1Dynamic
-      Target: PNode3:PNode3_1
+  Values:
+    PNode0: PValue0_inline
+    PNode1: PValue1_inline
+    PNode3:
+      PNode3_1: PValue3_1_inline
+      PNode3_2: PValue3_2_inline
+  Dynamic:
+  - Source: pnode0Dynamic
+    Target: PNode0
+  - Source: pnode2_1Dynamic
+    Target: PNode2:PNode2_1
+  - Source: pnode3_1Dynamic
+    Target: PNode3:PNode3_1
 ```
 
   - Assuming: `pnode0Dynamic = 'new PNode0 value'` and `pnode3_1Dynamic = 'new PNode3_1 value'`, the resulting Values will be:
 
 ```yaml
-    Values:
-      PNode0: new PNode0 value
-      PNode1: PValue1_inline
-      PNode3:
-        PNode3_1: new PNode3_1 value
-        PNode3_2: PValue3_2_inline
+  Values:
+    PNode0: new PNode0 value
+    PNode1: PValue1_inline
+    PNode3:
+      PNode3_1: new PNode3_1 value
+      PNode3_2: PValue3_2_inline
 ```
 
 - **XML Example:**
@@ -246,36 +239,36 @@ Tells the CommandHandler how the values should be encoded when replaced.
     - *Note:* the indexes below are specified for clarity, but not strictly required in XPath syntax.
 
 ```xml
-      Values:
-        <CXmlDoc>
-            <CNode0>CValue0_inline</CNode0>
-            <CNode1>CValue1_inline</CNode1>
-            <CNode3>
-                <CNode3_1 CAttr3_1="CAValue3_1_inline">CValue3_1_inline</CNode3_1>
-                <CNode3_2>CValue3_2_inline</CNode3_2>
-            </CNode3>
-        </CXmlDoc>
-      Dynamic:
-      - Source: cnode0Dynamic
-        Target: /CXmlDoc[1]/CNode0[1]
-      - Source: cnode2_1Dynamic
-        Target: /CXmlDoc[1]/CNode2[1]/CNode2_1[1]
-      - Source: cnode3_1Dynamic
-        Target: /CXmlDoc[1]/CNode3[1]/CNode3_1[1]/@CAttr3_1
+  Values:
+    <CXmlDoc>
+        <CNode0>CValue0_inline</CNode0>
+        <CNode1>CValue1_inline</CNode1>
+        <CNode3>
+            <CNode3_1 CAttr3_1="CAValue3_1_inline">CValue3_1_inline</CNode3_1>
+            <CNode3_2>CValue3_2_inline</CNode3_2>
+        </CNode3>
+    </CXmlDoc>
+  Dynamic:
+  - Source: cnode0Dynamic
+    Target: /CXmlDoc[1]/CNode0[1]
+  - Source: cnode2_1Dynamic
+    Target: /CXmlDoc[1]/CNode2[1]/CNode2_1[1]
+  - Source: cnode3_1Dynamic
+    Target: /CXmlDoc[1]/CNode3[1]/CNode3_1[1]/@CAttr3_1
 ```
 
 - Assuming: `cnode0Dynamic = 'new CNode0 value'` and `cnode3_1Dynamic = 'new CNode3_1 attr'`, the resulting Values will be:
 
 ```xml
-      Values:
-        <CXmlDoc>
-            <CNode0>new CNode0 value</CNode0>
-            <CNode1>CValue1_inline</CNode1>
-            <CNode3>
-                <CNode3_1 CAttr3_1="new CNode3_1 attr">CValue3_1_inline</CNode3_1>
-                <CNode3_2>CValue3_2_inline</CNode3_2>
-            </CNode3>
-        </CXmlDoc>
+  Values:
+    <CXmlDoc>
+        <CNode0>new CNode0 value</CNode0>
+        <CNode1>CValue1_inline</CNode1>
+        <CNode3>
+            <CNode3_1 CAttr3_1="new CNode3_1 attr">CValue3_1_inline</CNode3_1>
+            <CNode3_2>CValue3_2_inline</CNode3_2>
+        </CNode3>
+    </CXmlDoc>
 ```
 
 ### ParentExitData
@@ -297,25 +290,32 @@ Passing data from a parent Action to its children it accomplished with the Paren
       Encode: None | Base64
 ```
 
+#### TransformInPlace
+
+The TransformInPlace section provides a method for light data transformation _within_ the ParentExitData itself.  This is useful in scenarios where combining 2+ data elements is required _before_ copying data to the Values.
+
 |Name|Type/Value|Required|Description
 |-|-|-|-
-|TransformSource|String|No|The path to value/structure from the parent Action's ExitData.
-|TransformDestination|String|No*|The path to the target location to add/update the value/structure _within_ the parent Action's ExitData.  This field is required if specifying TransformationSource.
-|Source|String|Yes*|The path to value/structure from the parent Action's ExitData. -Note: When specifying TransformationSource/Target, you may omit this Source setting if it is the same as TransformationDestinatoin; Source will default to the TransformationDestination.
-|Target|String|Yes*|The path to the target location to add/update the value/structure in the current Action's Parameters Values.
-|CastToForEachItems|Boolean|No|If
+|Source|String|No|The path to value/structure from the parent Action's ExitData.
+|Target|String|No*|The path to the target location to add/update the value/structure _within_ the parent Action's ExitData.  This field is required if specifying Source.  If the target path does not exist, it will be created and seeded.
+
+#### CopyToValues
+
+The CopyToValues section copies values from ParentExitData to Parameters->Values.  
+
+
+|Name|Type/Value|Required|Description
+|-|-|-|-
+|Source|String|Yes*|The path to value/structure from the parent Action's ExitData. -Note: When specifying TransformaInPlace->Source/Target, you may omit this Source setting if it is the same as TransformaInPlace->Target; Source will default to the TransformaInPlace->Target.
+|Target|String|Yes|The path to the target location to add/update the value/structure in the current Action's Parameters Values.  If the target path does not exist, it will be created and seeded.
+
+#### Settings with common definitions:
+
+|Name|Type/Value|Required|Description
+|-|-|-|-
 |Parse|Boolean|No|Tries to parse the source value as YAML/JSON and integrate the result into the Parameters Values structure.
 |Replace|String|No|Performs a Regular Expression replacement of the Target value with the value from Source, subject to the Regex pattern.
-|Encoding|[Enum](#encodingtype-values)|No|Specifies how to encode the Replace string before replacement.  Click [here](#encodingtype-values) for valid values.  (Default = None)
-
-#### EncodingType Values
-
-Tells the CommandHandler how the values should be encoded when replaced.
-
-|Value|Description
-|-----|-----------
-|None|No Encoding Used.
-|Base64|Encodes value as Base64 string.
+|Encoding|Enum|No|Specifies how to encode the value before replacement.  Options are _**None**_ and *Base64*.
 
 
 - **YAML Example:**
@@ -340,13 +340,14 @@ Actions:
   - Name: Child
     Parameters:
       ParentExitData:
-      - Source: Something:Wonderful:Stars
-        Target: SleepMilliseconds
-      - Source: Foo:Bar
-        Target: ReturnStatus
-      - Source: ListMember
-        Target: ExitData
-        Parse: True
+        CopyToValues:
+        - Source: Something:Wonderful:Stars
+          Target: SleepMilliseconds
+        - Source: Foo:Bar
+          Target: ReturnStatus
+        - Source: ListMember
+          Target: ExitData
+          Parse: True
 ```
 
 - **XML Example:**
@@ -385,39 +386,61 @@ Actions:
     Parameters:
       Type: Xml
       ParentExitData:
-      - Source: /Something/Wonderful/Stars
-        Target: /EmptyHandlerParameters/SleepMilliseconds[1]
-      - Source: /Something/Foo/Bar
-        Target: /EmptyHandlerParameters/ReturnStatus
-      - Source: /Something/ListMember
-        Target: /EmptyHandlerParameters/ExitData
+        CopyToValues:
+        - Source: /Something/Wonderful/Stars
+          Target: /EmptyHandlerParameters/SleepMilliseconds[1]
+        - Source: /Something/Foo/Bar
+          Target: /EmptyHandlerParameters/ReturnStatus
+        - Source: /Something/ListMember
+          Target: /EmptyHandlerParameters/ExitData
 ```
 
 
 ### ForEach
-ForEach blocks calculate the cartesian product of the declared Path/Values and expands the Action into a set of Actions for each result item. ActionGroup and child Actions relationships are maintained and will be executed per result item, as well. Of note, as both Action.Handler.Config and Action.Parameters can be declared with ForEach blocks, the total execution iterations for an Action is the carstesian product of the expanded Config and expanded Parameters.
+ForEach blocks calculate the Cartesian product of the declared Target/Values and expands the Action into a set of Actions for each result item. ActionGroup and child Actions relationships are maintained and will be executed per result item, as well. Of note, as both Action.Handler.Config and Action.Parameters can be declared with ForEach blocks, the total execution iterations for an Action is the carstesian product of the expanded Config and expanded Parameters.
+
+```yaml
+  ForEach:
+  - ParameterSource:
+      Name: Named ParameterInfo Block
+      Source: Element:IndexedElement[0]:Element
+      Parse: false
+    Target: Element:IndexedElement[0]:Element
+    Replace: Regex Expression
+    Encode: None | Base64
+    Values:
+    - value0
+    - value1
+```
+
+|Name|Type/Value|Required|Description
+|-|-|-|-
+|Source|String|Yes|The path to value/structure from the Action's Values.
+|Target|String|Yes|The path to the target location to add/update the value/structure in the current Action's Parameters Values.  If the target path does not exist, it will be created and seeded.
+
 
 - **YAML Example**
 
 ```yaml
+  Values:
+    PNode0: PValue0_file
+    PNode1: PValue1_file
+    PNode2:
+      PNode2_1: PValue2_1_file
+      PNode2_2: PValue2_2_file
+    PNode3:
+      PNode3_1: PValue3_1_inline
+      PNode3_2: PValue3_2_inline
+  ForEach:
+    CopyToValues:
+  - Target: PNode1
     Values:
-      PNode0: PValue0_file
-      PNode1: PValue1_file
-      PNode2:
-        PNode2_1: PValue2_1_file
-        PNode2_2: PValue2_2_file
-      PNode3:
-        PNode3_1: PValue3_1_inline
-        PNode3_2: PValue3_2_inline
-    ForEach:
-    - Target: PNode1
-      Values:
-      - PValue1_foreach_0
-      - PValue1_foreach_1
-    - Target: PNode2:PNode2_1
-      Values:
-      - PValue2_2_foreach_0
-      - PValue2_2_foreach_1
+    - PValue1_foreach_0
+    - PValue1_foreach_1
+  - Target: PNode2:PNode2_1
+    Values:
+    - PValue2_2_foreach_0
+    - PValue2_2_foreach_1
 ```
  - The block above is processed like a nested for loop (psuedocode):
 
@@ -429,45 +452,45 @@ foreach( string value0 in valueSet0 )
 
   - Resulting in four distinct sets of Values, as follows:
 ```yaml
-    Values:
-      PNode0: PValue0_file
-      PNode1: PValue1_foreach_0
-      PNode2:
-        PNode2_1: PValue2_2_foreach_0
-        PNode2_2: PValue2_2_file
-      PNode3:
-        PNode3_1: PValue3_1_inline
-        PNode3_2: PValue3_2_inline
+  Values:
+    PNode0: PValue0_file
+    PNode1: PValue1_foreach_0
+    PNode2:
+      PNode2_1: PValue2_2_foreach_0
+      PNode2_2: PValue2_2_file
+    PNode3:
+      PNode3_1: PValue3_1_inline
+      PNode3_2: PValue3_2_inline
 
-    Values:
-      PNode0: PValue0_file
-      PNode1: PValue1_foreach_0
-      PNode2:
-        PNode2_1: PValue2_2_foreach_1
-        PNode2_2: PValue2_2_file
-      PNode3:
-        PNode3_1: PValue3_1_inline
-        PNode3_2: PValue3_2_inline
+  Values:
+    PNode0: PValue0_file
+    PNode1: PValue1_foreach_0
+    PNode2:
+      PNode2_1: PValue2_2_foreach_1
+      PNode2_2: PValue2_2_file
+    PNode3:
+      PNode3_1: PValue3_1_inline
+      PNode3_2: PValue3_2_inline
 
-    Values:
-      PNode0: PValue0_file
-      PNode1: PValue1_foreach_1
-      PNode2:
-        PNode2_1: PValue2_2_foreach_0
-        PNode2_2: PValue2_2_file
-      PNode3:
-        PNode3_1: PValue3_1_inline
-        PNode3_2: PValue3_2_inline
+  Values:
+    PNode0: PValue0_file
+    PNode1: PValue1_foreach_1
+    PNode2:
+      PNode2_1: PValue2_2_foreach_0
+      PNode2_2: PValue2_2_file
+    PNode3:
+      PNode3_1: PValue3_1_inline
+      PNode3_2: PValue3_2_inline
 
-    Values:
-      PNode0: PValue0_file
-      PNode1: PValue1_foreach_1
-      PNode2:
-        PNode2_1: PValue2_2_foreach_1
-        PNode2_2: PValue2_2_file
-      PNode3:
-        PNode3_1: PValue3_1_inline
-        PNode3_2: PValue3_2_inline
+  Values:
+    PNode0: PValue0_file
+    PNode1: PValue1_foreach_1
+    PNode2:
+      PNode2_1: PValue2_2_foreach_1
+      PNode2_2: PValue2_2_file
+    PNode3:
+      PNode3_1: PValue3_1_inline
+      PNode3_2: PValue3_2_inline
 ```
 
 ---
@@ -509,14 +532,15 @@ A complete example, showing Uri, Values, Dynamic, and ForEach processing follows
     - Source: pnode3_1Dynamic
       Target: PNode3:PNode3_1
     ForEach:
-    - Target: PNode1
-      Values:
-      - PValue1_foreach_0
-      - PValue1_foreach_1
-    - Target: PNode2:PNode2_1
-      Values:
-      - PValue2_2_foreach_0
-      - PValue2_2_foreach_1
+      CopyToValues:
+      - Target: PNode1
+        Values:
+        - PValue1_foreach_0
+        - PValue1_foreach_1
+      - Target: PNode2:PNode2_1
+        Values:
+        - PValue2_2_foreach_0
+        - PValue2_2_foreach_1
 ```
   - Assuming the contents of the `yaml_in.yaml` are:
 
@@ -529,87 +553,87 @@ PNode2:
 ```
   - And, parameters to synapse.cli.exe include:
 ```dos
-synapse.cli.exe /plan:sample.yaml /dryRun:true /pnode0Dynamic:PValue0_dynamic
-                /pnode2_1Dynamic:PValue2_1_Dynamic /pnode3_1Dynamic:PValue3_1_Dynamic
+synapse.cli.exe plan:sample.yaml dryRun:true pnode0Dynamic:PValue0_dynamic
+                pnode2_1Dynamic:PValue2_1_Dynamic pnode3_1Dynamic:PValue3_1_Dynamic
 ```
 
 #### Step 1 - Retrieve the file URI, resulting in:
 ```yaml
-    Values:
-      PNode0: PValue0_file
-      PNode1: PValue1_file
-      PNode2:
-        PNode2_1: PValue2_1_file
-        PNode2_2: PValue2_2_file
+  Values:
+    PNode0: PValue0_file
+    PNode1: PValue1_file
+    PNode2:
+      PNode2_1: PValue2_1_file
+      PNode2_2: PValue2_2_file
 ```
 
 #### Step 2 - Merge Locally declared Value with the file URI contents, resulting in:
 ```yaml
-    Values:
-      PNode0: PValue0_inline
-      PNode1: PValue1_inline
-      PNode2:
-        PNode2_1: PValue2_1_file
-        PNode2_2: PValue2_2_file
-      PNode3:
-        PNode3_1: PValue3_1_inline
-        PNode3_2: PValue3_2_inline
+  Values:
+    PNode0: PValue0_inline
+    PNode1: PValue1_inline
+    PNode2:
+      PNode2_1: PValue2_1_file
+      PNode2_2: PValue2_2_file
+    PNode3:
+      PNode3_1: PValue3_1_inline
+      PNode3_2: PValue3_2_inline
 ```
 
 #### Step 3 - Merge Dynamic values into current Values, resulting in:
 ```yaml
-    Values:
-      PNode0: PValue0_dynamic
-      PNode1: PValue1_inline
-      PNode2:
-        PNode2_1: PValue2_1_Dynamic
-        PNode2_2: PValue2_2_file
-      PNode3:
-        PNode3_1: PValue3_1_Dynamic
-        PNode3_2: PValue3_2_inline
+  Values:
+    PNode0: PValue0_dynamic
+    PNode1: PValue1_inline
+    PNode2:
+      PNode2_1: PValue2_1_Dynamic
+      PNode2_2: PValue2_2_file
+    PNode3:
+      PNode3_1: PValue3_1_Dynamic
+      PNode3_2: PValue3_2_inline
 ```
 
 #### Step 4 - Process the ForEach block, expanding the current Values into four new blocks:
 ```yaml
-    Values:
-      PNode0: PValue0_dynamic
-      PNode1: PValue1_foreach_0
-      PNode2:
-        PNode2_1: PValue2_2_foreach_0
-        PNode2_2: PValue2_2_file
-      PNode3:
-        PNode3_1: PValue3_1_Dynamic
-        PNode3_2: PValue3_2_inline
+  Values:
+    PNode0: PValue0_dynamic
+    PNode1: PValue1_foreach_0
+    PNode2:
+      PNode2_1: PValue2_2_foreach_0
+      PNode2_2: PValue2_2_file
+    PNode3:
+      PNode3_1: PValue3_1_Dynamic
+      PNode3_2: PValue3_2_inline
 
-    Values:
-      PNode0: PValue0_dynamic
-      PNode1: PValue1_foreach_0
-      PNode2:
-        PNode2_1: PValue2_2_foreach_1
-        PNode2_2: PValue2_2_file
-      PNode3:
-        PNode3_1: PValue3_1_Dynamic
-        PNode3_2: PValue3_2_inline
+  Values:
+    PNode0: PValue0_dynamic
+    PNode1: PValue1_foreach_0
+    PNode2:
+      PNode2_1: PValue2_2_foreach_1
+      PNode2_2: PValue2_2_file
+    PNode3:
+      PNode3_1: PValue3_1_Dynamic
+      PNode3_2: PValue3_2_inline
 
-    Values:
-      PNode0: PValue0_dynamic
-      PNode1: PValue1_foreach_1
-      PNode2:
-        PNode2_1: PValue2_2_foreach_0
-        PNode2_2: PValue2_2_file
-      PNode3:
-        PNode3_1: PValue3_1_Dynamic
-        PNode3_2: PValue3_2_inline
+  Values:
+    PNode0: PValue0_dynamic
+    PNode1: PValue1_foreach_1
+    PNode2:
+      PNode2_1: PValue2_2_foreach_0
+      PNode2_2: PValue2_2_file
+    PNode3:
+      PNode3_1: PValue3_1_Dynamic
+      PNode3_2: PValue3_2_inline
 
-    Values:
-      PNode0: PValue0_dynamic
-      PNode1: PValue1_foreach_1
-      PNode2:
-        PNode2_1: PValue2_2_foreach_1
-        PNode2_2: PValue2_2_file
-      PNode3:
-        PNode3_1: PValue3_1_Dynamic
-        PNode3_2: PValue3_2_inline
+  Values:
+    PNode0: PValue0_dynamic
+    PNode1: PValue1_foreach_1
+    PNode2:
+      PNode2_1: PValue2_2_foreach_1
+      PNode2_2: PValue2_2_file
+    PNode3:
+      PNode3_1: PValue3_1_Dynamic
+      PNode3_2: PValue3_2_inline
 ```
 
 The resulting four Value sets will each be passed to the Action.Handler as runtime parameters (as four independently executed Actions).
