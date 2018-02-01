@@ -81,3 +81,26 @@ Handler response, contained in the "ExitData" field and captured in the `$result
 <script src="https://gist.github.com/SynapseGists/b635cb7fb2b11faade7dda9b17b38d69.js"></script>
 
 If the value of "ExitCode" is 0, it means the operation is successful. The value of -1 indicates the operation fails. "Message" will provide brief summary of the success or the reason of failure.
+
+### Sample 5 - GET with Basic Authentication
+This test script can be modified to simulate a test request sent from client to Synapse to invoke the handler.
+
+<script src="https://gist.github.com/SynapseGists/e6c681b3d63fce9a949593fd9d881c09.js"></script>
+
+Handler response, contained in the "ExitData" field and captured in the `$result` PowerShell variable  may look like this in "json" format.
+
+<script src="https://gist.github.com/SynapseGists/18f6a9d0cf4fe43c063bcc8dcbf64b4c.js"></script>
+
+If the value of "ExitCode" is 0, it means the operation is successful. The value of -1 indicates the operation fails. "Message" will provide brief summary of the success or the reason of failure.
+
+### Sample 6 - GET with NTLM (Windows) Authentication
+This test script can be modified to simulate a test request sent from client to Synapse to invoke the handler.
+
+<script src="https://gist.github.com/SynapseGists/137e51b5a2d17e2097ccd69083bcc2b8.js"></script>
+
+Handler response, contained in the "ExitData" field and captured in the `$result` PowerShell variable  may look like this in "json" format.
+
+<script src="https://gist.github.com/SynapseGists/a2b303be729a2373154df732a2bec0ba.js"></script>
+
+If the value of "ExitCode" is 0, it means the operation is successful. The value of -1 indicates the operation fails. "Message" will provide brief summary of the success or the reason of failure.
+
