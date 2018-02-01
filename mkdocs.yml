@@ -57,6 +57,8 @@ pages:
     - MungeFile Handler: handlers/fileutil/mungefile.md
   - Data Transformation:
     - Transform Handler: handlers/datatransformation/index.md
+  - URI:
+    - REST Handler: handlers/uri/rest.md
 - Releases: releases.md
 - Roadmap: roadmap.md
 - Support: support.md
