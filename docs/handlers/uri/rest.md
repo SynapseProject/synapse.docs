@@ -3,8 +3,8 @@
 The Representational State Transfer (REST) Handler provides a simple and programmatic way to interact with remote HTTP services and returns the response result to the client.
 
 Currently the handler supports:  
-* REST actions - DELETE, GET, POST, PUT  
-* Authentication - None, Basic, NTLM  
+1. REST actions - DELETE, GET, POST, PUT  
+2. Authentication - None, Basic, NTLM (Windows) 
 
 At a high level, the flow of actions is:  
 1. **Initialize** - It will read the handler configuration from the Action Config values in the Synapse plan.  
@@ -13,10 +13,10 @@ At a high level, the flow of actions is:
 
 ## Plan Details
 ### Config
-TO BE ADDED.
+None. 
 
 ### Sample
-TO BE ADDED.
+None
 
 ### Parameters
 The Parameter section specifies what a client should send in during run-time.
