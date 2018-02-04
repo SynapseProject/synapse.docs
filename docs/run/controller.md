@@ -10,7 +10,6 @@ The Synapse Controller URI is: http://{host:port}/synapse/execute.  For detailed
 |-|-|-
 |get|/synapse/execute/hello|Returns "Hello, World!"  Does not invoke RBAC or DAL, but does require authentication.
 |get|/synapse/execute/hello/whoami|Returns a string of the authenticated user context.  Does not invoke RBAC or DAL.
-|get|/synapse/execute/hello/about|Returns the server configuration (`synapse.server.config.yaml`) and an inventory of files for this server instance.
 |get|/synapse/execute/{planUniqueName}/item|Returns a Plan by PlanUniqueName.
 |get|/synapse/execute|Returns a list of Plans.
 |get|/synapse/execute/{planUniqueName}|Returns a list of Plan Instance Ids.
@@ -24,10 +23,6 @@ The Synapse Controller URI is: http://{host:port}/synapse/execute.  For detailed
 |post|/synapse/execute/{planUniqueName}/{planInstanceId}/action|Update the status of an individual Action within a Plan, by planInstanceId.
 |get|/synapse/execute/{planUniqueName}/{planInstanceId}/part|Select an individual element from within a Plan, specifing the desired return data serialization format.  See [Using the Part Interface] below for details.
 |post|/synapse/execute/{planUniqueName}/{planInstanceId}/part|Select one or more individual elements from within a Plan, specifing the desired return data serialization format.  See [Part] below for details.
-|get|/synapse/execute/update|Invokes AutoUpdate, which will stop the server, refresh the binaries, and then optionally restart the server.
-|get|/synapse/execute/update/logs|Fetches a list of AutoUpdate logs.
-|get|/synapse/execute/update/logs/{name}|Fetches a specific AutoUpdate log.
-
 
 
 ## Using the Part Interface
@@ -56,3 +51,43 @@ To return "native" data formats from the Synapse Controller API, specify the ser
 - Unspecified
 
 YAML/JSON/XML will attempt to parse the element data into the specified format before returning it.  "Unspecified" will return the data, as-is.
+
+## Dynamic Paramters
+
+Synapse Controller accepts dynamic Plan parameters in both GET and POST operations, as follows below.
+
+### Dynamic Parameters with GET
+
+The general URI signature for starting a Plan via GET is:
+
+- `http://host:port/synapse/execute/{planUniqueName}/start/?dryRun={true|false}&requestNumber={requestNumber}`
+
+where `dryRun` and `requestNumber` are reserved by Synapse as built-in paramters.  Every other key/value pair on the URL is passed-through to the Plan as a custom/dynamic parameter.
+
+#### GET Example:
+- `http://host:port/synapse/execute/{planUniqueName}/start/?dryRun=true&requestNumber=0123&key0=value0&key1=value1&key2=value2`
+- `key0`, `key1`, and `key2` will all be treated as dynamic parameters and passed through to the Plan.
+
+### Dynamic Paramters with POST
+
+As with a GET, the URI for a POST remains:
+
+- `http://host:port/synapse/execute/{planUniqueName}/start/?dryRun={true|false}&requestNumber={requestNumber}`
+
+but sending dynamic parameters is accomplished in the http request via the `DynamicParamters` key/value pair wrapper structure.
+
+#### POST Example
+
+- Content-Type = application/json
+- Request Body (raw):
+
+```json
+{
+  "DynamicParameters": {
+    "key0": "value0",
+    "key1": "value1",
+    "key2": "value2"
+  }
+}
+```
+

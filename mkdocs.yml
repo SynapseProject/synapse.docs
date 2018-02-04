@@ -23,7 +23,9 @@ pages:
     - Encrypting Plans: run/crypto.md
   - Web API:
     - Controller: run/controller.md
+    - Postman Example: run/postman.md
     - Node: run/node.md
+    - Admin: run/admin.md
     - Swagger: run/swagger.md
     - AutoUpdate: run/autoupdate.md
   - CommandLines:
@@ -59,6 +61,9 @@ pages:
     - Transform Handler: handlers/datatransformation/index.md
   - URI:
     - REST Handler: handlers/uri/rest.md
+- UI:
+  - How To Use: ui/howtouse.md
+  - How To Contribute: ui/howtocontribute.md
 - Releases: releases.md
 - Roadmap: roadmap.md
 - Support: support.md
@@ -74,7 +79,4 @@ pages:
       - Basic: plans/parms/xml/basic.md
       - ForEach: plans/parms/xml/foreach.md
   - Complete YAML: yaml.md
-- UI:
-  - How To Use: ui/howtouse.md
-  - How To Contribute: ui/howtocontribute.md
 theme: readthedocs
