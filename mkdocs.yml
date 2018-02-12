@@ -19,6 +19,7 @@ pages:
       - Options: run/setup/options.md
       - Authentication: run/setup/authentication.md
       - Impersonation: run/setup/impersonation.md
+      - Authorization: run/setup/authorization.md
     - SSL/TLS: run/ssl.md
     - Encrypting Plans: run/crypto.md
   - Web API:
