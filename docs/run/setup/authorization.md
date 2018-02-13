@@ -2,7 +2,7 @@
 
 ## Overview
 
-The WebApi Authorization section is used to granulate who can access the Controller, Node, and Admin methods.  Configure Authorization by adding one or more `Providers`, using the `ApliesTo` settings to filter what is affected by the specifc Provider.
+The WebApi Authorization section is used to granulate who can access the Controller, Node, and Admin methods.  Configure Authorization by adding one or more `Providers`, using the `AppliesTo` settings to filter what is affected by the specific Provider.
 
 ## YAML Layout
 
@@ -25,7 +25,7 @@ WebApi:
 |Name|Type|Required|Description
 |-|-|-|-
 |AllowAnonymous|boolean|No, default is `True`|Set this `False` to specifically disallow anonymous access to authorization-checked actions.
-|Providers|Section|No|Create enties in the section to control access to API methods.  If no Providers are configured, the API defaults to "allow access to all methods for everyone."  *Note:* The Controller->Start methods will still honor Plan security, even if "everyone" can execute the Start method itself.
+|Providers|Section|No|Create entries in the section to control access to API methods.  If no Providers are configured, the API defaults to "allow access to all methods for everyone."  *Note:* The Controller->Start methods will still honor Plan security, even if "everyone" can execute the Start method itself.
 |Type|string|Yes|Syntax Library:Namespace.ClassName (as with Hander Type declaration)
 |AppliesTo|Section|No|Used to filter the Providers list at runtime.
 |AppliesTo.ServerRole|bitmask enumeration|No|Specifies with of the WebApi functions are governed by this Provider. You may combine any of the values as csv: `ServerRole: Node, Admin, ...`.  The default value is `Universal`.
@@ -40,8 +40,8 @@ public enum ServerRole
     Node = 2,
     Admin = 4,
     Server = 7,
-    Enterprise = 8,
-    Universal = 15
+    Enterprise = 8, //future use
+    Universal = 15  //future use
 }
 ```
 
@@ -84,7 +84,7 @@ WebApi:
 
 #### Pattern 2: ContainsRole( role ) .and. ContainsTopic( topic )
 
-For WebApi methods that advertise a Topic, you may further granuate access with the Topics list.  The following example extends the previous example by providing specifc access to the Node->Drainstop and Admin->About/AutoUpdate methods.  When a topic list is specified, any Provider entries matching Pattern #1 are ignored in favor of those matching Pattern #2.
+For WebApi methods that advertise a Topic, you may further granulate access with the Topics list.  The following example extends the previous example by providing specific access to the Node->Drainstop and Admin->About/AutoUpdate methods.  When a topic list is specified, any Provider entries matching Pattern #1 are ignored in favor of those matching Pattern #2.
 
 ```yaml
 WebApi:
@@ -123,7 +123,7 @@ WebApi:
 
 ### Synapse.Authorization:WindowsPrincipalProvider
 
-The WindowsPrincipalProvider authorizes against a simple list of `domain\username` (users) or Active Directory groups in a standard Allowed/Denied pattern, where Denied principals always supercede Allowed principals.  As mentioned above, the runtime engine processes the Providers list sequentially and the first Provider to answer with Allow/Deny will terminate processing.
+The WindowsPrincipalProvider authorizes against a simple list of `domain\username` (users) or Active Directory groups in a standard Allowed/Denied pattern, where Denied principals always supersede Allowed principals.  As mentioned above, the runtime engine processes the Providers list sequentially and the first Provider to answer with Allow/Deny will terminate processing.
 
 
 ```yaml
@@ -155,7 +155,7 @@ LdapRoot|string|Yes*|Required only if using Groups.
 |Users|string lists|No|Two lists, `Allowed` and `Denied` of user principals, in the form of `domain\username`
 |Groups|string lists|No|Two lists, `Allowed` and `Denied` of group principals, in the form of `groupname`
 
-**Note**: Both Users and Groups are marked as not required.  Omitting `Allowed` translates to "everyone is allowed," and omitting `Denied` translates to "no one is denied."  Providing an `Allowed` list translates to "only these principals are allowed, others are implcitly denied."  Providing a `Denied` list *explicitly* denies named principals and overrides any explicit allows.
+**Note**: Both Users and Groups are marked as not required.  Omitting `Allowed` translates to "everyone is allowed," and omitting `Denied` translates to "no one is denied."  Providing an `Allowed` list translates to "only these principals are allowed, others are implicitly denied."  Providing a `Denied` list *explicitly* denies named principals and overrides any explicit allows.
 
 ||Provided|Omitted
 |-|-|-
