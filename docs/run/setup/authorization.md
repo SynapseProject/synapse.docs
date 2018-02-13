@@ -117,7 +117,7 @@ WebApi:
         {Provider-specific configuration data}
 ```
 
-**Note:** the runtime engine processes the Providers list sequentially.  If multiple Providers address the same ServerRole/Topic, the engine will stop processing with first Provider to successfully process the Authorization request.
+**Note:** the runtime engine processes the entire list of matching Providers list, sequentially.  If multiple Providers address the same ServerRole/Topic, the engine will process each Provider and ultimately reports the cumulative authorization outcome.
 
 ## Providers
 
@@ -162,7 +162,7 @@ LdapRoot|string|Yes*|Required only if using Groups.
 |**Allowed**|Explicitly granted access. Others implicitly denied.|"Everyone" implicitly allowed.
 |**Denied**|Explicitly denied access. Others implicitly allowed.|"Everyone" implicitly allowed.
 
-In the example below, with an explicit Allow, the "Synapse Admins" group is premitted access to the "AutoUpdate" function of the Admin features.  The user "steve" (presumably a member of "Synapse Admins") is explicitly denied access, and any other principals are implicitly denied.
+In the two examples below, with an explicit Allow, the "Synapse Admins" group is permitted access to the Admin methods.  The user "steve" (presumably a member of "Synapse Admins") is explicitly denied access, and any other principals are implicitly denied.  For user "steve," both Provider setups produce the same result since all matching Providers are processed.  However, for group "Synapse Admins," the second Provider setup also grants access to the Controller and Node methods.
 
 ```yaml
 WebApi:
@@ -171,13 +171,32 @@ WebApi:
     - Type: Synapse.Authorization:WindowsPrincipalProvider
       AppliesTo:
         ServerRole: Admin
-        Topics:
-        - AutoUpdate
       Config:
         LdapRoot: LDAP://myDomain.domain.com/
         Users:
           Denied:
           - myDomain\steve
+        Groups:
+          Allowed:
+          - Synapse Admins
+```
+
+```yaml
+WebApi:
+  Authorization:
+    Providers:
+    - Type: Synapse.Authorization:WindowsPrincipalProvider
+      AppliesTo:
+        ServerRole: Admin
+      Config:
+        Users:
+          Denied:
+          - myDomain\steve
+    - Type: Synapse.Authorization:WindowsPrincipalProvider
+      AppliesTo:
+        ServerRole: Admin, Controller, Node
+      Config:
+        LdapRoot: LDAP://myDomain.domain.com/
         Groups:
           Allowed:
           - Synapse Admins
