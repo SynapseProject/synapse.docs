@@ -201,3 +201,42 @@ WebApi:
           Allowed:
           - Synapse Admins
 ```
+
+### Synapse.Authorization.Suplex:SuplexProvider
+
+The SuplexProvider is nearly identical to the WindowsPrincipalProvider, except instead of sourcing Active Directory for Group information, it sources a Suplex store.  Like the WindowsPrincipalProvider, the SuplexProvider authorizes against a simple list of `username` \ `domain\username` (users) or Suplex groups in a standard Allowed/Denied pattern, where Denied principals always supersede Allowed principals.  As mentioned above, the runtime engine processes the Providers list sequentially and the first Provider to answer with Allow/Deny will terminate processing.
+
+
+```yaml
+WebApi:
+  Authorization:
+    Providers:
+    - Type: Synapse.Authorization.Suplex:SuplexProvider
+      Config:
+        Connection:
+          Type: File #only File is supported at this time, is default value
+          Path: {Path to Suplex file-based store}
+        ListSourcePath: {file path}
+        Users:
+          Allowed:
+          - {User Principal}
+          Denied:
+          - {User Principal}
+        Groups:
+          Allowed:
+          - {Group Principal}
+          Denied:
+          - {Group Principal}
+```
+
+#### SuplexProvider Config Fields
+
+Most of the fields in the SuplexProvider mirror those of the WindowsPrincipalProvider.  Only the _Connection_ fields differ, and _WindowsPrincipalProvider.LDAP_ is removed.
+
+|Name|Type|Required|Description
+|-|-|-|-
+Connection.Type|enum|Yes|Options are **File**, SqlServer, RestApi.  At present, only _File_ is supported, and it's the default value.
+Connection.Path|string|Yes|Path to the Suple file-based store.
+|ListSourcePath|string|No|_See WindowsPrincipalProvider._
+|Users|string lists|No|_See WindowsPrincipalProvider._
+|Groups|string lists|No|_See WindowsPrincipalProvider._
