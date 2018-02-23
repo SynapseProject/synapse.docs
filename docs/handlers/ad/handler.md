@@ -154,6 +154,7 @@ For Group Membership actions (AddToGroup and RemoveFromGroup), a "Groups" sectio
     Values:
       Users:
       - Identity: cn=mfox,ou=MyOrgUnit,DC=sandbox,DC=local
+        Name: Michael Fox            # This will change the "Common Name" of the object.  Use To "Rename" a User.
         Password: bi@02LL49_VWQ{b
         GivenName: Michael
         MiddleName: J
@@ -272,6 +273,7 @@ Values under the "Properties" section are dynamic.  Any "attribute" that ActiveD
     Values:
       Groups:
       - Identity: cn=MyNewGroup,ou=Synapse,DC=sandbox,DC=local
+        Name: MyNewerGroup            # This will change the "Common Name" of the object.  Use To "Rename" a Group.
         Scope: Universal     # Local, Global or Universal
         IsSecurityGroup: true
         SamAccountName: MyNewGroupSam
@@ -310,6 +312,7 @@ Values under the "Properties" section are dynamic.  Any "attribute" that ActiveD
     Values:
       OrganizationalUnits:
       - Identity: ou=MyOrgUnit,dc=sandbox,dc=local
+        Name: MyNewerOrgUnit            # This will change the "Name" of the object.  Use To "Rename" an Organizational Unit.
         Description: Some Lame Description
         ManagedBy: mfox    # Can Be Identity of any User or Group
         Properties:
