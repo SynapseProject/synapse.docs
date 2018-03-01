@@ -24,6 +24,7 @@ Below is a list of supported actions that can be performed on ActiveDirectory ob
 |**Create**|Creates a single ActiveDirectory object by its distinguished name only. (2)|Organizational Units<br>Groups<br>Users
 |**Modify**|Modifies a single ActiveDirectory object by its [identity](#activedirectory-objects-and-identities). (2)|Organizational Units<br>Groups<br>Users
 |**Delete**|Deletes a single ActiveDirectory object by its [identity](#activedirectory-objects-and-identities)|Users<br>Groups<br>Organizational Units
+|**Move**|Moves a single ActiveDirectory object by its [identity](#activedirectory-objects-and-identities) to another Organizational Unit.|Users<br>Groups<br>Organizational Units
 |**AddToGroup**|Adds Users and/or Groups to an existing ActiveDirecory group by its [identity](#activedirectory-objects-and-identities).|Users<br>Groups
 |**RemoveFromGroup**|Removes Users and/or Groups from an existing ActiveDirectory group by its [identity](#activedirectory-objects-and-identities).|Users<br>Groups
 |**AddAccessRule**|Adds Access Rights to an ActiveDirectory object for a given Principal (User or Group)|Users<br>Groups<br>Organizational Units
@@ -426,6 +427,25 @@ The valid values for the list of rights assignable in an access rule are based o
 ````
 
 The "Roles" element defines the role "name" and to which principal (user or group) the role should be applied or removed from.  See the [Role Manager](#rolemanager) section above for details on how to define roles.
+
+### Action: Move, Object Type: All
+
+````yaml
+  Parameters:
+    Type: Yaml
+    Values:
+      Users:
+      - Identity: cn=MoveMeUser,ou=Source,ou=MoveMe,ou=Synapse,dc=sandbox,dc=local
+        MoveTo: ou=Destination,ou=MoveMe,ou=Synapse,dc=sandbox,dc=local
+      Groups:
+      - Identity: MoveMeGroup
+        MoveTo: Destination
+      OrganizationalUnits:
+      - Identity: MoveMeOrgUnit
+        MoveTo: Destination
+````
+
+The "MoveTo" element must be the identity of an Organizational Unit.
 
 ### Action: Search, Object Type : Not Applicable
 
