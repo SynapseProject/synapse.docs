@@ -15,6 +15,7 @@ The general format for the rest URL is above, using HTTP Verbs to indicate what 
 |Create|POST|&lt;protocol&gt;://&lt;host&gt;:&lt;port&gt;/myriad/&lt;object&gt;/&lt;identity&gt;
 |Modify|PUT|&lt;protocol&gt;://&lt;host&gt;:&lt;port&gt;/myriad/&lt;object&gt;/&lt;identity&gt;
 |Delete|DELETE|&lt;protocol&gt;://&lt;host&gt;:&lt;port&gt;/myriad/&lt;object&gt;/&lt;identity&gt;
+|Move|PUT|&lt;protocol&gt;://&lt;host&gt;:&lt;port&gt;/myriad/&lt/objectgt;/&lt;identity&gt;/&lt;destinationOrgUnit&gt;
 |AddToGroup|POST|&lt;protocol&gt;://&lt;host&gt;:&lt;port&gt;/myriad/&lt;object&gt;/&lt;identity&gt;/&lt;groupIdentity&gt;
 |RemoveFromGroup|DELETE|&lt;protocol&gt;://&lt;host&gt;:&lt;port&gt;/myriad/&lt;object&gt;/&lt;identity&gt;&lt;groupIdentity&gt;
 |AddAccessRule|POST|&lt;protocol&gt;://&lt;host&gt;:&lt;port&gt;/myriad/accessrule/&lt;object&gt;/&lt;identity&gt;/&lt;principal&gt;/&lt;type&gt;/&lt;rights&gt;
@@ -99,8 +100,8 @@ Statuses is an array of statuses because a single request could results in multi
 |2|Create
 |4|Modify
 |8|Delete
-|16|Rename (Not Yet Implemented)
-|32|Move (Not Yet Implemented)
+|16|Rename (Not Used, Use "Modify" Instead)
+|32|Move
 |64|AddToGroup
 |128|RemoveFromGroup
 |256|Search
@@ -704,6 +705,50 @@ The format for the URL is identical for a Get and a Delete action.  The only dif
 {{protocol}}://{{host}}:{{controllerPort}}/myriad/ou/AmericanActors  (By Name)
 {{protocol}}://{{host}}:{{controllerPort}}/myriad/ou/OU=AmericanActors,OU=Synapse,DC=sandbox,DC=local  (By DistinguishedName)
 {{protocol}}://{{host}}:{{controllerPort}}/myriad/ou/95637ae6-9f24-420f-b573-7c2ab3496419  (By Guid)
+````
+
+---
+## Move (HTTP PUT)
+
+The format for the PUT URL to move an object to a new OrganizationalUnit is : 
+..../object/identity/destinationIdentity
+
+---
+### Move User
+
+**Requests**
+
+````
+{{protocol}}://{{host}}:{{port}}/myriad/user/mfox/DestinationOu  (By Name)
+{{protocol}}://{{host}}:{{port}}/myriad/user/CN=mfox,OU=Synapse,DC=sandbox,DC=local/OU=DestinationOu,DC=sandbox,DC=local  (By Distinguished Name)
+{{protocol}}://{{host}}:{{port}}/myriad/user/S-1-5-21-4054027134-3251639354-3875066094-1773/OU=DestinationOu,DC=sandbox,DC=local  (By Sid)
+{{protocol}}://{{host}}:{{port}}/myriad/user/1722b838-57e1-4058-a394-338882af9e2f/1722b838-57e1-4058-a394-339994af9guy  (By Guid)
+{{protocol}}://{{host}}:{{port}}/myriad/user/mfox/OU=DestinationOu,DC=sandbox,DC=local  (By SamAccountName)
+{{protocol}}://{{host}}:{{port}}/myriad/user/mfox@sandbox.local/OU=DestinationOu,DC=sandbox,DC=local  (By UserPrincipal)
+````
+
+---
+### Move Group
+
+**Request**
+
+````
+{{protocol}}://{{host}}:{{port}}/myriad/group/FamousActors/DestinationOu (By Name)
+{{protocol}}://{{host}}:{{port}}/myriad/group/CN=FamousActors,OU=Synapse,DC=sandbox,DC=local/OU=DestinationOu,DC=sandbox,DC=local  (By DistinguishedName)
+{{protocol}}://{{host}}:{{port}}/myriad/group/S-1-5-21-4054027134-3251639354-3875066094-1774/OU=DestinationOu,DC=sandbox,DC=local  (By Sid)
+{{protocol}}://{{host}}:{{port}}/myriad/group/19cdf305-c43b-497a-a932-6091f4a09dbb/1722b838-57e1-4058-a394-339994af9guy  (By Guid)
+{{protocol}}://{{host}}:{{port}}/myriad/group/FamousActors/OU=DestinationOu,DC=sandbox,DC=local  (By SamAccountName)
+````
+
+---
+### Move Organizational Unit
+
+**Request**
+
+````
+{{protocol}}://{{host}}:{{controllerPort}}/myriad/ou/AmericanActors/DestinationOu  (By Name)
+{{protocol}}://{{host}}:{{controllerPort}}/myriad/ou/OU=AmericanActors,OU=Synapse,DC=sandbox,DC=local/OU=DestinationOu,DC=sandbox,DC=local  (By DistinguishedName)
+{{protocol}}://{{host}}:{{controllerPort}}/myriad/ou/95637ae6-9f24-420f-b573-7c2ab3496419/1722b838-57e1-4058-a394-339994af9guy  (By Guid)
 ````
 
 ---

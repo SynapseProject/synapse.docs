@@ -24,6 +24,7 @@ Below is a list of supported actions that can be performed on ActiveDirectory ob
 |**Create**|Creates a single ActiveDirectory object by its distinguished name only. (2)|Organizational Units<br>Groups<br>Users
 |**Modify**|Modifies a single ActiveDirectory object by its [identity](#activedirectory-objects-and-identities). (2)|Organizational Units<br>Groups<br>Users
 |**Delete**|Deletes a single ActiveDirectory object by its [identity](#activedirectory-objects-and-identities)|Users<br>Groups<br>Organizational Units
+|**Move**|Moves a single ActiveDirectory object by its [identity](#activedirectory-objects-and-identities) to another Organizational Unit.|Users<br>Groups<br>Organizational Units
 |**AddToGroup**|Adds Users and/or Groups to an existing ActiveDirecory group by its [identity](#activedirectory-objects-and-identities).|Users<br>Groups
 |**RemoveFromGroup**|Removes Users and/or Groups from an existing ActiveDirectory group by its [identity](#activedirectory-objects-and-identities).|Users<br>Groups
 |**AddAccessRule**|Adds Access Rights to an ActiveDirectory object for a given Principal (User or Group)|Users<br>Groups<br>Organizational Units
@@ -154,6 +155,7 @@ For Group Membership actions (AddToGroup and RemoveFromGroup), a "Groups" sectio
     Values:
       Users:
       - Identity: cn=mfox,ou=MyOrgUnit,DC=sandbox,DC=local
+        Name: Michael Fox            # This will change the "Common Name" of the object.  Use To "Rename" a User.
         Password: bi@02LL49_VWQ{b
         GivenName: Michael
         MiddleName: J
@@ -272,6 +274,7 @@ Values under the "Properties" section are dynamic.  Any "attribute" that ActiveD
     Values:
       Groups:
       - Identity: cn=MyNewGroup,ou=Synapse,DC=sandbox,DC=local
+        Name: MyNewerGroup            # This will change the "Common Name" of the object.  Use To "Rename" a Group.
         Scope: Universal     # Local, Global or Universal
         IsSecurityGroup: true
         SamAccountName: MyNewGroupSam
@@ -310,6 +313,7 @@ Values under the "Properties" section are dynamic.  Any "attribute" that ActiveD
     Values:
       OrganizationalUnits:
       - Identity: ou=MyOrgUnit,dc=sandbox,dc=local
+        Name: MyNewerOrgUnit            # This will change the "Name" of the object.  Use To "Rename" an Organizational Unit.
         Description: Some Lame Description
         ManagedBy: mfox    # Can Be Identity of any User or Group
         Properties:
@@ -423,6 +427,25 @@ The valid values for the list of rights assignable in an access rule are based o
 ````
 
 The "Roles" element defines the role "name" and to which principal (user or group) the role should be applied or removed from.  See the [Role Manager](#rolemanager) section above for details on how to define roles.
+
+### Action: Move, Object Type: All
+
+````yaml
+  Parameters:
+    Type: Yaml
+    Values:
+      Users:
+      - Identity: cn=MoveMeUser,ou=Source,ou=MoveMe,ou=Synapse,dc=sandbox,dc=local
+        MoveTo: ou=Destination,ou=MoveMe,ou=Synapse,dc=sandbox,dc=local
+      Groups:
+      - Identity: MoveMeGroup
+        MoveTo: Destination
+      OrganizationalUnits:
+      - Identity: MoveMeOrgUnit
+        MoveTo: Destination
+````
+
+The "MoveTo" element must be the identity of an Organizational Unit.
 
 ### Action: Search, Object Type : Not Applicable
 
