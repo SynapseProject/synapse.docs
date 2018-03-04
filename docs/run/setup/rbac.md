@@ -69,10 +69,11 @@ To Edit security, open the SuplexAdmin UI, and create/open a Security.splx file.
 When securing Plans, best practice is to group Plan elements within a "Container," apply Permissions to the Container, and let the permissions inherit downward.
 
 - Note: this is logical division only; Synapse does not differentiate between "Containers" and "Plans" within the FileSyatemDal's consumption of Suplex security data as all elements are of type *SplxFileSystemManager*.  However, future implementations of the DAL may expand on this implementation.
+- Note: The tops node of the tree **must** be **SynapseRoot**.
 
 |Feature|Function
 |-|-
-|Element Hierarchy|The tree of Containers and Plans.  Apply Permissions to these elements.<br>- Note: Elements with security settings applied will show a lock icon in the tree.
+|Element Hierarchy|The tree of Containers and Plans.  Apply Permissions to these elements.<br>- Note: The tops node of the tree **must** be **SynapseRoot**.<br>- Note: Elements with security settings applied will show a lock icon in the tree.
 
 #### Element Properties
 |Feature|Function
@@ -127,4 +128,4 @@ When securing Plans, best practice is to create Groups and Roles as separate ent
 #### Group Membership
 |Feature|Function
 |-|-
-|Membership/Non-Membership|The left box represents Membership, the right box represents Non-Membership.  Suplex-groups are eligible for editing nested group membership.
+|Membership/Non-Membership|The left box represents Membership, the right box represents Non-Membership.  Suplex-groups are eligible for editing group membership, whereas External-groups must be edited at the source system.
