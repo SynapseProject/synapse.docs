@@ -69,11 +69,11 @@ To Edit security, open the SuplexAdmin UI, and create/open a Security.splx file.
 When securing Plans, best practice is to group Plan elements within a "Container," apply Permissions to the Container, and let the permissions inherit downward.
 
 - Note: this is logical division only; Synapse does not differentiate between "Containers" and "Plans" within the FileSyatemDal's consumption of Suplex security data as all elements are of type *SplxFileSystemManager*.  However, future implementations of the DAL may expand on this implementation.
-- Note: The tops node of the tree **must** be **SynapseRoot**.
+- Note: The top node of the tree **must** be **SynapseRoot**.
 
 |Feature|Function
 |-|-
-|Element Hierarchy|The tree of Containers and Plans.  Apply Permissions to these elements.<br>- Note: The tops node of the tree **must** be **SynapseRoot**.<br>- Note: Elements with security settings applied will show a lock icon in the tree.
+|Element Hierarchy|The tree of Containers and Plans.  Apply Permissions to these elements.<br>- Note: The top node of the tree **must** be **SynapseRoot**.<br>- Note: Elements with security settings applied will show a lock icon in the tree.
 
 #### Element Properties
 |Feature|Function
