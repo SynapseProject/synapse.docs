@@ -38,7 +38,10 @@ pages:
   - SDK:
     - About: sdk/index.md
     - Custom Handlers: sdk/handlers.md
-    - Custom Controller Interface: sdk/controller.md
+    - Custom Controller:
+      - Overview: sdk/controller/index.md
+      - Auto-Generate: sdk/controller/util.md
+      - Code in VS: sdk/controller/vs.md
 - Handlers:
   - CommandLine:
     - Command Handler: handlers/commandline/command.md
@@ -52,7 +55,7 @@ pages:
     - Api: handlers/ad/api.md
     - Role Managers: handlers/ad/rolemanager.md
   - DNS:
-    - DNS Handler: handlers/dns/dns.md
+    - DNS Handler: handlers/dns/index.md
   - Cloud:
     - AWS Handler: handlers/cloud/aws.md
   - FileUtil:
