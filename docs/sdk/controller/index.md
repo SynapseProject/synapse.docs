@@ -6,9 +6,9 @@ Synapse.Controller accepts configuration specifying custom ApiController librari
 
 There are two ways to implement a custom ApiController: you may use the Synapse.CustomContoller utility to auto-generate a code file and dll based on a YAML template, or you can code a Controller by hand in Visual Studio.
 
-- Read a detailed explanation of [Synapse.CustomController Commandline Utility here](controller/util).
+- Read a detailed explanation of [Synapse.CustomController Commandline Utility here](util).
 
-- Read a detailed explanation of [coding a Controller in Visual Studio here](controller/vs).
+- Read a detailed explanation of [coding a Controller in Visual Studio here](vs).
 
     - Example code: <a href="https://gist.github.com/SynapseProject/0f345c4fa60cdb53ae8d3585cde24513" target="_blank">Custom ApiController using Synapse.Server.Extensibility on Github.com</a>.
 

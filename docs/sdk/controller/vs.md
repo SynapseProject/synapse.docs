@@ -8,6 +8,6 @@ If you have a more complex requirement than is serviced from the Synapse.CustomC
 
 You may choose to implement a "regular" .NET ApiController, that is, a Controller sans any Synapse references, and Synapse Server will load it just fine.  The Synapse.Server.Extensibility library mentioned above is simply a helper lib.  Working without Synapse.Server.Extensibility just means you need to bridge into Synapse.Controller on your own, whereas Synapse.Server.Extensibility provides utility helper classes to do so for you.
 
-## Example of manually-ceded Custom Synapse Controller
+## Example of manually-coded Custom Synapse Controller
 
 <script src="https://gist.github.com/SynapseProject/0f345c4fa60cdb53ae8d3585cde24513.js"></script>
