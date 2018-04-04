@@ -1,6 +1,39 @@
 # Synapse.CustomController Commandline Utility
 
-The Synapse.CustomController commandline utility can be used to create a code file and dll for a custom Contoller interface.  The tool provides for a simple "Plan wrapper," but also supports more complex scenarios with custo code.
+## Overview
+
+The Synapse.CustomController commandline utility can be used to create a code file and dll for a custom Contoller interface.  The tool provides for a simple "Plan wrapper," but also supports more complex scenarios with custom code.
+
+## Synapse.CustomController.exe
+
+Synapse.CustomController.exe takes a YAML template to create a c# code files and compile them to a dll.  The tool can be executed to create the code files and dll (both), or each task independently.  You may generate a sample .cs and .dll via the 'sample [verbose]' option.  Syntax:
+
+```dos
+C:\...\Controller\Assemblies\Custom> .\Synapse.CustomController.exe
+Synapse Server Custom Controller Utility
+Syntax: Synapse.CustomController.exe {path to settings file}|sample [verbose]
+        sample: Will generate sample settings file.
+```
+
+### YAML Template: Top-Level Settings
+
+|Parameter|Type/Value|Required|Default Value|Description
+|-|-|-|-|-
+|OutputAssembly|string|yes|None; will generate a random name if nothing provided|The filename for the dll to be created.
+|ApiControllers|list|yes*|n/a|If using the utility to create c# files, provide the settings below.
+
+### YAML Template: ApiControllers Settings
+
+|Parameter|Type/Value|Required|Default Value|Description
+|-|-|-|-|-
+|Name|string|yes|None; will generate a random name if nothing provided|Maps to class name is code; must be unique within the dll.
+|AuthorizationTopic||||
+|RoutePrefix||||
+|CreateHelloApiMethod||||
+|CreateWhoAmIApiMethod||||
+|CreateClassFileOnly||||
+|ApiMethods|List|yes|n/a|The list of methods to be generated.
+
 
 Commandline tool for creating custom Synapse.Server ApiControllers from YAML templates.
 

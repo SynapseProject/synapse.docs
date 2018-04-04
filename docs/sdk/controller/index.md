@@ -6,16 +6,14 @@ Synapse.Controller accepts configuration specifying custom ApiController librari
 
 There are two ways to implement a custom ApiController: you may use the Synapse.CustomContoller utility to auto-generate a code file and dll based on a YAML template, or you can code a Controller by hand in Visual Studio.
 
-- Read a detailed explanation of [Synapse.CustomController Commandline Utility here](util).
+- Read about [Synapse.CustomController Commandline Utility here](util).
 
-- Read a detailed explanation of [coding a Controller in Visual Studio here](vs).
-
-    - Example code: <a href="https://gist.github.com/SynapseProject/0f345c4fa60cdb53ae8d3585cde24513" target="_blank">Custom ApiController using Synapse.Server.Extensibility on Github.com</a>.
+- Read about [coding a Controller in Visual Studio here](vs).
 
 
 ## Declare your Custom Controller Interface
 
-After you implement the custom interface and compile it to a dll, specify it in Synapse.Server.config.yaml in the Controller->Assemblies section, as shown below.  The syntax is simply to list the assembly name, as opposed to `assembly:{namepsace.}class`, as in Handler declaration.  Synapse Controller will discover all classes that inherit from `System.Web.Http.ApiController` (<a href="https://msdn.microsoft.com/en-us/library/system.web.http.apicontroller(v=vs.118).aspx" target="_blank">MSDN<a/>).
+After you implement the custom interface and compile it to a dll, you need to specify it in Synapse.Server.config.yaml in the Controller->Assemblies section, as shown below.  The syntax is simply to list the assembly name, as opposed to `assembly:{namepsace:}class`, as in Handler declaration.  Synapse Controller will discover all classes that inherit from `System.Web.Http.ApiController` (<a href="https://msdn.microsoft.com/en-us/library/system.web.http.apicontroller(v=vs.118).aspx" target="_blank">MSDN<a/>).
 
 ```yaml
 # Configure the 'Assemblies' node of Synapse.Server.config.yaml
