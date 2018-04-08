@@ -43,6 +43,7 @@ pages:
       - Auto-Generate: sdk/controller/util.md
       - Code in VS: sdk/controller/vs.md
 - Handlers:
+  - About: handlers/about.md
   - CommandLine:
     - Command Handler: handlers/commandline/command.md
     - Script Handler: handlers/commandline/script.md
