@@ -82,7 +82,11 @@ Controller:
   NodeUrl: http://{host:port}/synapse/node
   SignPlan: false
   Assemblies:
-  - {list of dynamically loaded assemblies}
+  - Name: MyCustomAssm0
+    Config:
+      {any required config}
+  - Name: MyCustomAssm1
+    Config:
   Dal:
     Type: {dal library}
     Config:
@@ -92,7 +96,7 @@ Controller:
 |-|-
 |NodeUrl|[Optional] When configuring a Controller, populate the URI value for where this Controller sends work by default.  When executing Plans, the Start method allows a Node URL parameter, so it's possible to specify/override this setting per Start call.  **Note:** If you do not specify a default setting here, you must supply a NodeUrl per Plan execution.
 |SignPlan|Specifies whether to sign the Plan with a hash value.
-|Assemblies|A list of ApiControllers to dynamically load into the Synapse Controller execution space; provides for custom URI implementations.  Specify as library:classname.
+|Assemblies|A list of ApiControllers to dynamically load into the Synapse Controller execution space; provides for custom URI implementations.  Specify as just library name.
 |Dal|Specifies the type of Data Access Layer to invoke. See [Controller Data Access Layer](dal "Controller Data Access Layer") for details.
 
 #### Assemblies Subfolder

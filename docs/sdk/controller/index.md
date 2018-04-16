@@ -26,9 +26,15 @@ Service:
 Controller:
   ...
   Assemblies: 
-  - Synapse.CustomController0
-  - Synapse.CustomController1
-  - Synapse.CustomController2
+  - Name: Synapse.CustomController0
+    Config:
+      {any required config}
+  - Name: Synapse.CustomController1
+    Config:
+      {any required config}
+  - Name: Synapse.CustomController2
+    Config:
+      {any required config}
   Dal:
     ...
 ```
