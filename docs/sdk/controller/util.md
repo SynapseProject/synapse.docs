@@ -31,8 +31,33 @@ Syntax: Synapse.CustomController.exe {path to settings file}|sample [verbose]
 |RoutePrefix|`string`|yes|none|The URL prefix for all subsequent ApiMethod routes.
 |CreateHelloApiMethod|`bool`|no|true|Creates a "Hello from [Name]Controller, World!" method for simple connectivity testing.
 |CreateWhoAmIApiMethod|`bool`|no|true|Creates a method to return the current security context from underlying Execute Controller.
+|CreateDalApi|(section)|no|n/a|Optional declaration to generate a DataAccessLayer API for a given class.
+| - Class|string|yes|none|The class name for which DAL methods will be created.  This class must exist in the referenced code `File`.
+| - File|string|yes|none|The path to the file containing the c# class code as referenced in the `Class` setting.
 |CreateClassFileOnly|`bool`|no|false|Prevents the generation of the controller dll as output - only the class files will be created.
 |ApiMethods|`List`|yes|n/a|The list of methods to be generated.
+
+
+#### Details on generating a DataAccesLayer API
+
+The `CreateDalApi->File` setting should reference a file with a complete c# class declaration in it, as shown below.  Be sure the class is in the **same namespace** as the ApiController, which is `Synapse.Custom` by default.  The `CreateDalApi->Class` setting simply reflects the name of the class as specified in the `File`, but id declared in the `CreateDalApi` settings for clarity.
+
+```java
+using System;
+using System.Collections.Generic;
+
+//use the same namespace as the ApiContoller!
+namespace Synapse.Custom
+{
+    public partial class MyDataClass
+    {
+        public int Id { get; set; }
+
+        ...
+    }
+}
+```
+
 
 ### YAML Template: ApiMethods Settings
 
@@ -231,4 +256,32 @@ Compiler:
   - YamlDotNet.dll
 Files:
 - Synapse.CustomAssm.Sample\Custom.cs
+```
+
+## Declare your Custom Controller Interface
+
+After you implement the custom interface and compile it to a dll, you need to specify it in Synapse.Server.config.yaml in the Controller->Assemblies section, as shown below.  The syntax is simply to list the assembly name, as opposed to `assembly:{namepsace:}class`, as in Handler declaration.  Synapse Controller will discover all classes that inherit from `System.Web.Http.ApiController` (<a href="https://msdn.microsoft.com/en-us/library/system.web.http.apicontroller(v=vs.118).aspx" target="_blank">MSDN<a/>).
+
+```yaml
+# Configure the 'Assemblies' node of Synapse.Server.config.yaml
+
+Service:
+  Name: Synapse.Controller
+  DisplayName: Synapse Controller
+  Role: Controller
+...
+Controller:
+  ...
+  Assemblies: 
+  - Name: Synapse.CustomController0
+    Config:
+      {any required config}
+  - Name: Synapse.CustomController1
+    Config:
+      {any required config}
+  - Name: Synapse.CustomController2
+    Config:
+      {any required config}
+  Dal:
+    ...
 ```
