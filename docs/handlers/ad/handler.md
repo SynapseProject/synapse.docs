@@ -14,6 +14,21 @@ Below is a table of supported active diretory object types, and the supported wa
 
 (1) - Assumes only a single name exists.  Since multiple objects are allowed to have the same name under different organizational units, when multiple objects exist with the same name, an error will occur.
 
+### Domains
+
+By default, the handler assumes the identity is in the same domian as the server where the handler is running.  When specifying an identity in a different domain, a domain qualifier must be pre-pended to the identity, unless already included in the identity itself (Distinguished Name and UserPrincipalName).  Below shows examples of every identity type supported in both the "default" domain (SANDBOX) and a different domain (SB2 for this example).
+
+|**Identity Type**|Examples
+|-----------------|--------
+|**DistinguishedName**|cn=user002,ou=myorgunit,**dc=sandbox,dc=local**<br />cn=user002,ou=myorgunit,**dc=sb2,dc=local**
+|**Name**|Joe User<br/>**SB2\\**Joe User
+|**UserPrincipal**|User003**@sandbox.local**<br/>User003**@sb2.local**
+|**SamAccountName**|User004Sam<br/>**SB2\\**User004Sam
+|**SecurityIdentifier (Sid)**|S-1-5-21-4054027134-3251639354-3875066094-1704<br/>**SB2\\**S-1-5-21-4054027134-3251639354-3875066094-1720
+|**Guid**|2c534dc4-06ba-4dc0-b86c-0eabdeb158f5<br/>**SB2\\**0fe13b30-7500-424e-a7c9-d0d7cc9ecec6
+
+**Note :** If no domain is explicitly provided, the server domain (where the hander is running) is assumed.
+
 ## Actions
 
 Below is a list of supported actions that can be performed on ActiveDirectory objects.  The action will execute against the objects in a certain order, depending on the action.  For example, Organizational Units will be created before users and groups that might be members of that Organizational Unit.

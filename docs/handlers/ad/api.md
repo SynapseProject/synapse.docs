@@ -4,28 +4,31 @@ The ActiveDirectory Api (Myriad) provides a simple rest interface to the ActiveD
 # Url Structure
 ## Base Url
 ````
-<protocol>://<host>:<port>/myriad/<object>/<identity>
+{protocol}://{host}:{port}/myriad/{object}/{identity}
+{protocol}://{host}:{port}/myriad/{object}/{domain}/{identity>}
 ````
 
 The general format for the rest URL is above, using HTTP Verbs to indicate what action to perform.  While this format isn't absolute, and will be different for some actions (ex: AddToGroup requires a 2nd identity to identify the group), the general format applies to most rest calls.  The specific URL formats and HTTP Verbs for each action are below :
 
+Note: All URL's below are assumed to start with **{protocol}://{host}:{port}/myriad**
+
 |Action|Verb|Url Format
 |------|----|----------
-|Get|GET|&lt;protocol&gt;://&lt;host&gt;:&lt;port&gt;/myriad/&lt;object&gt;/&lt;identity&gt;
-|Create|POST|&lt;protocol&gt;://&lt;host&gt;:&lt;port&gt;/myriad/&lt;object&gt;/&lt;identity&gt;
-|Modify|PUT|&lt;protocol&gt;://&lt;host&gt;:&lt;port&gt;/myriad/&lt;object&gt;/&lt;identity&gt;
-|Delete|DELETE|&lt;protocol&gt;://&lt;host&gt;:&lt;port&gt;/myriad/&lt;object&gt;/&lt;identity&gt;
-|Move|PUT|&lt;protocol&gt;://&lt;host&gt;:&lt;port&gt;/myriad/&lt/objectgt;/&lt;identity&gt;/&lt;destinationOrgUnit&gt;
-|AddToGroup|POST|&lt;protocol&gt;://&lt;host&gt;:&lt;port&gt;/myriad/&lt;object&gt;/&lt;identity&gt;/&lt;groupIdentity&gt;
-|RemoveFromGroup|DELETE|&lt;protocol&gt;://&lt;host&gt;:&lt;port&gt;/myriad/&lt;object&gt;/&lt;identity&gt;&lt;groupIdentity&gt;
-|AddAccessRule|POST|&lt;protocol&gt;://&lt;host&gt;:&lt;port&gt;/myriad/accessrule/&lt;object&gt;/&lt;identity&gt;/&lt;principal&gt;/&lt;type&gt;/&lt;rights&gt;
-|RemoveAccessRule|DELETE|&lt;protocol&gt;://&lt;host&gt;:&lt;port&gt;/myriad/accessrule/&lt;object&gt;/&lt;identity&gt;/&lt;principal&gt;/&lt;type&gt;/&lt;rights&gt;
-|SetAccessRule|PUT|&lt;protocol&gt;://&lt;host&gt;:&lt;port&gt;/myriad/accessrule/&lt;object&gt;/&lt;identity&gt;/&lt;principal&gt;/&lt;type&gt;/&lt;rights&gt;
-|PurgeAccessRules|DELETE|&lt;protocol&gt;://&lt;host&gt;:&lt;port&gt;/myriad/accessrule/&lt;object&gt;/&lt;identity&gt;/&lt;principal&gt;
-|Search|POST|&lt;protocol&gt;://&lt;host&gt;:&lt;port&gt;/myriad/search
-|[Search (Custom)](#custom-searches)|POST|&lt;protocol&gt;://&lt;host&gt;:&lt;port&gt;/myriad/search/&lt;planname&gt;
-|AddRole|POST|&lt;protocol&gt;://&lt;host&gt;:&lt;port&gt;/myriad/role/&lt;object&gt;/&lt;identity&gt;/&lt;principal&gt;/&lt;role&gt;
-|RemoveRole|POST|&lt;protocol&gt;://&lt;host&gt;:&lt;port&gt;/myriad/role/&lt;object&gt;/&lt;identity&gt;/&lt;principal&gt;/&lt;role&gt;
+|Get|GET|.../{object}/{identity}<br/>.../{object}/{domain}/{identity}
+|Create|POST|.../{object}/{identity}<br/>.../{object}/{domain}/{identity}
+|Modify|PUT|.../{object}/{identity}<br/>.../{object}/{domain}/{identity}
+|Delete|DELETE|.../{object}/{identity}<br/>.../{object}/{domain}/{identity}
+|Move|PUT|.../{object}/{identity}/ou/{destinationOrgUnitIdentity}<br/>.../{object}/{domain}/{identity}/ou/{destDomain}{destOrgUnitIdentity}<br/>.../{object}/{domain}/{identity}/ou/{destOrgUnitIdentity}<br/>.../{object}/{identity}/ou/{destDomain}{destOrgUnitIdentity}
+|AddToGroup|POST|.../{object}/{identity}/group/{groupidentity}<br/>.../{object}/{domain}/{identity}/group/{groupDomain}/{groupidentity}<br/>.../{object}/{domain}/{identity}/group/{groupidentity}<br/>.../{object}/{identity}/group/{groupDomain}/{groupidentity}
+|RemoveFromGroup|DELETE|.../{object}/{identity}/group/{groupidentity}<br/>.../{object}/{domain}/{identity}/group/{groupDomain}/{groupidentity}<br/>.../{object}/{domain}/{identity}/group/{groupidentity}<br/>.../{object}/{identity}/group/{groupDomain}/{groupidentity}
+|AddAccessRule|POST|.../{object}/{identity}/rule/{principal}/{type}/{rights}<br/>.../{object}/{domain}/{identity}/rule/{principaldomain}/{principal}/{type}/{rights}<br/>.../{object}/{domain}/{identity}/rule/{principal}/{type}/{rights}<br/>.../{object}/{identity}/rule/{principaldomain}/{principal}/{type}/{rights}
+|RemoveAccessRule|DELETE|.../{object}/{identity}/rule/{principal}/{type}/{rights}<br/>.../{object}/{domain}/{identity}/rule/{principaldomain}/{principal}/{type}/{rights}<br/>.../{object}/{domain}/{identity}/rule/{principal}/{type}/{rights}<br/>.../{object}/{identity}/rule/{principaldomain}/{principal}/{type}/{rights}
+|SetAccessRule|PUT|.../{object}/{identity}/rule/{principal}/{type}/{rights}<br/>.../{object}/{domain}/{identity}/rule/{principaldomain}/{principal}/{type}/{rights}<br/>.../{object}/{domain}/{identity}/rule/{principal}/{type}/{rights}<br/>.../{object}/{identity}/rule/{principaldomain}/{principal}/{type}/{rights}
+|PurgeAccessRules|DELETE|.../{object}/{identity}/rules/{principal}<br/>.../{object}/{domain}/{identity}/rules/{principaldomain}/{principal}<br/>.../{object}/{domain}/{identity}/rules/{principal}<br/>.../{object}/{identity}/rules/{principaldomain}/{principal}
+|AddRole|POST|.../{object}/{identity}/role/{principal}/{role}<br/>.../{object}/{domain}/{identity}/role/{principaldomain}/{principal}/{role}<br/>.../{object}/{domain}/{identity}/role/{principal}/{role}<br/>.../{object}/{identity}/role/{principaldomain}/{principal}/{role}
+|RemoveRole|POST|.../{object}/{identity}/role/{principal}/{role}<br/>.../{object}/{domain}/{identity}/role/{principaldomain}/{principal}/{role}<br/>.../{object}/{domain}/{identity}/role/{principal}/{role}<br/>.../{object}/{identity}/role/{principaldomain}/{principal}/{role}
+|Search|POST|.../search
+|[Search (Custom)](#custom-searches)|POST|.../search/{planname}
 
 
 ## Query String
@@ -675,12 +678,21 @@ The format for the URL is identical for a Get and a Delete action.  The only dif
 **Requests**
 
 ````
+Default Domain
 {{protocol}}://{{host}}:{{port}}/myriad/user/mfox  (By Name)
 {{protocol}}://{{host}}:{{port}}/myriad/user/CN=mfox,OU=Synapse,DC=sandbox,DC=local  (By Distinguished Name)
 {{protocol}}://{{host}}:{{port}}/myriad/user/S-1-5-21-4054027134-3251639354-3875066094-1773  (By Sid)
 {{protocol}}://{{host}}:{{port}}/myriad/user/1722b838-57e1-4058-a394-338882af9e2f  (By Guid)
 {{protocol}}://{{host}}:{{port}}/myriad/user/mfox  (By SamAccountName)
 {{protocol}}://{{host}}:{{port}}/myriad/user/mfox@sandbox.local  (By UserPrincipal)
+
+Domain Name: SB2
+{{protocol}}://{{host}}:{{port}}/myriad/user/sb2\mfox  (By Name)
+{{protocol}}://{{host}}:{{port}}/myriad/user/CN=mfox,OU=Synapse,DC=sb2,DC=local  (By Distinguished Name)
+{{protocol}}://{{host}}:{{port}}/myriad/user/sb2\S-1-5-21-4054027134-3251639354-3875066094-1773  (By Sid)
+{{protocol}}://{{host}}:{{port}}/myriad/user/sb2\1722b838-57e1-4058-a394-338882af9e2f  (By Guid)
+{{protocol}}://{{host}}:{{port}}/myriad/user/sb2\mfox  (By SamAccountName)
+{{protocol}}://{{host}}:{{port}}/myriad/user/mfox@sb2.local  (By UserPrincipal)
 ````
 
 ---
@@ -689,11 +701,19 @@ The format for the URL is identical for a Get and a Delete action.  The only dif
 **Request**
 
 ````
+Default Domain
 {{protocol}}://{{host}}:{{port}}/myriad/group/FamousActors  (By Name)
 {{protocol}}://{{host}}:{{port}}/myriad/group/CN=FamousActors,OU=Synapse,DC=sandbox,DC=local  (By DistinguishedName)
 {{protocol}}://{{host}}:{{port}}/myriad/group/S-1-5-21-4054027134-3251639354-3875066094-1774  (By Sid)
 {{protocol}}://{{host}}:{{port}}/myriad/group/19cdf305-c43b-497a-a932-6091f4a09dbb  (By Guid)
 {{protocol}}://{{host}}:{{port}}/myriad/group/FamousActors  (By SamAccountName)
+
+Domain Name : SB2
+{{protocol}}://{{host}}:{{port}}/myriad/group/sb2\FamousActors  (By Name)
+{{protocol}}://{{host}}:{{port}}/myriad/group/CN=FamousActors,OU=Synapse,DC=sb2,DC=local  (By DistinguishedName)
+{{protocol}}://{{host}}:{{port}}/myriad/group/sb2\S-1-5-21-4054027134-3251639354-3875066094-1774  (By Sid)
+{{protocol}}://{{host}}:{{port}}/myriad/group/sb2\19cdf305-c43b-497a-a932-6091f4a09dbb  (By Guid)
+{{protocol}}://{{host}}:{{port}}/myriad/group/sb2\FamousActors  (By SamAccountName)
 ````
 
 ---
@@ -702,16 +722,26 @@ The format for the URL is identical for a Get and a Delete action.  The only dif
 **Request**
 
 ````
+Default Domain
 {{protocol}}://{{host}}:{{controllerPort}}/myriad/ou/AmericanActors  (By Name)
 {{protocol}}://{{host}}:{{controllerPort}}/myriad/ou/OU=AmericanActors,OU=Synapse,DC=sandbox,DC=local  (By DistinguishedName)
 {{protocol}}://{{host}}:{{controllerPort}}/myriad/ou/95637ae6-9f24-420f-b573-7c2ab3496419  (By Guid)
+
+Domain Name: SB2
+{{protocol}}://{{host}}:{{controllerPort}}/myriad/ou/sb2\AmericanActors  (By Name)
+{{protocol}}://{{host}}:{{controllerPort}}/myriad/ou/OU=AmericanActors,OU=Synapse,DC=sb2,DC=local  (By DistinguishedName)
+{{protocol}}://{{host}}:{{controllerPort}}/myriad/ou/sb2\95637ae6-9f24-420f-b573-7c2ab3496419  (By Guid)
 ````
 
 ---
 ## Move (HTTP PUT)
 
 The format for the PUT URL to move an object to a new OrganizationalUnit is : 
-..../object/identity/destinationIdentity
+
+- ..../object/identity/ou/destinationIdentity
+- ..../object/domain/identity/ou/destDomain/destinationIdentity
+- ..../object/domain/identity/ou/destinationIdentity
+- ..../object/identity/ou/destDomain/destinationIdentity
 
 ---
 ### Move User
@@ -719,12 +749,21 @@ The format for the PUT URL to move an object to a new OrganizationalUnit is :
 **Requests**
 
 ````
-{{protocol}}://{{host}}:{{port}}/myriad/user/mfox/DestinationOu  (By Name)
-{{protocol}}://{{host}}:{{port}}/myriad/user/CN=mfox,OU=Synapse,DC=sandbox,DC=local/OU=DestinationOu,DC=sandbox,DC=local  (By Distinguished Name)
-{{protocol}}://{{host}}:{{port}}/myriad/user/S-1-5-21-4054027134-3251639354-3875066094-1773/OU=DestinationOu,DC=sandbox,DC=local  (By Sid)
-{{protocol}}://{{host}}:{{port}}/myriad/user/1722b838-57e1-4058-a394-338882af9e2f/1722b838-57e1-4058-a394-339994af9guy  (By Guid)
-{{protocol}}://{{host}}:{{port}}/myriad/user/mfox/OU=DestinationOu,DC=sandbox,DC=local  (By SamAccountName)
-{{protocol}}://{{host}}:{{port}}/myriad/user/mfox@sandbox.local/OU=DestinationOu,DC=sandbox,DC=local  (By UserPrincipal)
+Default Domain
+{{protocol}}://{{host}}:{{port}}/myriad/user/mfox/ou/DestinationOu  (By Name)
+{{protocol}}://{{host}}:{{port}}/myriad/user/CN=mfox,OU=Synapse,DC=sandbox,DC=local/ou/OU=DestinationOu,DC=sandbox,DC=local  (By Distinguished Name)
+{{protocol}}://{{host}}:{{port}}/myriad/user/S-1-5-21-4054027134-3251639354-3875066094-1773/ou/OU=DestinationOu,DC=sandbox,DC=local  (By Sid)
+{{protocol}}://{{host}}:{{port}}/myriad/user/1722b838-57e1-4058-a394-338882af9e2f/ou/1722b838-57e1-4058-a394-339994af9guy  (By Guid)
+{{protocol}}://{{host}}:{{port}}/myriad/user/mfox/ou/OU=DestinationOu,DC=sandbox,DC=local  (By SamAccountName)
+{{protocol}}://{{host}}:{{port}}/myriad/user/mfox@sandbox.local/ou/OU=DestinationOu,DC=sandbox,DC=local  (By UserPrincipal)
+
+Domain Name : SB2
+{{protocol}}://{{host}}:{{port}}/myriad/user/sb2\mfox/ou/sb2\DestinationOu  (By Name)
+{{protocol}}://{{host}}:{{port}}/myriad/user/CN=mfox,OU=Synapse,DC=sb2,DC=local/ou/OU=DestinationOu,DC=sb2,DC=local  (By Distinguished Name)
+{{protocol}}://{{host}}:{{port}}/myriad/user/sb2\S-1-5-21-4054027134-3251639354-3875066094-1773/ou/OU=DestinationOu,DC=sb2,DC=local  (By Sid)
+{{protocol}}://{{host}}:{{port}}/myriad/user/sb2\1722b838-57e1-4058-a394-338882af9e2f/ou/sb2\1722b838-57e1-4058-a394-339994af9guy  (By Guid)
+{{protocol}}://{{host}}:{{port}}/myriad/user/sb2\mfox/ou/OU=DestinationOu,DC=sb2,DC=local  (By SamAccountName)
+{{protocol}}://{{host}}:{{port}}/myriad/user/mfox@sb2.local/ou/OU=DestinationOu,DC=sb2,DC=local  (By UserPrincipal)
 ````
 
 ---
@@ -733,11 +772,19 @@ The format for the PUT URL to move an object to a new OrganizationalUnit is :
 **Request**
 
 ````
-{{protocol}}://{{host}}:{{port}}/myriad/group/FamousActors/DestinationOu (By Name)
-{{protocol}}://{{host}}:{{port}}/myriad/group/CN=FamousActors,OU=Synapse,DC=sandbox,DC=local/OU=DestinationOu,DC=sandbox,DC=local  (By DistinguishedName)
-{{protocol}}://{{host}}:{{port}}/myriad/group/S-1-5-21-4054027134-3251639354-3875066094-1774/OU=DestinationOu,DC=sandbox,DC=local  (By Sid)
-{{protocol}}://{{host}}:{{port}}/myriad/group/19cdf305-c43b-497a-a932-6091f4a09dbb/1722b838-57e1-4058-a394-339994af9guy  (By Guid)
-{{protocol}}://{{host}}:{{port}}/myriad/group/FamousActors/OU=DestinationOu,DC=sandbox,DC=local  (By SamAccountName)
+Default Domain
+{{protocol}}://{{host}}:{{port}}/myriad/group/FamousActors/ou/DestinationOu (By Name)
+{{protocol}}://{{host}}:{{port}}/myriad/group/CN=FamousActors,OU=Synapse,DC=sandbox,DC=local/ou/OU=DestinationOu,DC=sandbox,DC=local  (By DistinguishedName)
+{{protocol}}://{{host}}:{{port}}/myriad/group/S-1-5-21-4054027134-3251639354-3875066094-1774/ou/OU=DestinationOu,DC=sandbox,DC=local  (By Sid)
+{{protocol}}://{{host}}:{{port}}/myriad/group/19cdf305-c43b-497a-a932-6091f4a09dbb/ou/1722b838-57e1-4058-a394-339994af9guy  (By Guid)
+{{protocol}}://{{host}}:{{port}}/myriad/group/FamousActors/ou/OU=DestinationOu,DC=sandbox,DC=local  (By SamAccountName)
+
+Domain Name : SB2
+{{protocol}}://{{host}}:{{port}}/myriad/group/sb2\FamousActors/ou/sb2\DestinationOu (By Name)
+{{protocol}}://{{host}}:{{port}}/myriad/group/CN=FamousActors,OU=Synapse,DC=sb2,DC=local/ou/OU=DestinationOu,DC=sb2,DC=local  (By DistinguishedName)
+{{protocol}}://{{host}}:{{port}}/myriad/group/sb2\S-1-5-21-4054027134-3251639354-3875066094-1774/ou/OU=DestinationOu,DC=sb2,DC=local  (By Sid)
+{{protocol}}://{{host}}:{{port}}/myriad/group/sb2\19cdf305-c43b-497a-a932-6091f4a09dbb/ou/sb2\1722b838-57e1-4058-a394-339994af9guy  (By Guid)
+{{protocol}}://{{host}}:{{port}}/myriad/group/sb2\FamousActors/ou/OU=DestinationOu,DC=sb2,DC=local  (By SamAccountName)
 ````
 
 ---
@@ -746,9 +793,15 @@ The format for the PUT URL to move an object to a new OrganizationalUnit is :
 **Request**
 
 ````
-{{protocol}}://{{host}}:{{controllerPort}}/myriad/ou/AmericanActors/DestinationOu  (By Name)
-{{protocol}}://{{host}}:{{controllerPort}}/myriad/ou/OU=AmericanActors,OU=Synapse,DC=sandbox,DC=local/OU=DestinationOu,DC=sandbox,DC=local  (By DistinguishedName)
-{{protocol}}://{{host}}:{{controllerPort}}/myriad/ou/95637ae6-9f24-420f-b573-7c2ab3496419/1722b838-57e1-4058-a394-339994af9guy  (By Guid)
+Default Domain
+{{protocol}}://{{host}}:{{controllerPort}}/myriad/ou/AmericanActors/ou/DestinationOu  (By Name)
+{{protocol}}://{{host}}:{{controllerPort}}/myriad/ou/OU=AmericanActors,OU=Synapse,DC=sandbox,DC=local/ou/OU=DestinationOu,DC=sandbox,DC=local  (By DistinguishedName)
+{{protocol}}://{{host}}:{{controllerPort}}/myriad/ou/95637ae6-9f24-420f-b573-7c2ab3496419/ou/1722b838-57e1-4058-a394-339994af9guy  (By Guid)
+
+Domain Name : SB2
+{{protocol}}://{{host}}:{{controllerPort}}/myriad/ou/sb2\AmericanActors/ou/sb2\DestinationOu  (By Name)
+{{protocol}}://{{host}}:{{controllerPort}}/myriad/ou/OU=AmericanActors,OU=Synapse,DC=sb2,DC=local/ou/OU=DestinationOu,DC=sb2,DC=local  (By DistinguishedName)
+{{protocol}}://{{host}}:{{controllerPort}}/myriad/ou/95637sb2\ae6-9f24-420f-b573-7c2ab3496419/ou/sb2\1722b838-57e1-4058-a394-339994af9guy  (By Guid)
 ````
 
 ---
@@ -762,12 +815,21 @@ The format for the URL is identical for an AddToGroup and RemoveFromGroup action
 **Request**
 
 ````
-{{protocol}}://{{host}}:{{controllerPort}}/myriad/user/mfox/FamousActors  (By Name)
-{{protocol}}://{{host}}:{{port}}/myriad/user/CN=mfox,OU=Synapse,DC=sandbox,DC=local/CN=FamousActors,OU=Synapse,DC=sandbox,DC=local  (By Distinguished Name)
-{{protocol}}://{{host}}:{{port}}/myriad/user/S-1-5-21-4054027134-3251639354-3875066094-1773/S-1-5-21-4054027134-3251639354-3875066094-1774  (By Sid)
-{{protocol}}://{{host}}:{{port}}/myriad/user/1722b838-57e1-4058-a394-338882af9e2f/19cdf305-c43b-497a-a932-6091f4a09dbb  (By Guid)
-{{protocol}}://{{host}}:{{port}}/myriad/user/mfox/FamousActors  (By SamAccountName)
-{{protocol}}://{{host}}:{{port}}/myriad/user/mfox@sandbox.local/FamousActors  (By UserPrincipal / Name)
+Default Domain
+{{protocol}}://{{host}}:{{controllerPort}}/myriad/user/mfox/group/FamousActors  (By Name)
+{{protocol}}://{{host}}:{{port}}/myriad/user/CN=mfox,OU=Synapse,DC=sandbox,DC=local/group/CN=FamousActors,OU=Synapse,DC=sandbox,DC=local  (By Distinguished Name)
+{{protocol}}://{{host}}:{{port}}/myriad/user/S-1-5-21-4054027134-3251639354-3875066094-1773/group/S-1-5-21-4054027134-3251639354-3875066094-1774  (By Sid)
+{{protocol}}://{{host}}:{{port}}/myriad/user/1722b838-57e1-4058-a394-338882af9e2f/group/19cdf305-c43b-497a-a932-6091f4a09dbb  (By Guid)
+{{protocol}}://{{host}}:{{port}}/myriad/user/mfox/group/FamousActors  (By SamAccountName)
+{{protocol}}://{{host}}:{{port}}/myriad/user/mfox@sandbox.local/group/FamousActors  (By UserPrincipal / Name)
+
+Domain Name : SB2
+{{protocol}}://{{host}}:{{controllerPort}}/myriad/user/sb2\mfox/group/sb2\FamousActors  (By Name)
+{{protocol}}://{{host}}:{{port}}/myriad/user/CN=mfox,OU=Synapse,DC=sb2,DC=local/group/CN=FamousActors,OU=Synapse,DC=sb2,DC=local  (By Distinguished Name)
+{{protocol}}://{{host}}:{{port}}/myriad/user/sb2\S-1-5-21-4054027134-3251639354-3875066094-1773/group/sb2\S-1-5-21-4054027134-3251639354-3875066094-1774  (By Sid)
+{{protocol}}://{{host}}:{{port}}/myriad/user/sb2\1722b838-57e1-4058-a394-338882af9e2f/group/sb2\19cdf305-c43b-497a-a932-6091f4a09dbb  (By Guid)
+{{protocol}}://{{host}}:{{port}}/myriad/user/sb2\mfox/group/sb2\FamousActors  (By SamAccountName)
+{{protocol}}://{{host}}:{{port}}/myriad/user/mfox@sb2.local/group/sb2\FamousActors  (By UserPrincipal / Name)
 
 * Note: There is not "UserPrincipal" for a group, so last example is using "Name" for the groupIdentity.
 ````
@@ -780,11 +842,19 @@ The format for the URL is identical for an AddToGroup and RemoveFromGroup action
 **Request**
 
 ````
-{{protocol}}://{{host}}:{{controllerPort}}/myriad/group/FamousActors/AllActors  (By Name)
-{{protocol}}://{{host}}:{{port}}/myriad/group/CN=FamousActors,OU=Synapse,DC=sandbox,DC=local/CN=AllActors,OU=Synapse,DC=sandbox,DC=local (By DistinguishedName)
-{{protocol}}://{{host}}:{{port}}/myriad/group/S-1-5-21-4054027134-3251639354-3875066094-1774/S-1-5-21-4054027134-3251639354-3875066094-1775  (By Sid)
-{{protocol}}://{{host}}:{{port}}/myriad/group/19cdf305-c43b-497a-a932-6091f4a09dbb/cc8db84b-3aca-4e69-b1d1-6b9a3b30ee73  (By Guid)
-{{protocol}}://{{host}}:{{port}}/myriad/group/FamousActors/AllActors  (By SamAccountName)
+Default Domain
+{{protocol}}://{{host}}:{{controllerPort}}/myriad/group/FamousActors/group/AllActors  (By Name)
+{{protocol}}://{{host}}:{{port}}/myriad/group/CN=FamousActors,OU=Synapse,DC=sandbox,DC=local/group/CN=AllActors,OU=Synapse,DC=sandbox,DC=local (By DistinguishedName)
+{{protocol}}://{{host}}:{{port}}/myriad/group/S-1-5-21-4054027134-3251639354-3875066094-1774/group/S-1-5-21-4054027134-3251639354-3875066094-1775  (By Sid)
+{{protocol}}://{{host}}:{{port}}/myriad/group/19cdf305-c43b-497a-a932-6091f4a09dbb/group/cc8db84b-3aca-4e69-b1d1-6b9a3b30ee73  (By Guid)
+{{protocol}}://{{host}}:{{port}}/myriad/group/FamousActors/group/AllActors  (By SamAccountName)
+
+Domain Name : SB2
+{{protocol}}://{{host}}:{{controllerPort}}/myriad/group/sb2\FamousActors/group/sb2\AllActors  (By Name)
+{{protocol}}://{{host}}:{{port}}/myriad/group/CN=FamousActors,OU=Synapse,DC=sb2,DC=local/group/CN=AllActors,OU=Synapse,DC=sb2,DC=local (By DistinguishedName)
+{{protocol}}://{{host}}:{{port}}/myriad/group/sb2\S-1-5-21-4054027134-3251639354-3875066094-1774/group/sb2\S-1-5-21-4054027134-3251639354-3875066094-1775  (By Sid)
+{{protocol}}://{{host}}:{{port}}/myriad/group/sb2\19cdf305-c43b-497a-a932-6091f4a09dbb/group/sb2\cc8db84b-3aca-4e69-b1d1-6b9a3b30ee73  (By Guid)
+{{protocol}}://{{host}}:{{port}}/myriad/group/sb2\FamousActors/group/sb2\AllActors  (By SamAccountName)
 ````
 
 ---
@@ -800,12 +870,21 @@ The format for the URL is identical for the AddAccessRule, RemoveAccessRule and 
 **Requests**
 
 ````
-{{protocol}}://{{host}}:{{port}}/myriad/accessrule/user/mfox/user001/Allow/GenericAll  (By Name)
-{{protocol}}://{{host}}:{{port}}/myriad/user/CN=mfox,OU=Synapse,DC=sandbox,DC=local/CN=user001,OU=Synapse,DC=sandbox,DC=local/Allow/GenericAll  (By Distinguished Name)
-{{protocol}}://{{host}}:{{port}}/myriad/user/S-1-5-21-4054027134-3251639354-3875066094-1773/S-1-5-21-4054027134-3251639354-3875066094-1206/Allow/GenericAll  (By Sid)
-{{protocol}}://{{host}}:{{port}}/myriad/user/1722b838-57e1-4058-a394-338882af9e2f/4db94271-1fde-402a-a8c5-1564dfd8d62b/Allow/GenericAll  (By Guid)
-{{protocol}}://{{host}}:{{port}}/myriad/user/mfox/user001/Allow/GenericAll  (By SamAccountName)
-{{protocol}}://{{host}}:{{port}}/myriad/user/mfox@sandbox.local/user001@sandbox.local/Allow/GenericAll  (By UserPrincipal)
+Default Domain 
+{{protocol}}://{{host}}:{{port}}/myriad/user/mfox/rule/user001/Allow/GenericAll  (By Name)
+{{protocol}}://{{host}}:{{port}}/myriad/user/CN=mfox,OU=Synapse,DC=sandbox,DC=local/rule/CN=user001,OU=Synapse,DC=sandbox,DC=local/Allow/GenericAll  (By Distinguished Name)
+{{protocol}}://{{host}}:{{port}}/myriad/user/S-1-5-21-4054027134-3251639354-3875066094-1773/rule/S-1-5-21-4054027134-3251639354-3875066094-1206/Allow/GenericAll  (By Sid)
+{{protocol}}://{{host}}:{{port}}/myriad/user/1722b838-57e1-4058-a394-338882af9e2f/rule/4db94271-1fde-402a-a8c5-1564dfd8d62b/Allow/GenericAll  (By Guid)
+{{protocol}}://{{host}}:{{port}}/myriad/user/mfox/rule/user001/Allow/GenericAll  (By SamAccountName)
+{{protocol}}://{{host}}:{{port}}/myriad/user/mfox@sandbox.local/rule/user001@sandbox.local/Allow/GenericAll  (By UserPrincipal)
+
+Domain Name : SB2
+{{protocol}}://{{host}}:{{port}}/myriad/user/sb2\mfox/rule/sb2\user001/Allow/GenericAll  (By Name)
+{{protocol}}://{{host}}:{{port}}/myriad/user/CN=mfox,OU=Synapse,DC=sb2,DC=local/rule/CN=user001,OU=Synapse,DC=sb2,DC=local/Allow/GenericAll  (By Distinguished Name)
+{{protocol}}://{{host}}:{{port}}/myriad/user/sb2\S-1-5-21-4054027134-3251639354-3875066094-1773/rule/sb2\S-1-5-21-4054027134-3251639354-3875066094-1206/Allow/GenericAll  (By Sid)
+{{protocol}}://{{host}}:{{port}}/myriad/user/sb2\1722b838-57e1-4058-a394-338882af9e2f/rule/sb2\4db94271-1fde-402a-a8c5-1564dfd8d62b/Allow/GenericAll  (By Guid)
+{{protocol}}://{{host}}:{{port}}/myriad/user/sb2\mfox/rule/sb2\user001/Allow/GenericAll  (By SamAccountName)
+{{protocol}}://{{host}}:{{port}}/myriad/user/mfox@sb2.local/rule/user001@sb2.local/Allow/GenericAll  (By UserPrincipal)
 ````
 
 ---
@@ -814,11 +893,19 @@ The format for the URL is identical for the AddAccessRule, RemoveAccessRule and 
 **Requests**
 
 ````
-{{protocol}}://{{host}}:{{port}}/myriad/accessrule/group/FamousActors/mfox/Allow/GenericAll  (By Name)
-{{protocol}}://{{host}}:{{port}}/myriad/group/CN=FamousActors,OU=Synapse,DC=sandbox,DC=local/CN=mfox,OU=Synapse,DC=sandbox,DC=local/Allow/GenericAll  (By Distinguished Name)
-{{protocol}}://{{host}}:{{port}}/myriad/group/S-1-5-21-4054027134-3251639354-3875066094-1835/S-1-5-21-4054027134-3251639354-3875066094-1773/Allow/GenericAll  (By Sid)
-{{protocol}}://{{host}}:{{port}}/myriad/group/72e11fd9-10f4-4c27-acb4-08dd30c78b8f/1722b838-57e1-4058-a394-338882af9e2f/Allow/GenericAll  (By Guid)
-{{protocol}}://{{host}}:{{port}}/myriad/group/FamousActors/mfox/Allow/GenericAll  (By SamAccountName)
+Default Domain
+{{protocol}}://{{host}}:{{port}}/myriad/group/FamousActors/rule/mfox/Allow/GenericAll  (By Name)
+{{protocol}}://{{host}}:{{port}}/myriad/group/CN=FamousActors,OU=Synapse,DC=sandbox,DC=local/rule/CN=mfox,OU=Synapse,DC=sandbox,DC=local/Allow/GenericAll  (By Distinguished Name)
+{{protocol}}://{{host}}:{{port}}/myriad/group/S-1-5-21-4054027134-3251639354-3875066094-1835/rule/S-1-5-21-4054027134-3251639354-3875066094-1773/Allow/GenericAll  (By Sid)
+{{protocol}}://{{host}}:{{port}}/myriad/group/72e11fd9-10f4-4c27-acb4-08dd30c78b8f/rule/1722b838-57e1-4058-a394-338882af9e2f/Allow/GenericAll  (By Guid)
+{{protocol}}://{{host}}:{{port}}/myriad/group/FamousActors/rule/mfox/Allow/GenericAll  (By SamAccountName)
+
+Domain Name : SB2
+{{protocol}}://{{host}}:{{port}}/myriad/group/FamousActors/rule/mfox/Allow/GenericAll  (By Name)
+{{protocol}}://{{host}}:{{port}}/myriad/group/CN=FamousActors,OU=Synapse,DC=sandbox,DC=local/rule/CN=mfox,OU=Synapse,DC=sandbox,DC=local/Allow/GenericAll  (By Distinguished Name)
+{{protocol}}://{{host}}:{{port}}/myriad/group/S-1-5-21-4054027134-3251639354-3875066094-1835/rule/S-1-5-21-4054027134-3251639354-3875066094-1773/Allow/GenericAll  (By Sid)
+{{protocol}}://{{host}}:{{port}}/myriad/group/72e11fd9-10f4-4c27-acb4-08dd30c78b8f/rule/1722b838-57e1-4058-a394-338882af9e2f/Allow/GenericAll  (By Guid)
+{{protocol}}://{{host}}:{{port}}/myriad/group/FamousActors/rule/mfox/Allow/GenericAll  (By SamAccountName)
 ````
 
 
@@ -828,9 +915,15 @@ The format for the URL is identical for the AddAccessRule, RemoveAccessRule and 
 **Requests**
 
 ````
-{{protocol}}://{{host}}:{{port}}/myriad/accessrule/ou/AmericanActors/FamousActors/Allow/GenericAll  (By Name)
-{{protocol}}://{{host}}:{{port}}/myriad/ou/CN=AmericanActors,OU=Synapse,DC=sandbox,DC=local/CN=FamousActors,OU=Synapse,DC=sandbox,DC=local/Allow/GenericAll  (By Distinguished Name)
-{{protocol}}://{{host}}:{{port}}/myriad/ou/768d8062-c1d2-4d67-9ad6-57c73cc3982b/72e11fd9-10f4-4c27-acb4-08dd30c78b8f/Allow/GenericAll  (By Guid)
+Default Domain
+{{protocol}}://{{host}}:{{port}}/myriad/ou/AmericanActors/rule/FamousActors/Allow/GenericAll  (By Name)
+{{protocol}}://{{host}}:{{port}}/myriad/ou/CN=AmericanActors,OU=Synapse,DC=sandbox,DC=local/rule/CN=FamousActors,OU=Synapse,DC=sandbox,DC=local/Allow/GenericAll  (By Distinguished Name)
+{{protocol}}://{{host}}:{{port}}/myriad/ou/768d8062-c1d2-4d67-9ad6-57c73cc3982b/rule/72e11fd9-10f4-4c27-acb4-08dd30c78b8f/Allow/GenericAll  (By Guid)
+
+Domain Name : SB2
+{{protocol}}://{{host}}:{{port}}/myriad/ou/sb2\AmericanActors/rule/sb2\FamousActors/Allow/GenericAll  (By Name)
+{{protocol}}://{{host}}:{{port}}/myriad/ou/CN=AmericanActors,OU=Synapse,DC=sb2,DC=local/rule/CN=FamousActors,OU=Synapse,DC=sb2,DC=local/Allow/GenericAll  (By Distinguished Name)
+{{protocol}}://{{host}}:{{port}}/myriad/ou/sb2\768d8062-c1d2-4d67-9ad6-57c73cc3982b/rule/sb2\72e11fd9-10f4-4c27-acb4-08dd30c78b8f/Allow/GenericAll  (By Guid)
 ````
 
 ---
@@ -844,12 +937,21 @@ The format for the URL is identical for the AddAccessRule, RemoveAccessRule and 
 **Requests**
 
 ````
-{{protocol}}://{{host}}:{{port}}/myriad/accessrule/user/mfox/user001  (By Name)
-{{protocol}}://{{host}}:{{port}}/myriad/user/CN=mfox,OU=Synapse,DC=sandbox,DC=local/CN=user001,OU=Synapse,DC=sandbox,DC=local  (By Distinguished Name)
-{{protocol}}://{{host}}:{{port}}/myriad/user/S-1-5-21-4054027134-3251639354-3875066094-1773/S-1-5-21-4054027134-3251639354-3875066094-1206  (By Sid)
-{{protocol}}://{{host}}:{{port}}/myriad/user/1722b838-57e1-4058-a394-338882af9e2f/4db94271-1fde-402a-a8c5-1564dfd8d62b  (By Guid)
-{{protocol}}://{{host}}:{{port}}/myriad/user/mfox/user001/Allow/GenericAll  (By SamAccountName)
-{{protocol}}://{{host}}:{{port}}/myriad/user/mfox@sandbox.local/user001@sandbox.local  (By UserPrincipal)
+Default Domain
+{{protocol}}://{{host}}:{{port}}/myriad/user/mfox/rules/user001  (By Name)
+{{protocol}}://{{host}}:{{port}}/myriad/user/CN=mfox,OU=Synapse,DC=sandbox,DC=local/rules/CN=user001,OU=Synapse,DC=sandbox,DC=local  (By Distinguished Name)
+{{protocol}}://{{host}}:{{port}}/myriad/user/S-1-5-21-4054027134-3251639354-3875066094-1773/rules/S-1-5-21-4054027134-3251639354-3875066094-1206  (By Sid)
+{{protocol}}://{{host}}:{{port}}/myriad/user/1722b838-57e1-4058-a394-338882af9e2f/rules/4db94271-1fde-402a-a8c5-1564dfd8d62b  (By Guid)
+{{protocol}}://{{host}}:{{port}}/myriad/user/mfox/rules/user001  (By SamAccountName)
+{{protocol}}://{{host}}:{{port}}/myriad/user/mfox@sandbox.local/rules/user001@sandbox.local  (By UserPrincipal)
+
+Domain Name : SB2
+{{protocol}}://{{host}}:{{port}}/myriad/user/sb2\mfox/rules/sb2\user001  (By Name)
+{{protocol}}://{{host}}:{{port}}/myriad/user/CN=mfox,OU=Synapse,DC=sb2,DC=local/rules/CN=user001,OU=Synapse,DC=sb2,DC=local  (By Distinguished Name)
+{{protocol}}://{{host}}:{{port}}/myriad/user/sb2\S-1-5-21-4054027134-3251639354-3875066094-1773/rules/sb2\S-1-5-21-4054027134-3251639354-3875066094-1206  (By Sid)
+{{protocol}}://{{host}}:{{port}}/myriad/user/sb2\1722b838-57e1-4058-a394-338882af9e2f/rules/sb2\4db94271-1fde-402a-a8c5-1564dfd8d62b  (By Guid)
+{{protocol}}://{{host}}:{{port}}/myriad/user/sb2\mfox/rules/sb2\user001  (By SamAccountName)
+{{protocol}}://{{host}}:{{port}}/myriad/user/mfox@sb2.local/rules/user001@sb2.local  (By UserPrincipal)
 ````
 
 ---
@@ -858,11 +960,19 @@ The format for the URL is identical for the AddAccessRule, RemoveAccessRule and 
 **Requests**
 
 ````
-{{protocol}}://{{host}}:{{port}}/myriad/accessrule/group/FamousActors/mfox/  (By Name)
-{{protocol}}://{{host}}:{{port}}/myriad/group/CN=FamousActors,OU=Synapse,DC=sandbox,DC=local/CN=mfox,OU=Synapse,DC=sandbox,DC=local  (By Distinguished Name)
-{{protocol}}://{{host}}:{{port}}/myriad/group/S-1-5-21-4054027134-3251639354-3875066094-1835/S-1-5-21-4054027134-3251639354-3875066094-1773  (By Sid)
-{{protocol}}://{{host}}:{{port}}/myriad/group/72e11fd9-10f4-4c27-acb4-08dd30c78b8f/1722b838-57e1-4058-a394-338882af9e2f  (By Guid)
-{{protocol}}://{{host}}:{{port}}/myriad/group/FamousActors/mfox  (By SamAccountName)
+Default Domain
+{{protocol}}://{{host}}:{{port}}/myriad/group/FamousActors/rules/mfox/  (By Name)
+{{protocol}}://{{host}}:{{port}}/myriad/group/CN=FamousActors,OU=Synapse,DC=sandbox,DC=local/rules/CN=mfox,OU=Synapse,DC=sandbox,DC=local  (By Distinguished Name)
+{{protocol}}://{{host}}:{{port}}/myriad/group/S-1-5-21-4054027134-3251639354-3875066094-1835/rules/S-1-5-21-4054027134-3251639354-3875066094-1773  (By Sid)
+{{protocol}}://{{host}}:{{port}}/myriad/group/72e11fd9-10f4-4c27-acb4-08dd30c78b8f/rules/1722b838-57e1-4058-a394-338882af9e2f  (By Guid)
+{{protocol}}://{{host}}:{{port}}/myriad/group/FamousActors/rules/mfox  (By SamAccountName)
+
+Domain Name : SB2
+{{protocol}}://{{host}}:{{port}}/myriad/group/sb2\FamousActors/rules/sb2\mfox/  (By Name)
+{{protocol}}://{{host}}:{{port}}/myriad/group/CN=FamousActors,OU=Synapse,DC=sb2,DC=local/rules/CN=mfox,OU=Synapse,DC=sb2,DC=local  (By Distinguished Name)
+{{protocol}}://{{host}}:{{port}}/myriad/group/sb2\S-1-5-21-4054027134-3251639354-3875066094-1835/rules/sb2\S-1-5-21-4054027134-3251639354-3875066094-1773  (By Sid)
+{{protocol}}://{{host}}:{{port}}/myriad/group/sb2\72e11fd9-10f4-4c27-acb4-08dd30c78b8f/rules/sb2\1722b838-57e1-4058-a394-338882af9e2f  (By Guid)
+{{protocol}}://{{host}}:{{port}}/myriad/group/sb2\FamousActors/rules/sb2\mfox  (By SamAccountName)
 ````
 
 ---
@@ -871,9 +981,15 @@ The format for the URL is identical for the AddAccessRule, RemoveAccessRule and 
 **Requests**
 
 ````
-{{protocol}}://{{host}}:{{port}}/myriad/accessrule/group/AmericanActors/FamousActors/  (By Name)
-{{protocol}}://{{host}}:{{port}}/myriad/group/CN=AmericanActors,OU=Synapse,DC=sandbox,DC=local/CN=FamousActors,OU=Synapse,DC=sandbox,DC=local  (By Distinguished Name)
-{{protocol}}://{{host}}:{{port}}/myriad/group/768d8062-c1d2-4d67-9ad6-57c73cc3982b/72e11fd9-10f4-4c27-acb4-08dd30c78b8f  (By Guid)
+Default Domain
+{{protocol}}://{{host}}:{{port}}/myriad/group/AmericanActors/rules/FamousActors/  (By Name)
+{{protocol}}://{{host}}:{{port}}/myriad/group/CN=AmericanActors,OU=Synapse,DC=sandbox,DC=local/rules/CN=FamousActors,OU=Synapse,DC=sandbox,DC=local  (By Distinguished Name)
+{{protocol}}://{{host}}:{{port}}/myriad/group/768d8062-c1d2-4d67-9ad6-57c73cc3982b/rules/72e11fd9-10f4-4c27-acb4-08dd30c78b8f  (By Guid)
+
+Domain Name : SB2
+{{protocol}}://{{host}}:{{port}}/myriad/group/sb2\AmericanActors/rules/sb2\FamousActors/  (By Name)
+{{protocol}}://{{host}}:{{port}}/myriad/group/CN=AmericanActors,OU=Synapse,DC=sb2,DC=local/rules/CN=FamousActors,OU=Synapse,DC=sb2,DC=local  (By Distinguished Name)
+{{protocol}}://{{host}}:{{port}}/myriad/group/sb2\768d8062-c1d2-4d67-9ad6-57c73cc3982b/rules/sb2\72e11fd9-10f4-4c27-acb4-08dd30c78b8f  (By Guid)
 ````
 
 ---
@@ -970,7 +1086,10 @@ The details of how this is accomplished is detailed in the RoleManager implement
 #### Requests
 
 ````
-{{protocol}}://{{host}}:{{controllerPort}}/myriad/role/user/<identity>/<principal>/<role>
+{{protocol}}://{{host}}:{{controllerPort}}/myriad/user/<identity>/role/<principal>/<role>
+{{protocol}}://{{host}}:{{controllerPort}}/myriad/user/<domain>/<identity>/role/<principalDomain>/<principal>/<role>
+{{protocol}}://{{host}}:{{controllerPort}}/myriad/user/<domain>/<identity>/role/<principal>/<role>
+{{protocol}}://{{host}}:{{controllerPort}}/myriad/user/<identity>/role/<principalDomain>/<principal>/<role>
 ````
 
 ---
@@ -979,7 +1098,10 @@ The details of how this is accomplished is detailed in the RoleManager implement
 #### Requests
 
 ````
-{{protocol}}://{{host}}:{{controllerPort}}/myriad/role/group/<identity>/<principal>/<role>
+{{protocol}}://{{host}}:{{controllerPort}}/myriad/group/<identity>/role/<principal>/<role>
+{{protocol}}://{{host}}:{{controllerPort}}/myriad/group/<domain>/<identity>/role/<principalDomain>/<principal>/<role>
+{{protocol}}://{{host}}:{{controllerPort}}/myriad/group/<domain>/<identity>/role/<principal>/<role>
+{{protocol}}://{{host}}:{{controllerPort}}/myriad/group/<identity>/role/<principalDomain>/<principal>/<role>
 ````
 
 ---
@@ -988,6 +1110,9 @@ The details of how this is accomplished is detailed in the RoleManager implement
 #### Requests
 
 ````
-{{protocol}}://{{host}}:{{controllerPort}}/myriad/role/ou/<identity>/<principal>/<role>
+{{protocol}}://{{host}}:{{controllerPort}}/myriad/ou/<identity>/role/<principal>/<role>
+{{protocol}}://{{host}}:{{controllerPort}}/myriad/ou/<domain>/<identity>/role/<principalDomain>/<principal>/<role>
+{{protocol}}://{{host}}:{{controllerPort}}/myriad/ou/<domain>/<identity>/role/<principal>/<role>
+{{protocol}}://{{host}}:{{controllerPort}}/myriad/ou/<identity>/role/<principalDomain>/<principal>/<role>
 ````
 
