@@ -367,24 +367,29 @@ Values under the "Properties" section are dynamic.  Any "attribute" that ActiveD
         - Identity: TestUser001
           Type: Allow
           Rights: Self,GenericRead
+          Inheritance: None
         - Identity: TestUser001
           Type: Deny
           Rights: ListChildren
+          Inheritance: All
       Groups:
       - Identity: SomeGroup001
         AccessRules:
         - Identity: TestUser001
           Type: Allow
           Rights: Self,GenericRead
+          Inheritance: Descendents
         - Identity: TestUser001
           Type: Deny
           Rights: ListChildren
+          Inheritance: SelfAndChildren
       OrganizationalUnits:
       - Identity: SomeOrgUnit001
         AccessRules:
         - Identity: TestUser001
           Type: Allow
           Rights: Self,GenericRead
+          Inheritance: Children
         - Identity: TestUser001
           Type: Deny
           Rights: ListChildren
@@ -417,6 +422,26 @@ The valid values for the list of rights assignable in an access rule are based o
 |WriteDacl|The right to modify the DACL in the object security descriptor.
 |WriteOwner|The right to assume ownership of the object. The user must be an object trustee. The user cannot transfer the ownership to other users.
 |WriteProperty|The right to write properties of the object.
+
+#### Inheritance Enumeration
+
+The valid values for the list of inheritance assignable to an access rule are based on the C# enumeration "ActiveDirectorySecurityInheritance" in the System.DirectoryServices namespace.  Below are the valid values at the time this document was created.  For a more detailed view, see the [Microsoft documentation site](https://msdn.microsoft.com/en-us/library/system.directoryservices.activedirectorysecurityinheritance(v=vs.110).aspx). 
+
+In the table below, the column "Applies To" assumes an OrgUnit structure like :
+
+**A --> B --> C**
+
+- C is a child of B
+- B is a child of A
+
+
+|Inheritance|Description|Applies To
+|-----------|-----------|----------
+|None|No Inheritance.|A
+|All|Inclues the object, all children, and all their descendants.|A,B,C
+|Descendents|Inclues all children and their descendants, but not the object itself.|B,C
+|SelfAndChildren|Inclues the object and all children, but not any descendants of the children.|A,B
+|Children|Includes all children, but not the object or any of the children's descendants.|B
 
 ### Action: AddRole or Remove Role, Object Type: All
 
