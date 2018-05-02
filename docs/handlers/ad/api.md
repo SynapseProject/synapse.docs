@@ -21,9 +21,9 @@ Note: All URL's below are assumed to start with **{protocol}://{host}:{port}/myr
 |Move|PUT|.../{object}/{identity}/ou/{destinationOrgUnitIdentity}<br/>.../{object}/{domain}/{identity}/ou/{destDomain}{destOrgUnitIdentity}<br/>.../{object}/{domain}/{identity}/ou/{destOrgUnitIdentity}<br/>.../{object}/{identity}/ou/{destDomain}{destOrgUnitIdentity}
 |AddToGroup|POST|.../{object}/{identity}/group/{groupidentity}<br/>.../{object}/{domain}/{identity}/group/{groupDomain}/{groupidentity}<br/>.../{object}/{domain}/{identity}/group/{groupidentity}<br/>.../{object}/{identity}/group/{groupDomain}/{groupidentity}
 |RemoveFromGroup|DELETE|.../{object}/{identity}/group/{groupidentity}<br/>.../{object}/{domain}/{identity}/group/{groupDomain}/{groupidentity}<br/>.../{object}/{domain}/{identity}/group/{groupidentity}<br/>.../{object}/{identity}/group/{groupDomain}/{groupidentity}
-|AddAccessRule|POST|.../{object}/{identity}/rule/{principal}/{type}/{rights}<br/>.../{object}/{domain}/{identity}/rule/{principaldomain}/{principal}/{type}/{rights}<br/>.../{object}/{domain}/{identity}/rule/{principal}/{type}/{rights}<br/>.../{object}/{identity}/rule/{principaldomain}/{principal}/{type}/{rights}
-|RemoveAccessRule|DELETE|.../{object}/{identity}/rule/{principal}/{type}/{rights}<br/>.../{object}/{domain}/{identity}/rule/{principaldomain}/{principal}/{type}/{rights}<br/>.../{object}/{domain}/{identity}/rule/{principal}/{type}/{rights}<br/>.../{object}/{identity}/rule/{principaldomain}/{principal}/{type}/{rights}
-|SetAccessRule|PUT|.../{object}/{identity}/rule/{principal}/{type}/{rights}<br/>.../{object}/{domain}/{identity}/rule/{principaldomain}/{principal}/{type}/{rights}<br/>.../{object}/{domain}/{identity}/rule/{principal}/{type}/{rights}<br/>.../{object}/{identity}/rule/{principaldomain}/{principal}/{type}/{rights}
+|AddAccessRule|POST|.../{object}/{identity}/rule/{principal}/{type}/{rights}/{inheritance?}<br/>.../{object}/{domain}/{identity}/rule/{principaldomain}/{principal}/{type}/{rights}/{inheritance?}<br/>.../{object}/{domain}/{identity}/rule/{principal}/{type}/{rights}/{inheritance?}<br/>.../{object}/{identity}/rule/{principaldomain}/{principal}/{type}/{rights}/{inheritance?}
+|RemoveAccessRule|DELETE|.../{object}/{identity}/rule/{principal}/{type}/{rights}/{inheritance?}<br/>.../{object}/{domain}/{identity}/rule/{principaldomain}/{principal}/{type}/{rights}/{inheritance?}<br/>.../{object}/{domain}/{identity}/rule/{principal}/{type}/{rights}/{inheritance?}<br/>.../{object}/{identity}/rule/{principaldomain}/{principal}/{type}/{rights}/{inheritance?}
+|SetAccessRule|PUT|.../{object}/{identity}/rule/{principal}/{type}/{rights}/{inheritance?}<br/>.../{object}/{domain}/{identity}/rule/{principaldomain}/{principal}/{type}/{rights}/{inheritance?}<br/>.../{object}/{domain}/{identity}/rule/{principal}/{type}/{rights}/{inheritance?}<br/>.../{object}/{identity}/rule/{principaldomain}/{principal}/{type}/{rights}/{inheritance?}
 |PurgeAccessRules|DELETE|.../{object}/{identity}/rules/{principal}<br/>.../{object}/{domain}/{identity}/rules/{principaldomain}/{principal}<br/>.../{object}/{domain}/{identity}/rules/{principal}<br/>.../{object}/{identity}/rules/{principaldomain}/{principal}
 |AddRole|POST|.../{object}/{identity}/role/{principal}/{role}<br/>.../{object}/{domain}/{identity}/role/{principaldomain}/{principal}/{role}<br/>.../{object}/{domain}/{identity}/role/{principal}/{role}<br/>.../{object}/{identity}/role/{principaldomain}/{principal}/{role}
 |RemoveRole|POST|.../{object}/{identity}/role/{principal}/{role}<br/>.../{object}/{domain}/{identity}/role/{principaldomain}/{principal}/{role}<br/>.../{object}/{domain}/{identity}/role/{principal}/{role}<br/>.../{object}/{identity}/role/{principaldomain}/{principal}/{role}
@@ -861,8 +861,11 @@ Domain Name : SB2
 ## AddAccessRule (HTTP POST), RemoveAccessRule (HTTP DELETE) or SetAccessRule (HTTP PUT)
 
 The format for the URL is identical for the AddAccessRule, RemoveAccessRule and SetAccessRule actions.  The only differences would be :
+
 * On Delete, no object will be returned (kinda obvious)
 * The "Statuses > Action" field would reflect either "AddAccessRule", "RemoveAccessRule or "SetAccessRule", depending on which was called.  Valid values for permitted "rights" can be found [here](handler.md#activedirectoryrights-enumeration).
+
+Also, values for the **optional** inheritance field can be found [here](handler.md#inheritance-enumeration).  If not provided, the default value is "None" (rule applies to this object only).
 
 ---
 ### AddAccessRule/RemoveAccessRule/SetAccessRule to User
@@ -916,13 +919,13 @@ Domain Name : SB2
 
 ````
 Default Domain
-{{protocol}}://{{host}}:{{port}}/myriad/ou/AmericanActors/rule/FamousActors/Allow/GenericAll  (By Name)
-{{protocol}}://{{host}}:{{port}}/myriad/ou/CN=AmericanActors,OU=Synapse,DC=sandbox,DC=local/rule/CN=FamousActors,OU=Synapse,DC=sandbox,DC=local/Allow/GenericAll  (By Distinguished Name)
-{{protocol}}://{{host}}:{{port}}/myriad/ou/768d8062-c1d2-4d67-9ad6-57c73cc3982b/rule/72e11fd9-10f4-4c27-acb4-08dd30c78b8f/Allow/GenericAll  (By Guid)
+{{protocol}}://{{host}}:{{port}}/myriad/ou/AmericanActors/rule/FamousActors/Allow/GenericAll/All  (By Name)
+{{protocol}}://{{host}}:{{port}}/myriad/ou/CN=AmericanActors,OU=Synapse,DC=sandbox,DC=local/rule/CN=FamousActors,OU=Synapse,DC=sandbox,DC=local/Allow/GenericAll/Descendents  (By Distinguished Name)
+{{protocol}}://{{host}}:{{port}}/myriad/ou/768d8062-c1d2-4d67-9ad6-57c73cc3982b/rule/72e11fd9-10f4-4c27-acb4-08dd30c78b8f/Allow/GenericAll/SelfAndChildren  (By Guid)
 
 Domain Name : SB2
-{{protocol}}://{{host}}:{{port}}/myriad/ou/sb2\AmericanActors/rule/sb2\FamousActors/Allow/GenericAll  (By Name)
-{{protocol}}://{{host}}:{{port}}/myriad/ou/CN=AmericanActors,OU=Synapse,DC=sb2,DC=local/rule/CN=FamousActors,OU=Synapse,DC=sb2,DC=local/Allow/GenericAll  (By Distinguished Name)
+{{protocol}}://{{host}}:{{port}}/myriad/ou/sb2\AmericanActors/rule/sb2\FamousActors/Allow/GenericAll/Children  (By Name)
+{{protocol}}://{{host}}:{{port}}/myriad/ou/CN=AmericanActors,OU=Synapse,DC=sb2,DC=local/rule/CN=FamousActors,OU=Synapse,DC=sb2,DC=local/Allow/GenericAll/None  (By Distinguished Name)
 {{protocol}}://{{host}}:{{port}}/myriad/ou/sb2\768d8062-c1d2-4d67-9ad6-57c73cc3982b/rule/sb2\72e11fd9-10f4-4c27-acb4-08dd30c78b8f/Allow/GenericAll  (By Guid)
 ````
 
