@@ -59,13 +59,16 @@ The AdApi returns a list of "Results".  Each result starts with a "Statuses" blo
         {
             "Statuses": [
                 {
-                    "Status": 4,
-                    "Message": "User [HonestPolitician] Not Found.",
-                    "Action": 1
+                    "StatusId": 1,
+                    "Status": "Success",
+                    "Message": "Success",
+                    "ActionId": 1,
+                    "Action": "Get"
                 }
             ],
-            "Type": 1,
-            "Identity": "HonestPolitician",
+            "TypeId": 3,
+            "Type": "Computer",
+            "Identity": "movemecomputer@sandbox.local",
             "Object": null
         }
     ]
@@ -74,9 +77,11 @@ The AdApi returns a list of "Results".  Each result starts with a "Statuses" blo
 
 Statuses is an array of statuses because a single request could results in multiple action (Create a user and add him to 3 groups).  Inside each individual status is a status code, a message, and the action performed.  The numeric values are mapped below : 
 
-**Status**
+**StatusId and Status**
 
-|Value|Description
+The "StatusId" and "Status" fields represent the result of the action(s).  The table below shows all possible values and their cooresponding meanings.
+
+|Id|Description
 |-----|-----------
 |0|Unknown
 |1|Success
@@ -94,16 +99,18 @@ Statuses is an array of statuses because a single request could results in multi
 |13|MultipleMatches
 
 
-**Action**
+**ActionId and Action**
 
-|Value|Description
+The "ActionId" and "Action" fields represent the action that was requested, and on which the status was reported back.  The table below shows all possible values and their cooresponding meanings.
+
+|Id|Description
 |-----|-----------
 |0|None
 |1|Get
 |2|Create
 |4|Modify
 |8|Delete
-|16|Rename (Not Used, Use "Modify" Instead)
+|16|~~Not Used~~
 |32|Move
 |64|AddToGroup
 |128|RemoveFromGroup
@@ -124,8 +131,8 @@ The rest of the request message tell information about the original request (Typ
 |0|None|None
 |1|User|UserPrincipalObject
 |2|Group|GroupPrincipalObject
-|3|Computer (Not Yet Implemented)|????
-|4|OrganizationalUnit|OrganizationalUnitObject
+|3|Computer|DirectoryEntryObject
+|4|OrganizationalUnit|DirectoryEntryObject
 |5|GroupPolicy (Not Yet Implemented)|????
 |6|Search|SearchResultsObject
 
@@ -141,7 +148,7 @@ These are the parts of the "Object" property that all ActiveDirectory objects ca
 
 **Applies To:** All Objects
 
-In come cases, roperties can contain more than one value.  Thus, the properties are turned as an array of values with the property name being the "key".
+In come cases, properties can contain more than one value.  Thus, the properties are returned as an array of values with the property name being the "key".
 
 ````yaml
 "Object": {
@@ -185,7 +192,7 @@ In come cases, roperties can contain more than one value.  Thus, the properties 
 
 #### Groups (Group Membership)
 
-**Applies To:** : Users and Groups
+**Applies To:** : Users and Groups (Computers group membership can be found in the "memberOf" property.)
 
 This section details all group a Principal is a member of.  It has the same return structure as the "GroupPrincipalObject" described below, without the "Groups" and "AccessRules" returned.
 
@@ -233,7 +240,7 @@ This section details all group a Principal is a member of.  It has the same retu
 
 #### AccessRules
 
-**Applies To** : Users, Groups and Organizational Units
+**Applies To** : All Objects
 
 The "AccessRules" section reports all Access Rules associated with an object.  These include both ones directly applied to the object, and those applied through inheritance.
 
@@ -400,9 +407,9 @@ Below is an example of a GroupPrincipalObject being returned in the Object field
 }
 ````
 
-### Organizational Units (OrganizationalUnitObject)
+### Organizational Units (DirectoryEntryObject)
 
-Below is an example of a OrganizationalUnitObject being returned in the Object field.  In this example, the Properties, Groups and AccessRules were not requested, and are thus "null".
+Below is an example of a DirectoryEntryObject being returned in the Object field, representing an Organizational Unit object.  In this example, the Properties and AccessRules were not requested, and are thus "null".
 
 ````yaml
 "Object": {
@@ -451,6 +458,40 @@ Below is an example of a OrganizationalUnitObject being returned in the Object f
         "Username": null,
         "AccessRules": null
     },
+    "UsePropertyCache": "true",
+    "Username": null,
+    "AccessRules": null
+}
+````
+
+### Computers (DirectoryEntryObject)
+
+Below is an example of a DirectoryEntryObject being returned in the Object field, representing a Computer object.  In this example, the Properties and AccessRules were not requested, and are thus "null".
+
+````yaml
+"Object": {
+    "DistinguishedName": "CN=MoveMeComputer,OU=Source,OU=MoveMe,OU=Synapse,DC=sandbox,DC=local",
+    "Guid": "0ed91c36-f6db-4c0b-962b-562135fc48ae",
+    "Name": "CN=MoveMeComputer",
+    "NativeGuid": "361cd90edbf60b4c962b562135fc48ae",
+    "Parent": {
+        "DistinguishedName": "OU=Source,OU=MoveMe,OU=Synapse,DC=sandbox,DC=local",
+        "Guid": "32c31fc1-d7ee-4876-a53a-81513f2f85fa",
+        "Name": "OU=Source",
+        "NativeGuid": "c11fc332eed77648a53a81513f2f85fa",
+        "Parent": null,
+        "Path": "LDAP://sandbox.local/OU=Source,OU=MoveMe,OU=Synapse,DC=sandbox,DC=local",
+        "Properties": null,
+        "SchemaClassName": "organizationalUnit",
+        "SchemaEntry": null,
+        "UsePropertyCache": "true",
+        "Username": null,
+        "AccessRules": null
+    },
+    "Path": "LDAP://sandbox.local/CN=MoveMeComputer,OU=Source,OU=MoveMe,OU=Synapse,DC=sandbox,DC=local",
+    "Properties": null,
+    "SchemaClassName": "computer",
+    "SchemaEntry": null,
     "UsePropertyCache": "true",
     "Username": null,
     "AccessRules": null
@@ -665,6 +706,35 @@ Body:
 ````
 
 ---
+### Create/Modify Computer
+
+**Request**
+
+````
+{{protocol}}://{{host}}:{{port}}/myriad/computer/cn=MyNewComputer,ou=Synapse,dc=sandbox,dc=local
+
+Body:
+{
+  Description: "Hello World",
+  ManagedBy: "mfox",
+  Properties: { 
+      "dnsHostName": [ "mynewcomputer.sandbox.local" ],
+      "displayName": [ "My Display Name" ],
+      "location": ["SANDBOX.LOCAL"],
+      "userAccountControl": ["544"],
+      "sAMAccountName": ["MyNewComputerSam"],
+      "operatingSystem": ["Windows Server 2016 Standard"],
+      "operatingSystemVersion": ["10.0 (14393)"],
+      "operatingSystemHotFix": ["HF10.0.1"],
+      "operatingSystemServicePack": ["SP1"],
+      "wWWHomePage": ["www.google.com"],
+      "accountExpires": ["131714099030000000"],
+      "userPrincipalName": ["mynewcomputer@sandbox.local"]
+    }
+}
+````
+
+---
 ## Get (HTTP GET) or Delete (HTTP DELETE)
 
 The format for the URL is identical for a Get and a Delete action.  The only differences would be :
@@ -723,14 +793,37 @@ Domain Name : SB2
 
 ````
 Default Domain
-{{protocol}}://{{host}}:{{controllerPort}}/myriad/ou/AmericanActors  (By Name)
-{{protocol}}://{{host}}:{{controllerPort}}/myriad/ou/OU=AmericanActors,OU=Synapse,DC=sandbox,DC=local  (By DistinguishedName)
-{{protocol}}://{{host}}:{{controllerPort}}/myriad/ou/95637ae6-9f24-420f-b573-7c2ab3496419  (By Guid)
+{{protocol}}://{{host}}:{{port}}/myriad/ou/AmericanActors  (By Name)
+{{protocol}}://{{host}}:{{port}}/myriad/ou/OU=AmericanActors,OU=Synapse,DC=sandbox,DC=local  (By DistinguishedName)
+{{protocol}}://{{host}}:{{port}}/myriad/ou/95637ae6-9f24-420f-b573-7c2ab3496419  (By Guid)
 
 Domain Name: SB2
-{{protocol}}://{{host}}:{{controllerPort}}/myriad/ou/sb2\AmericanActors  (By Name)
-{{protocol}}://{{host}}:{{controllerPort}}/myriad/ou/OU=AmericanActors,OU=Synapse,DC=sb2,DC=local  (By DistinguishedName)
-{{protocol}}://{{host}}:{{controllerPort}}/myriad/ou/sb2\95637ae6-9f24-420f-b573-7c2ab3496419  (By Guid)
+{{protocol}}://{{host}}:{{port}}/myriad/ou/sb2\AmericanActors  (By Name)
+{{protocol}}://{{host}}:{{port}}/myriad/ou/OU=AmericanActors,OU=Synapse,DC=sb2,DC=local  (By DistinguishedName)
+{{protocol}}://{{host}}:{{port}}/myriad/ou/sb2\95637ae6-9f24-420f-b573-7c2ab3496419  (By Guid)
+````
+
+---
+### Get/Delete Computer
+
+**Requests**
+
+````
+Default Domain
+{{protocol}}://{{host}}:{{port}}/myriad/computer/MyNewComputer  (By Name)
+{{protocol}}://{{host}}:{{port}}/myriad/computer/CN=mynewcomputer,OU=Synapse,DC=sandbox,DC=local  (By Distinguished Name)
+{{protocol}}://{{host}}:{{port}}/myriad/computer/S-1-5-21-4054027134-3251639354-3875066094-1773  (By Sid)
+{{protocol}}://{{host}}:{{port}}/myriad/computer/1722b838-57e1-4058-a394-338882af9e2f  (By Guid)
+{{protocol}}://{{host}}:{{port}}/myriad/computer/mynewcomputersam  (By SamAccountName)
+{{protocol}}://{{host}}:{{port}}/myriad/computer/mynewcomputer@sandbox.local  (By UserPrincipal)
+
+Domain Name: SB2
+{{protocol}}://{{host}}:{{port}}/myriad/computer/sb2\MyNewComputer  (By Name)
+{{protocol}}://{{host}}:{{port}}/myriad/computer/CN=mynewcomputer,OU=Synapse,DC=sb2,DC=local  (By Distinguished Name)
+{{protocol}}://{{host}}:{{port}}/myriad/computer/sb2\S-1-5-21-4054027134-3251639354-3875066094-1773  (By Sid)
+{{protocol}}://{{host}}:{{port}}/myriad/computer/sb2\1722b838-57e1-4058-a394-338882af9e2f  (By Guid)
+{{protocol}}://{{host}}:{{port}}/myriad/computer/sb2\mynewcomputer  (By SamAccountName)
+{{protocol}}://{{host}}:{{port}}/myriad/computer/mynewcomputer@sb2.local  (By UserPrincipal)
 ````
 
 ---
@@ -794,17 +887,39 @@ Domain Name : SB2
 
 ````
 Default Domain
-{{protocol}}://{{host}}:{{controllerPort}}/myriad/ou/AmericanActors/ou/DestinationOu  (By Name)
-{{protocol}}://{{host}}:{{controllerPort}}/myriad/ou/OU=AmericanActors,OU=Synapse,DC=sandbox,DC=local/ou/OU=DestinationOu,DC=sandbox,DC=local  (By DistinguishedName)
-{{protocol}}://{{host}}:{{controllerPort}}/myriad/ou/95637ae6-9f24-420f-b573-7c2ab3496419/ou/1722b838-57e1-4058-a394-339994af9guy  (By Guid)
+{{protocol}}://{{host}}:{{port}}/myriad/ou/AmericanActors/ou/DestinationOu  (By Name)
+{{protocol}}://{{host}}:{{port}}/myriad/ou/OU=AmericanActors,OU=Synapse,DC=sandbox,DC=local/ou/OU=DestinationOu,DC=sandbox,DC=local  (By DistinguishedName)
+{{protocol}}://{{host}}:{{port}}/myriad/ou/95637ae6-9f24-420f-b573-7c2ab3496419/ou/1722b838-57e1-4058-a394-339994af9guy  (By Guid)
 
 Domain Name : SB2
-{{protocol}}://{{host}}:{{controllerPort}}/myriad/ou/sb2\AmericanActors/ou/sb2\DestinationOu  (By Name)
-{{protocol}}://{{host}}:{{controllerPort}}/myriad/ou/OU=AmericanActors,OU=Synapse,DC=sb2,DC=local/ou/OU=DestinationOu,DC=sb2,DC=local  (By DistinguishedName)
-{{protocol}}://{{host}}:{{controllerPort}}/myriad/ou/95637sb2\ae6-9f24-420f-b573-7c2ab3496419/ou/sb2\1722b838-57e1-4058-a394-339994af9guy  (By Guid)
+{{protocol}}://{{host}}:{{port}}/myriad/ou/sb2\AmericanActors/ou/sb2\DestinationOu  (By Name)
+{{protocol}}://{{host}}:{{port}}/myriad/ou/OU=AmericanActors,OU=Synapse,DC=sb2,DC=local/ou/OU=DestinationOu,DC=sb2,DC=local  (By DistinguishedName)
+{{protocol}}://{{host}}:{{port}}/myriad/ou/95637sb2\ae6-9f24-420f-b573-7c2ab3496419/ou/sb2\1722b838-57e1-4058-a394-339994af9guy  (By Guid)
 ````
 
 ---
+### Move Computer
+
+**Requests**
+
+````
+Default Domain
+{{protocol}}://{{host}}:{{port}}/myriad/computer/MyNewComputer/ou/DestinationOu  (By Name)
+{{protocol}}://{{host}}:{{port}}/myriad/computer/CN=mynewcomputer,OU=Synapse,DC=sandbox,DC=local/ou/OU=DestinationOu,DC=sandbox,DC=local  (By Distinguished Name)
+{{protocol}}://{{host}}:{{port}}/myriad/computer/S-1-5-21-4054027134-3251639354-3875066094-1773/ou/OU=DestinationOu,DC=sandbox,DC=local  (By Sid)
+{{protocol}}://{{host}}:{{port}}/myriad/computer/1722b838-57e1-4058-a394-338882af9e2f/ou/1722b838-57e1-4058-a394-339994af9guy  (By Guid)
+{{protocol}}://{{host}}:{{port}}/myriad/computer/mynewcomputersam/ou/OU=DestinationOu,DC=sandbox,DC=local  (By SamAccountName)
+{{protocol}}://{{host}}:{{port}}/myriad/computer/mynewcomputer@sandbox.local/ou/OU=DestinationOu,DC=sandbox,DC=local  (By UserPrincipal)
+
+Domain Name : SB2
+{{protocol}}://{{host}}:{{port}}/myriad/computer/sb2\MyNewComputer/ou/sb2\DestinationOu  (By Name)
+{{protocol}}://{{host}}:{{port}}/myriad/computer/CN=mynewcomputer,OU=Synapse,DC=sb2,DC=local/ou/OU=DestinationOu,DC=sb2,DC=local  (By Distinguished Name)
+{{protocol}}://{{host}}:{{port}}/myriad/computer/sb2\S-1-5-21-4054027134-3251639354-3875066094-1773/ou/OU=DestinationOu,DC=sb2,DC=local  (By Sid)
+{{protocol}}://{{host}}:{{port}}/myriad/computer/sb2\1722b838-57e1-4058-a394-338882af9e2f/ou/sb2\1722b838-57e1-4058-a394-339994af9guy  (By Guid)
+{{protocol}}://{{host}}:{{port}}/myriad/computer/sb2\mynewcomputersam/ou/OU=DestinationOu,DC=sb2,DC=local  (By SamAccountName)
+{{protocol}}://{{host}}:{{port}}/myriad/computer/mynewcomputer@sb2.local/ou/OU=DestinationOu,DC=sb2,DC=local  (By UserPrincipal)
+````
+
 ## AddToGroup (HTTP POST) or RemoveFromGroup (HTTP DELETE)
 
 The format for the URL is identical for an AddToGroup and RemoveFromGroup action.  The only real difference would be the status message returned, either "Added To" or "Removed From" depending on which action was called.
@@ -816,7 +931,7 @@ The format for the URL is identical for an AddToGroup and RemoveFromGroup action
 
 ````
 Default Domain
-{{protocol}}://{{host}}:{{controllerPort}}/myriad/user/mfox/group/FamousActors  (By Name)
+{{protocol}}://{{host}}:{{port}}/myriad/user/mfox/group/FamousActors  (By Name)
 {{protocol}}://{{host}}:{{port}}/myriad/user/CN=mfox,OU=Synapse,DC=sandbox,DC=local/group/CN=FamousActors,OU=Synapse,DC=sandbox,DC=local  (By Distinguished Name)
 {{protocol}}://{{host}}:{{port}}/myriad/user/S-1-5-21-4054027134-3251639354-3875066094-1773/group/S-1-5-21-4054027134-3251639354-3875066094-1774  (By Sid)
 {{protocol}}://{{host}}:{{port}}/myriad/user/1722b838-57e1-4058-a394-338882af9e2f/group/19cdf305-c43b-497a-a932-6091f4a09dbb  (By Guid)
@@ -824,7 +939,7 @@ Default Domain
 {{protocol}}://{{host}}:{{port}}/myriad/user/mfox@sandbox.local/group/FamousActors  (By UserPrincipal / Name)
 
 Domain Name : SB2
-{{protocol}}://{{host}}:{{controllerPort}}/myriad/user/sb2\mfox/group/sb2\FamousActors  (By Name)
+{{protocol}}://{{host}}:{{port}}/myriad/user/sb2\mfox/group/sb2\FamousActors  (By Name)
 {{protocol}}://{{host}}:{{port}}/myriad/user/CN=mfox,OU=Synapse,DC=sb2,DC=local/group/CN=FamousActors,OU=Synapse,DC=sb2,DC=local  (By Distinguished Name)
 {{protocol}}://{{host}}:{{port}}/myriad/user/sb2\S-1-5-21-4054027134-3251639354-3875066094-1773/group/sb2\S-1-5-21-4054027134-3251639354-3875066094-1774  (By Sid)
 {{protocol}}://{{host}}:{{port}}/myriad/user/sb2\1722b838-57e1-4058-a394-338882af9e2f/group/sb2\19cdf305-c43b-497a-a932-6091f4a09dbb  (By Guid)
@@ -843,14 +958,14 @@ The format for the URL is identical for an AddToGroup and RemoveFromGroup action
 
 ````
 Default Domain
-{{protocol}}://{{host}}:{{controllerPort}}/myriad/group/FamousActors/group/AllActors  (By Name)
+{{protocol}}://{{host}}:{{port}}/myriad/group/FamousActors/group/AllActors  (By Name)
 {{protocol}}://{{host}}:{{port}}/myriad/group/CN=FamousActors,OU=Synapse,DC=sandbox,DC=local/group/CN=AllActors,OU=Synapse,DC=sandbox,DC=local (By DistinguishedName)
 {{protocol}}://{{host}}:{{port}}/myriad/group/S-1-5-21-4054027134-3251639354-3875066094-1774/group/S-1-5-21-4054027134-3251639354-3875066094-1775  (By Sid)
 {{protocol}}://{{host}}:{{port}}/myriad/group/19cdf305-c43b-497a-a932-6091f4a09dbb/group/cc8db84b-3aca-4e69-b1d1-6b9a3b30ee73  (By Guid)
 {{protocol}}://{{host}}:{{port}}/myriad/group/FamousActors/group/AllActors  (By SamAccountName)
 
 Domain Name : SB2
-{{protocol}}://{{host}}:{{controllerPort}}/myriad/group/sb2\FamousActors/group/sb2\AllActors  (By Name)
+{{protocol}}://{{host}}:{{port}}/myriad/group/sb2\FamousActors/group/sb2\AllActors  (By Name)
 {{protocol}}://{{host}}:{{port}}/myriad/group/CN=FamousActors,OU=Synapse,DC=sb2,DC=local/group/CN=AllActors,OU=Synapse,DC=sb2,DC=local (By DistinguishedName)
 {{protocol}}://{{host}}:{{port}}/myriad/group/sb2\S-1-5-21-4054027134-3251639354-3875066094-1774/group/sb2\S-1-5-21-4054027134-3251639354-3875066094-1775  (By Sid)
 {{protocol}}://{{host}}:{{port}}/myriad/group/sb2\19cdf305-c43b-497a-a932-6091f4a09dbb/group/sb2\cc8db84b-3aca-4e69-b1d1-6b9a3b30ee73  (By Guid)
@@ -858,6 +973,32 @@ Domain Name : SB2
 ````
 
 ---
+---
+### Add/Remove Computer To Group
+
+**Request**
+
+````
+Default Domain
+{{protocol}}://{{host}}:{{port}}/myriad/computer/MyNewComputer/group/FamousActors  (By Name)
+{{protocol}}://{{host}}:{{port}}/myriad/computer/CN=mynewcomputer,OU=Synapse,DC=sandbox,DC=local/group/CN=FamousActors,OU=Synapse,DC=sandbox,DC=local  (By Distinguished Name)
+{{protocol}}://{{host}}:{{port}}/myriad/computer/S-1-5-21-4054027134-3251639354-3875066094-1773/group/S-1-5-21-4054027134-3251639354-3875066094-1774  (By Sid)
+{{protocol}}://{{host}}:{{port}}/myriad/computer/1722b838-57e1-4058-a394-338882af9e2f/group/19cdf305-c43b-497a-a932-6091f4a09dbb  (By Guid)
+{{protocol}}://{{host}}:{{port}}/myriad/computer/mynewcomputersam/group/FamousActors  (By SamAccountName)
+{{protocol}}://{{host}}:{{port}}/myriad/computer/mynewcomputer@sandbox.local/group/FamousActors  (By UserPrincipal / Name)
+
+Domain Name : SB2
+{{protocol}}://{{host}}:{{port}}/myriad/computer/sb2\MyNewComputer/group/sb2\FamousActors  (By Name)
+{{protocol}}://{{host}}:{{port}}/myriad/computer/CN=mynewcomputer,OU=Synapse,DC=sb2,DC=local/group/CN=FamousActors,OU=Synapse,DC=sb2,DC=local  (By Distinguished Name)
+{{protocol}}://{{host}}:{{port}}/myriad/computer/sb2\S-1-5-21-4054027134-3251639354-3875066094-1773/group/sb2\S-1-5-21-4054027134-3251639354-3875066094-1774  (By Sid)
+{{protocol}}://{{host}}:{{port}}/myriad/computer/sb2\1722b838-57e1-4058-a394-338882af9e2f/group/sb2\19cdf305-c43b-497a-a932-6091f4a09dbb  (By Guid)
+{{protocol}}://{{host}}:{{port}}/myriad/computer/sb2\mynewcomputersam/group/sb2\FamousActors  (By SamAccountName)
+{{protocol}}://{{host}}:{{port}}/myriad/computer/mynewcomputer@sb2.local/group/sb2\FamousActors  (By UserPrincipal / Name)
+
+* Note: There is not "UserPrincipal" for a group, so last example is using "Name" for the groupIdentity.
+````
+
+
 ## AddAccessRule (HTTP POST), RemoveAccessRule (HTTP DELETE) or SetAccessRule (HTTP PUT)
 
 The format for the URL is identical for the AddAccessRule, RemoveAccessRule and SetAccessRule actions.  The only differences would be :
@@ -930,6 +1071,29 @@ Domain Name : SB2
 ````
 
 ---
+### AddAccessRule/RemoveAccessRule/SetAccessRule to Computer
+
+**Requests**
+
+````
+Default Domain 
+{{protocol}}://{{host}}:{{port}}/myriad/computer/MyNewComputer/rule/user001/Allow/GenericAll  (By Name)
+{{protocol}}://{{host}}:{{port}}/myriad/computer/CN=mynewcomputer,OU=Synapse,DC=sandbox,DC=local/rule/CN=user001,OU=Synapse,DC=sandbox,DC=local/Allow/GenericAll  (By Distinguished Name)
+{{protocol}}://{{host}}:{{port}}/myriad/computer/S-1-5-21-4054027134-3251639354-3875066094-1773/rule/S-1-5-21-4054027134-3251639354-3875066094-1206/Allow/GenericAll  (By Sid)
+{{protocol}}://{{host}}:{{port}}/myriad/computer/1722b838-57e1-4058-a394-338882af9e2f/rule/4db94271-1fde-402a-a8c5-1564dfd8d62b/Allow/GenericAll  (By Guid)
+{{protocol}}://{{host}}:{{port}}/myriad/computer/mynewcomputersam/rule/user001/Allow/GenericAll  (By SamAccountName)
+{{protocol}}://{{host}}:{{port}}/myriad/computer/mynewcomputer@sandbox.local/rule/user001@sandbox.local/Allow/GenericAll  (By UserPrincipal)
+
+Domain Name : SB2
+{{protocol}}://{{host}}:{{port}}/myriad/computer/sb2\MyNewComputer/rule/sb2\user001/Allow/GenericAll  (By Name)
+{{protocol}}://{{host}}:{{port}}/myriad/computer/CN=mynewcomputer,OU=Synapse,DC=sb2,DC=local/rule/CN=user001,OU=Synapse,DC=sb2,DC=local/Allow/GenericAll  (By Distinguished Name)
+{{protocol}}://{{host}}:{{port}}/myriad/computer/sb2\S-1-5-21-4054027134-3251639354-3875066094-1773/rule/sb2\S-1-5-21-4054027134-3251639354-3875066094-1206/Allow/GenericAll  (By Sid)
+{{protocol}}://{{host}}:{{port}}/myriad/computer/sb2\1722b838-57e1-4058-a394-338882af9e2f/rule/sb2\4db94271-1fde-402a-a8c5-1564dfd8d62b/Allow/GenericAll  (By Guid)
+{{protocol}}://{{host}}:{{port}}/myriad/computer/sb2\mynewcomputersam/rule/sb2\user001/Allow/GenericAll  (By SamAccountName)
+{{protocol}}://{{host}}:{{port}}/myriad/computer/mynewcomputer@sb2.local/rule/user001@sb2.local/Allow/GenericAll  (By UserPrincipal)
+````
+
+
 ## PurgeAccessRules (HTTP DELETE)
 
 The format for the URL is identical for the AddAccessRule, RemoveAccessRule and SetAccessRule actions, except there is no need for a type or rights, since purge removes all rules (Allow and Deny) for the given principal (user or group).
@@ -996,6 +1160,28 @@ Domain Name : SB2
 ````
 
 ---
+### PurgeAccessRules on Computer
+
+**Requests**
+
+````
+Default Domain
+{{protocol}}://{{host}}:{{port}}/myriad/computer/MyNewComputer/rules/user001  (By Name)
+{{protocol}}://{{host}}:{{port}}/myriad/computer/CN=mynewcomputer,OU=Synapse,DC=sandbox,DC=local/rules/CN=user001,OU=Synapse,DC=sandbox,DC=local  (By Distinguished Name)
+{{protocol}}://{{host}}:{{port}}/myriad/computer/S-1-5-21-4054027134-3251639354-3875066094-1773/rules/S-1-5-21-4054027134-3251639354-3875066094-1206  (By Sid)
+{{protocol}}://{{host}}:{{port}}/myriad/computer/1722b838-57e1-4058-a394-338882af9e2f/rules/4db94271-1fde-402a-a8c5-1564dfd8d62b  (By Guid)
+{{protocol}}://{{host}}:{{port}}/myriad/computer/mynewcomputersam/rules/user001  (By SamAccountName)
+{{protocol}}://{{host}}:{{port}}/myriad/computer/mynewcomputer@sandbox.local/rules/user001@sandbox.local  (By UserPrincipal)
+
+Domain Name : SB2
+{{protocol}}://{{host}}:{{port}}/myriad/computer/sb2\MyNewComputer/rules/sb2\user001  (By Name)
+{{protocol}}://{{host}}:{{port}}/myriad/computer/CN=mynewcomputer,OU=Synapse,DC=sb2,DC=local/rules/CN=user001,OU=Synapse,DC=sb2,DC=local  (By Distinguished Name)
+{{protocol}}://{{host}}:{{port}}/myriad/computer/sb2\S-1-5-21-4054027134-3251639354-3875066094-1773/rules/sb2\S-1-5-21-4054027134-3251639354-3875066094-1206  (By Sid)
+{{protocol}}://{{host}}:{{port}}/myriad/computer/sb2\1722b838-57e1-4058-a394-338882af9e2f/rules/sb2\4db94271-1fde-402a-a8c5-1564dfd8d62b  (By Guid)
+{{protocol}}://{{host}}:{{port}}/myriad/computer/sb2\mynewcomputersam/rules/sb2\user001  (By SamAccountName)
+{{protocol}}://{{host}}:{{port}}/myriad/computer/mynewcomputer@sb2.local/rules/user001@sb2.local  (By UserPrincipal)
+````
+
 ## Search
 
 The "Search" action takes in a filter string, search base and a list of attributes to return, and returns the attributes for all DirectoryEntry objects that matches the filter string, assuming the requesting user has the rights to see that object in the first place.
@@ -1117,5 +1303,17 @@ The details of how this is accomplished is detailed in the RoleManager implement
 {{protocol}}://{{host}}:{{controllerPort}}/myriad/ou/<domain>/<identity>/role/<principalDomain>/<principal>/<role>
 {{protocol}}://{{host}}:{{controllerPort}}/myriad/ou/<domain>/<identity>/role/<principal>/<role>
 {{protocol}}://{{host}}:{{controllerPort}}/myriad/ou/<identity>/role/<principalDomain>/<principal>/<role>
+````
+
+---
+### AddRole (HTTP POST) or RemoveRole (HTTP DELETE) To Computer
+
+#### Requests
+
+````
+{{protocol}}://{{host}}:{{controllerPort}}/myriad/computer/<identity>/role/<principal>/<role>
+{{protocol}}://{{host}}:{{controllerPort}}/myriad/computer/<domain>/<identity>/role/<principalDomain>/<principal>/<role>
+{{protocol}}://{{host}}:{{controllerPort}}/myriad/computer/<domain>/<identity>/role/<principal>/<role>
+{{protocol}}://{{host}}:{{controllerPort}}/myriad/computer/<identity>/role/<principalDomain>/<principal>/<role>
 ````
 

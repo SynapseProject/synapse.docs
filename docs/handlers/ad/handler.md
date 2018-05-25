@@ -11,6 +11,7 @@ Below is a table of supported active diretory object types, and the supported wa
 |**User**|Yes|Yes|Yes|Yes|Yes|Yes
 |**Group**|Yes|Yes|No|Yes|Yes|Yes
 |**Organizational Unit**|Yes|Yes(1)|No|No|No|Yes
+|**Computer**|Yes|Yes|Yes|Yes|Yes|Yes
 
 (1) - Assumes only a single name exists.  Since multiple objects are allowed to have the same name under different organizational units, when multiple objects exist with the same name, an error will occur.
 
@@ -35,19 +36,19 @@ Below is a list of supported actions that can be performed on ActiveDirectory ob
 
 |**Action**|Description|Order of Operations
 |----------|-----------|-------------------
-|**Get**|Retrieves a single ActiveDirectory object by its [identity](#activedirectory-objects-and-identities).|Users<br>Groups<br>Organizational Units
-|**Create**|Creates a single ActiveDirectory object by its distinguished name only. (2)|Organizational Units<br>Groups<br>Users
-|**Modify**|Modifies a single ActiveDirectory object by its [identity](#activedirectory-objects-and-identities). (2)|Organizational Units<br>Groups<br>Users
-|**Delete**|Deletes a single ActiveDirectory object by its [identity](#activedirectory-objects-and-identities)|Users<br>Groups<br>Organizational Units
-|**Move**|Moves a single ActiveDirectory object by its [identity](#activedirectory-objects-and-identities) to another Organizational Unit.|Users<br>Groups<br>Organizational Units
-|**AddToGroup**|Adds Users and/or Groups to an existing ActiveDirecory group by its [identity](#activedirectory-objects-and-identities).|Users<br>Groups
-|**RemoveFromGroup**|Removes Users and/or Groups from an existing ActiveDirectory group by its [identity](#activedirectory-objects-and-identities).|Users<br>Groups
-|**AddAccessRule**|Adds Access Rights to an ActiveDirectory object for a given Principal (User or Group)|Users<br>Groups<br>Organizational Units
-|**RemoveAccessRule**|Removes Access Rights from an ActiveDirectory object for a given Principal (User or Group)|Users<br>Groups<br>Organizational Units
-|**SetAccessRule**|Sets Access Rights on an ActiveDirectory object for a given Principal (User or Group), clearing out any existing rights that might exist.|Users<br>Groups<br>Organizational Units
-|**PurgeAccessRules**|Removes All Access Rights to an ActiveDirectory object for a given Principal (User or Group)|Users<br>Groups<br>Organizational Units
-|**AddRole**|Adds a role to an ActiveDirectory object for a given Principal (User or Group)|Users<br>Groups<br>Organizational Units
-|**RemoveRole**|Removes a role from an ActiveDirectory object for a given Principal (User or Group)|Users<br>Groups<br>Organizational Units
+|**Get**|Retrieves a single ActiveDirectory object by its [identity](#activedirectory-objects-and-identities).|Users<br>Groups<br>Computers<br>Organizational Units
+|**Create**|Creates a single ActiveDirectory object by its distinguished name only. (2)|Organizational Units<br>Computers<br>Groups<br>Users
+|**Modify**|Modifies a single ActiveDirectory object by its [identity](#activedirectory-objects-and-identities). (2)|Organizational Units<br>Computers<br>Groups<br>Users
+|**Delete**|Deletes a single ActiveDirectory object by its [identity](#activedirectory-objects-and-identities)|Users<br>Groups<br>Computers<br>Organizational Units
+|**Move**|Moves a single ActiveDirectory object by its [identity](#activedirectory-objects-and-identities) to another Organizational Unit.|Users<br>Groups<br>Computers<br>Organizational Units
+|**AddToGroup**|Adds Users and/or Groups to an existing ActiveDirecory group by its [identity](#activedirectory-objects-and-identities).|Users<br>Groups<br>Computers
+|**RemoveFromGroup**|Removes Users and/or Groups from an existing ActiveDirectory group by its [identity](#activedirectory-objects-and-identities).|Users<br>Groups<br>Computers
+|**AddAccessRule**|Adds Access Rights to an ActiveDirectory object for a given Principal (User or Group)|Users<br>Groups<br>Computers<br>Organizational Units
+|**RemoveAccessRule**|Removes Access Rights from an ActiveDirectory object for a given Principal (User or Group)|Users<br>Groups<br>Computers<br>Organizational Units
+|**SetAccessRule**|Sets Access Rights on an ActiveDirectory object for a given Principal (User or Group), clearing out any existing rights that might exist.|Users<br>Groups<br>Computers<br>Organizational Units
+|**PurgeAccessRules**|Removes All Access Rights to an ActiveDirectory object for a given Principal (User or Group)|Users<br>Groups<br>Computers<br>Organizational Units
+|**AddRole**|Adds a role to an ActiveDirectory object for a given Principal (User or Group)|Users<br>Groups<br>Computers<br>Organizational Units
+|**RemoveRole**|Removes a role from an ActiveDirectory object for a given Principal (User or Group)|Users<br>Groups<br>Computers<br>Organizational Units
 |**Search**|Searches for ActiveDirectory objects based on standard LDAP Filter String syntax|Not Applicable
 |**None**|Used only for assignment of actions to roles in the [RoleManager](#role-manager).  This can not be used in plan execution.|N/A
 |**All**|Used only for assignment of actions to roles in the [RoleManager](#role-manager).  This can not be used in plan execution.|N/A
@@ -138,29 +139,40 @@ The parameters section of the plan is simply a list of each type of object you w
       - Identity: MyOrgUnit                                        # By Name
       - Identity: ou=myorgunit,dc=sandbox,dc=local                 # By Distinguished Name
       - Identity: fe00548a-1b8b-490f-8601-7646c290fc8a             # By Guid
+      Computers:
+      - Identity: computer1                                        # By Name
+      - Identity: cn=computer1,ou=myorgunit,dc=sandbox,dc=local    # By Disginguished Name
+      - Identity: 2c534dc4-06ba-4dc0-b86c-0eabdeb158f8             # By Guid
+      - Identity: computer1@sandbox.local                          # By User Principal
+      - Identity: computer1Sam                                     # By SamAccountName
+      - Identity: S-1-5-21-4054027134-3251639354-3875066094-1705   # By Sid
 
 ````
 
 For Get and Delete actions, the only field required for every ActiveDirectory object is its identity.  The example above shows each object type with every possible way it can be queried or deleted.
 
 ---
-### Action: AddToGroup and RemoveFromGroup, Object Type: Users and Groups
+### Action: AddToGroup and RemoveFromGroup, Object Type: Users, Groups and Computers
 ````yaml
   Parameters:
     Type: Yaml
     Values:
       Users:
       - Identity: user1                                            # Any Valid User Identity
-        Groups:
+        MemberOf:
         - MyGroup001                                               # Any Valid Group Identity
         - cn=MyGroup002,ou=myorgunit,dc=sandbox,dc=local           # Any Valid Group Identity
       Groups:
       - Identity: MyGroup001                                       # Any Valid Group Identity
-        Groups:
+        MemberOf:
+        - S-1-5-21-4054027134-3251639354-3875066094-1720           # Any Valid Group Identity
+      Computers:
+      - Identity: MyComputer001                                    # Any Valid Computer Identity
+        MemberOf:
         - S-1-5-21-4054027134-3251639354-3875066094-1720           # Any Valid Group Identity
 ````
 
-For Group Membership actions (AddToGroup and RemoveFromGroup), a "Groups" section is added below the Identity of each ActiveDirectory object.  The "Groups" section is a list of valid group [identities](#activedirectory-objects-and-identities) that specify which group the "Add" or "Remove" action it to be performed on.
+For Group Membership actions (AddToGroup and RemoveFromGroup), a "MemberOf" section is added below the Identity of each ActiveDirectory object.  The "MemberOf" section is a list of valid group [identities](#activedirectory-objects-and-identities) that specify which group the "Add" or "Remove" action it to be performed on.
 
 ---
 ### Action: Create or Modify, Object Type: Users
@@ -244,42 +256,7 @@ All the fields above are optional with the exception of "Identity" (which must b
 
 **Properties**
 
-Values under the "Properties" section are dynamic.  Any "attribute" that ActiveDirectory accepts for this type of object can be included here, in a "Key" and "Values" arrangement.  Most settable "attributes" for a User can be found on the microsoft site [here](https://msdn.microsoft.com/en-us/library/windows/desktop/ms677980(v=vs.85).aspx).  The "key" should represent the "Ldap-Display-Name" value of each attribute.   Here are the settable properties that apply to Users at the time of this documents writing :
-
-|Property|Description
-|--------|-----------
-|c|Country/Region (ISO-3166 2-Letter Code)
-|co|Country (Human Readable) 
-|company|Company 
-|countryCode|Country Code (ISO-3166 3-Digit Code)
-|department|Department 
-|facsimileTelephoneNumber|Fax Number
-|homePhone|Home Phone
-|info|Notes
-|initials|User Initials
-|ipPhone|IP Phone
-|l|City 
-|lockoutTime|Date and Time Account was locked out (Set To "0" For Unlock)
-|logonWorkstation|Log On To
-|manager|Manager Name (Distinguished Name) 
-|mobile|Mobile
-|otherFacsimileTelephoneNumber|Other Fax Numbers
-|otherHomePhone|Other Home Phones
-|otherIpPhone|Other IP Phones
-|otherMobile|Other Mobilesa
-|otherPager|Other Pagers
-|otherTelephone|Other Telephone Numbers
-|pager|Pager
-|physicalDeliveryOfficeName|Office
-|postalCode|Zip/Postal Code 
-|postOfficeBox|Post Office Box 
-|profilePath|Profile Path
-|st|State/Province
-|streetAddress|Street 
-|title|Job Title 
-|url|Other Web Pages
-|userWorkstations|Log On To
-|wWWHomePage|WWw Home Page
+Values under the "Properties" section are dynamic.  Any "attribute" that ActiveDirectory accepts for this type of object can be included here, in a "Key" and "Values" arrangement.  Most settable "attributes" for a User can be found on the microsoft site [here](https://msdn.microsoft.com/en-us/library/windows/desktop/ms677980(v=vs.85).aspx).  The "key" should represent the "Ldap-Display-Name" value of each attribute.
 
 ---
 ### Action: Create or Modify, Object Type: Groups
@@ -311,14 +288,7 @@ All the fields above are optional with the exception of "Identity" (which must b
 
 **Properties**
 
-Values under the "Properties" section are dynamic.  Any "attribute" that ActiveDirectory accepts for this type of object can be included here, in a "Key" and "Values" arrangement.  Most settable "attributes" for a Group can be found on the microsoft site [here](https://msdn.microsoft.com/en-us/library/windows/desktop/ms677980(v=vs.85).aspx).  The "key" should represent the "Ldap-Display-Name" value of each attribute.   Here are the settable properties that apply to Groups at the time of this documents writing :
-
-|Property|Description
-|--------|-----------
-|displayName|Display Name
-|info|Comments
-|mail|E-mail
-|managedBy|Managed By User (Distinguished Name)
+Values under the "Properties" section are dynamic.  Any "attribute" that ActiveDirectory accepts for this type of object can be included here, in a "Key" and "Values" arrangement.  Most settable "attributes" for a Group can be found on the microsoft site [here](https://msdn.microsoft.com/en-us/library/windows/desktop/ms677980(v=vs.85).aspx).  The "key" should represent the "Ldap-Display-Name" value of each attribute.
 
 ---
 ### Action: Create or Modify, Object Type: Organizational Units
@@ -341,18 +311,30 @@ Values under the "Properties" section are dynamic.  Any "attribute" that ActiveD
 ````
 **Properties**
 
-Values under the "Properties" section are dynamic.  Any "attribute" that ActiveDirectory accepts for this type of object can be included here, in a "Key" and "Values" arrangement.  Most settable "attributes" for an Organizational Unit can be found on the microsoft site [here](https://msdn.microsoft.com/en-us/library/windows/desktop/ms677623(v=vs.85).aspx).  The "key" should represent the "Ldap-Display-Name" value of each attribute.   Here are the settable properties that apply to Organizational Units at the time of this documents writing :
+Values under the "Properties" section are dynamic.  Any "attribute" that ActiveDirectory accepts for this type of object can be included here, in a "Key" and "Values" arrangement.  Most settable "attributes" for an Organizational Unit can be found on the microsoft site [here](https://msdn.microsoft.com/en-us/library/windows/desktop/ms677623(v=vs.85).aspx).  The "key" should represent the "Ldap-Display-Name" value of each attribute.
 
-|Property|Description
-|--------|-----------
-|countryCode|Country Code (ISO-3166 3-Digit Code)
-|co|Country (Human Readable) 
-|c|Country/Region (ISO-3166 2-Letter Code)
-|l|City 
-|managedBy|Managed By User (Distinguished Name)
-|postalCode|Zip/Postal Code 
-|street|Street 
-|st|State/Province
+---
+### Action: Create or Modify, Object Type: Computers
+````yaml
+  Parameters:
+    Type: Yaml
+    Values:
+      Computers:
+      - Identity: cn=MyComputer,dc=sandbox,dc=local
+        Name: MyRenamedComputer              # This will change the "Name" of the object.  Use To "Rename" an Organizational Unit.
+        Description: Some Lame Description
+        ManagedBy: mfox    # Can Be Identity of any User or Group
+        Properties:
+          managedBy:
+          - cn=mfox,ou=MyOrgUnit,DC=sandbox,DC=local    # Property Takes Precedence Over Field
+          userAccountControl:
+          - 544
+          operatingSystem:
+          - ~null~
+````
+**Properties**
+
+Values under the "Properties" section are dynamic.  Any "attribute" that ActiveDirectory accepts for this type of object can be included here, in a "Key" and "Values" arrangement.  Most settable "attributes" for a Computer can be found on the microsoft site [here](https://msdn.microsoft.com/en-us/library/windows/desktop/ms675736(v=vs.85).aspx).  The "key" should represent the "Ldap-Display-Name" value of each attribute.
 
 ---
 ### Action: AddAccessRule, RemoveAccessRule or SetAccessRule, Object Type: All
@@ -386,6 +368,16 @@ Values under the "Properties" section are dynamic.  Any "attribute" that ActiveD
       OrganizationalUnits:
       - Identity: SomeOrgUnit001
         AccessRules:
+        - Identity: MyComputer
+          Type: Allow
+          Rights: Self,GenericRead
+          Inheritance: Children
+        - Identity: TestUser001
+          Type: Deny
+          Rights: ListChildren
+      Computers:
+      - Identity: SomeComputer001
+        AccessRules:
         - Identity: TestUser001
           Type: Allow
           Rights: Self,GenericRead
@@ -395,7 +387,7 @@ Values under the "Properties" section are dynamic.  Any "attribute" that ActiveD
           Rights: ListChildren
 ````
 
-The "AccessRules" section creates AccessRules to allow or deny rights on the object to a given Principal (User or Group).  The "Type" field can either be the value "Allow" or "Deny".  The Rights field maps to the ActiveDirectoryRights Enumeration in C#.  To assign multiple rights in a single rule, comma-separate the values in the field (ex: "Self, GenericRead").   Below is the list of rights supported : 
+The "AccessRules" section creates AccessRules to allow or deny rights on the object to a given Principal (User, Group or Computer).  The "Type" field can either be the value "Allow" or "Deny".  The Rights field maps to the ActiveDirectoryRights Enumeration in C#.  To assign multiple rights in a single rule, comma-separate the values in the field (ex: "Self, GenericRead").   Below is the list of rights supported : 
 
 #### ActiveDirectoryRights Enumeration
 
@@ -464,6 +456,11 @@ In the table below, the column "Applies To" assumes an OrgUnit structure like :
         Roles:
         - Name: AdSomeOtherRole
           Principal: TestUser001
+      Computers:
+      - Identity: cn=MyComputer,ou=Computers,dc=sandbox,dc=local
+        Roles:
+        - Name: AdSomeOtherRole
+          Principal: TestUser001
 ````
 
 The "Roles" element defines the role "name" and to which principal (user or group) the role should be applied or removed from.  See the [Role Manager](#rolemanager) section above for details on how to define roles.
@@ -482,6 +479,9 @@ The "Roles" element defines the role "name" and to which principal (user or grou
         MoveTo: Destination
       OrganizationalUnits:
       - Identity: MoveMeOrgUnit
+        MoveTo: Destination
+      Computers:
+      - Identity: MoveMeComputer
         MoveTo: Destination
 ````
 
@@ -521,3 +521,14 @@ Things to know about using properites :
 The "ManagedBy" field of Groups and Organizational Units can be any valid identity of a User or Group.  The handler looks up the User or Group and provides the DistinguishedName to the "managedby" property.
 
 The "managedBy" property must be the DistinguishedName of a User or Group.  Properties directly manipulate the underlying DirectoryEntry and must match expected formats.
+
+## Appendix A: Object Properties
+
+A more "exhaustive" list of available properties for each object type can be found at the links below : 
+
+Object Type|Reference URLs
+-----------|--------------
+User|[https://social.technet.microsoft.com/wiki/contents/articles/12037.active-directory-get-aduser-default-and-extended-properties.aspx](https://social.technet.microsoft.com/wiki/contents/articles/12037.active-directory-get-aduser-default-and-extended-properties.aspx)
+Group|[https://social.technet.microsoft.com/wiki/contents/articles/12079.active-directory-get-adgroup-default-and-extended-properties.aspx](https://social.technet.microsoft.com/wiki/contents/articles/12079.active-directory-get-adgroup-default-and-extended-properties.aspx)
+Org Unit|[https://social.technet.microsoft.com/wiki/contents/articles/12089.active-directory-get-adorganizationalunit-default-and-extended-properties.aspx](https://social.technet.microsoft.com/wiki/contents/articles/12089.active-directory-get-adorganizationalunit-default-and-extended-properties.aspx)
+Computer|[https://social.technet.microsoft.com/wiki/contents/articles/12056.active-directory-get-adcomputer-default-and-extended-properties.aspx](https://social.technet.microsoft.com/wiki/contents/articles/12056.active-directory-get-adcomputer-default-and-extended-properties.aspx)
