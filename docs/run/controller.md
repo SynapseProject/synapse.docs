@@ -33,7 +33,7 @@ Synapse supports two execution models: sync and async.  These should not be conf
 
 When executing under the sync interface, the Controller will monitor the Plan for completion and return a subset of the ResultPlan when complete.  "Complete" is defined as a Plan Status value of `Complete/Success` (integer 128) or greater ([_see below for StatusType detail_](#statustype-values)).  Sync execution is most appropriate for short-running Plans where maintaining an open HTTP connection is acceptable.
 
-### Options
+### Sync Execution Options
 
 |Parameter|Type|Required|Default|Description
 |-|-|-|-|-
@@ -57,7 +57,7 @@ Note: Parameters specified below for clarity.
 #### StatusType Values
 StatusType values are part of the Synapse Core project.   The values below are current as of the last update to this documentation,
 but for the most recent values, please check the [SynapseProject GitHub page](https://github.com/SynapseProject/synapse.core.net/blob/master/Synapse.Core/Classes/Enums/StatusType.cs).
-```
+```java
 namespace Synapse.Core
 {
     public enum StatusType
@@ -83,7 +83,7 @@ namespace Synapse.Core
 #### SerializationType Values
 StatusType values are part of the Synapse Core project.   The values below are current as of the last update to this documentation,
 but for the most recent values, please check the [SynapseProject GitHub page](https://github.com/SynapseProject/synapse.core.net/blob/master/Synapse.Core/Classes/Enums/SerializationType.cs).
-```
+```java
 namespace Synapse.Core
 {
     public enum SerializationType
@@ -99,10 +99,9 @@ namespace Synapse.Core
 
 ## Asynchronous Execution
 
-When executing under the async interface, the Controller will immediately return a transaction Id back to the caller and close the HTTP connection.  To know when the Plan has completed, use the API endpoints for status as shown below.
+When executing under the async interface, the Controller will immediately return a plan instance Id back to the caller and close the HTTP connection.  To know when the Plan has completed, use the API endpoints for status as shown below.  Asynchronous execution is most appropriate for long-running Plans where maintaining an open HTTP connection is inappropriate.  When using async execution, you will need to manually poll for Plan completion via the planInstanceId, which may be accomplished through two interface options, as described below.
 
-
-### Options
+### Async Execution Options
 
 |Parameter|Type|Required|Default|Description
 |-|-|-|-|-
@@ -112,16 +111,43 @@ When executing under the async interface, the Controller will immediately return
 |`nodeRootUrl`|string|no|none|Optional value to override the default Node for Plan execution.  Specify as `http://{host:port}/synapse/node`.
 
 
-### Getting Plan Status
+### Getting Plan Status with PlanInstanceId
 
-/synapse/execute/{planUniqueName}/{planInstanceId}
+When manually fetching Plan status, you may choose to retrieve the entire `ResultPlan` or a specified subsection via the `\part` interface.
+
+#### Example Manual Poller
+```java
+public static StatusType GetStatus(string planName, long id, int pollingIntervalSeconds = 1, int timeoutSeconds = 120)
+{
+    //ensure valid values
+    pollingIntervalSeconds = pollingIntervalSeconds < 1 ? 1 : pollingIntervalSeconds;
+    timeoutSeconds = timeoutSeconds < 1 ? 120 : timeoutSeconds;
+
+    int c = 0;
+    StatusType status = StatusType.New;
+    while( c < timeoutSeconds )
+    {
+        Thread.Sleep( pollingIntervalSeconds * 1000 );
+        //pseudo-code: status = fetch from whole ResultPlan or part interface
+        c = status < StatusType.Success ? c + 1 : int.MaxValue;
+    }
+
+    return status;
+}
+```
+
+#### Getting the Entire ResultPlan
+
+One way to fetch Status is via getting the entire ResultPlan.  When polling, the ResultPlan will not contain status for every Action until the Plan Status is >= Complete.  To retrieve the ResultPlan, execute an HTTP GET to:
+
+- `/synapse/execute/{planUniqueName}/{planInstanceId}`
+
+Then, parse the Plan and get the Plan.Result.Status.
 
 
-### Using the Part Interface
+#### Using the `/part` Interface to get a Subsection of the ResultPlan
 
-The Synapse Controller /part/ interface is designed to allow selection of one or more individual Plan elements, serialized into a specific format.  This is useful when using Synapse a data service, or when seeking efficiency of data interrogation.
-
-#### Syntax
+The Synapse Controller /part interface is designed to allow selection of one or more individual Plan elements, serialized into a specific format.  This is useful when seeking efficiency of data interrogation or when serializing data to a specific format.
 
 Selecting Plan elements requires a rooted path, expressed as shown below.  If an element is part of a list, use a index specifier.
 
