@@ -4,14 +4,14 @@ A "RoleManager" is responsible for the administration and enforcement of "roles"
 ## Terms
 - **Role** : A logical grouping of allowed "actions".
 - **Action** : A task that can be executed against the Active Directory.  Click [here](handler.md#actions) for a detailed listing.
-- **Principal** : A User or Group to which a role can be assigned, either directly or through inheritance.
-- **Object** : An ActiveDirectory object to which the role applies (either directly or through inheritance).
+- **Principal** : A User or Group to which a role can be assigned, either directly or through inheritance.  An optional domain can be prepended for principals in other domains.  Click [here](handler.md#activedirectory-objects-and-identities) for more information about domains.
+- **Object** : An ActiveDirectory object to which the role applies (either directly or through inheritance).  An optional domain can be prepended for objects in other domains.  Click [here](handler.md#activedirectory-objects-and-identities) for more information about domains.
 
 ## Example
 
 The role "Administrators" can perform all actions against the ActiveDirectory.  This role is assigned to principal (group) "MyOuAdmins", and is applied to the object "MyOu" and all its children (through inheritance).   
 
-Thus, if user "scott" is in the group "MyOuAdmins" and wants to delete a user "tiger" (cn=tiger,ou=MyOu,ou=Dept001,dc=sandbox,dc=local) which is under the "MyOu" OrganizationalUnit, the RoleManager would evaluate scott's roles and determine he did was allowed to perform that action.
+Thus, if user "scott" is in the group "MyOuAdmins" and wants to delete a user "tiger" (cn=tiger,ou=MyOu,ou=Dept001,dc=sandbox,dc=local) which is under the "MyOu" OrganizationalUnit, the RoleManager would evaluate scott's roles and determine if he was allowed to perform that action.
 
 # Interface Methods
 
