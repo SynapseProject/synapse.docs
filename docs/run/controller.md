@@ -50,6 +50,7 @@ When executing under the sync interface, the Controller will monitor the Plan fo
 ### Example GET/POST
 
 Notes:
+
  - Parameters specified below for clarity, see above for required/default values.
  - GET/POST URLs are the same, but Plan Dynamic Parameters are managed differently per method.  See [Dynamic Parameters](#dynamic-parameters) below for details.
 
@@ -219,6 +220,7 @@ The general URI signature for starting a Plan via GET is:
 where `dryRun` and `requestNumber` are reserved by Synapse as built-in parameters.  Every other key/value pair on the URL is passed-through to the Plan as a custom/dynamic parameter.
 
 #### GET Example:
+
 - `http://host:port/synapse/execute/{planUniqueName}/start/?dryRun=true&requestNumber=0123&key0=value0&key1=value1&key2=value2`
 - `key0`, `key1`, and `key2` will all be treated as dynamic parameters and passed through to the Plan.
 
