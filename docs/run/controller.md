@@ -130,6 +130,7 @@ When executing under the async interface, the Controller will immediately return
 ### Example GET/POST
 
 Notes:
+
  - Parameters specified below for clarity, see above for required/default values.
  - GET/POST URLs are the same, but Plan Dynamic Parameters are managed differently per method.  See [Dynamic Parameters](#dynamic-parameters) below for details.
 
@@ -183,6 +184,7 @@ The Synapse Controller /part interface is designed to allow selection of one or 
 ### Example GET
 
 Notes:
+
  - Parameters specified below for clarity, see above for required/default values.
  - Unlike Synchronous Plan execution, Path is **required** in the /part interface.
 
