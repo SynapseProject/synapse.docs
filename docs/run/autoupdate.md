@@ -28,7 +28,7 @@ When initiating an autoupdate, Synapse.Server.AutoUpdater.exe follows this workf
 |UpdateConfigUri|String|Yes|URL or UNC path to the update configuration file.  See [Update Config File](#update-config-file) below for more information.
 |RuntimeExe|String|Yes|Path the runtime process.  The required value is `..\..\Synapse.Server.exe`.
 |DownloadFolder|String|Yes|The path where the update files are cached during the update process.
-|WaitForExitMilliseconds|Integer|Yes|The maximum number of milliseconds to wait before terminating the AutoUpdater.
+|WaitForExitMillseconds|Integer|Yes|The maximum number of milliseconds to wait before terminating the AutoUpdater.
 |StartServicesAfterInstall|Boolean|Yes|Indicates whether to restart the server after AutoUpdate is complete.
 
 #### Example `Synapse.Server.AutoUpdater.yaml` File
@@ -39,7 +39,7 @@ ServiceConfigs:
 UpdateConfigUri:  http:\\ [or] \\UNC\path\to\updates\updateconfig.xml
 RuntimeExe: ..\..\Synapse.Server.exe
 DownloadFolder: patches
-WaitForExitMilliseconds: 30000
+WaitForExitMillseconds: 30000
 StartServicesAfterInstall: false
 ```
 
