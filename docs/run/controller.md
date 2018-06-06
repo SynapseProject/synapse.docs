@@ -40,18 +40,20 @@ When executing under the sync interface, the Controller will monitor the Plan fo
 |`planUniqueName`|string|yes|none|The unique name of the Plan to execute.
 |`dryRun`|boolean|no|`false`|Indicates whether to execute the Plan in a "test" mode.
 |`requestNumber`|string|no|none|Optional self-provided tracking number for this current Plan execution.
-|`path`|string|no|`Actions[0]:Result:ExitData`|The subsection of the ResultPlan to return when the Plan completes.
+|`path`|string|**no**|`Actions[0]:Result:ExitData`|The subsection of the ResultPlan to return when the Plan completes.  See [Path Syntax](#path-syntax) for details.
 |`serializationType`|[SerializationType](#serializationtype-values)|no|`SerializationType.Json`|Takes the output from `path` above and validates it can be parsed according to the SerializationType and returns it as such.
 |`setContentType`|boolean|no|`true`|Optionally sets the HTTP Response header for `Content-Type` to match the SerializationType.
 |`pollingIntervalSeconds`|int|no|1|Specifies time interval, in seconds, for how often the Controller polls for Plan completion.
 |`timeoutSeconds`|int|no|120|Specifies the time interval, in seconds, for how long the Controller will continues polling for Plan completion.  If the timeout elapses the Controller will throw a timeout exception but that _does not_ affect Plan execution - you may continue to poll for status manually following a timeout.
 |`nodeRootUrl`|string|no|none|Optional value to override the default Node for Plan execution.  Specify as `http://{host:port}/synapse/node`.
 
-### Example GET
+### Example GET/POST
 
-Note: Parameters specified below for clarity.
+Notes:
+ - Parameters specified below for clarity, see above for required/default values.
+ - GET/POST URLs are the same, but Plan Dynamic Parameters are managed differently per method.  See [Dynamic Parameters](#dynamic-parameters) below for details.
 
-`http://localhost:20000/synapse/execute/samplePs1/start/sync?dryRun=false&requestNumber=1234&path=Actions%5B0%5D%3AResult%3AExitData&serializationType=2&setContentType=true&pollingIntervalSeconds=2&timeoutSeconds=20`
+`http://localhost:20000/synapse/execute/samplePs1/start/sync?dryRun=false&requestNumber=1234&path=Actions%5B0%5D%3AResult%3AExitData&serializationType=Json&setContentType=true&pollingIntervalSeconds=2&timeoutSeconds=20`
 
 
 #### StatusType Values
@@ -80,6 +82,18 @@ namespace Synapse.Core
 }
 ```
 
+#### Path Syntax
+Selecting Plan elements requires a rooted path, expressed as shown below.  If an element is part of a list, use a index specifier.
+
+- element:element:element:etc.
+- element[index]:element:element[index]:element:etc.
+
+Examples:
+
+- `Result:BranchStatus` #returns Plan.Result.Status
+- `Actions[0]:Result:ExitData`  #returns Plan.Actions[0]:Result:ExitData
+
+
 #### SerializationType Values
 StatusType values are part of the Synapse Core project.   The values below are current as of the last update to this documentation,
 but for the most recent values, please check the [SynapseProject GitHub page](https://github.com/SynapseProject/synapse.core.net/blob/master/Synapse.Core/Classes/Enums/SerializationType.cs).
@@ -97,9 +111,12 @@ namespace Synapse.Core
 }
 ```
 
+YAML/JSON/XML will attempt to parse the element data into the specified format before returning it.  "Unspecified" will return the data, as-is.
+
+
 ## Asynchronous Execution
 
-When executing under the async interface, the Controller will immediately return a plan instance Id back to the caller and close the HTTP connection.  To know when the Plan has completed, use the API endpoints for status as shown below.  Asynchronous execution is most appropriate for long-running Plans where maintaining an open HTTP connection is inappropriate.  When using async execution, you will need to manually poll for Plan completion via the planInstanceId, which may be accomplished through two interface options, as described below.
+When executing under the async interface, the Controller will immediately return a plan instance Id back to the caller and close the HTTP connection.  To know when the Plan has completed, create a manual poller ([example](#example-manual-poller)) and use the API endpoints for status as shown below.  Asynchronous execution is most appropriate for long-running Plans where maintaining an open HTTP connection is inappropriate.  When using async execution, you will need to manually poll for Plan completion via the planInstanceId, which may be accomplished through two interface options, as described below.
 
 ### Async Execution Options
 
@@ -110,12 +127,16 @@ When executing under the async interface, the Controller will immediately return
 |`requestNumber`|string|no|none|Optional self-provided tracking number for this current Plan execution.
 |`nodeRootUrl`|string|no|none|Optional value to override the default Node for Plan execution.  Specify as `http://{host:port}/synapse/node`.
 
+### Example GET/POST
 
-### Getting Plan Status with PlanInstanceId
+Notes:
+ - Parameters specified below for clarity, see above for required/default values.
+ - GET/POST URLs are the same, but Plan Dynamic Parameters are managed differently per method.  See [Dynamic Parameters](#dynamic-parameters) below for details.
 
-When manually fetching Plan status, you may choose to retrieve the entire `ResultPlan` or a specified subsection via the `\part` interface.
+`http://localhost:20000/synapse/execute/samplePs1/start?dryRun=false&requestNumber=1234&`
 
-#### Example Manual Poller
+
+### Example Manual Poller
 ```java
 public static StatusType GetStatus(string planName, long id, int pollingIntervalSeconds = 1, int timeoutSeconds = 120)
 {
@@ -136,6 +157,10 @@ public static StatusType GetStatus(string planName, long id, int pollingInterval
 }
 ```
 
+### Getting Plan Status with PlanInstanceId
+
+When manually fetching Plan status, you may choose to retrieve the entire `ResultPlan` or a specified subsection via the `\part` interface.
+
 #### Getting the Entire ResultPlan
 
 One way to fetch Status is via getting the entire ResultPlan.  When polling, the ResultPlan will not contain status for every Action until the Plan Status is >= Complete.  To retrieve the ResultPlan, execute an HTTP GET to:
@@ -145,30 +170,38 @@ One way to fetch Status is via getting the entire ResultPlan.  When polling, the
 Then, parse the Plan and get the Plan.Result.Status.
 
 
-#### Using the `/part` Interface to get a Subsection of the ResultPlan
+#### Getting Subsections of the ResultPlan with the `/part` Interface
 
-The Synapse Controller /part interface is designed to allow selection of one or more individual Plan elements, serialized into a specific format.  This is useful when seeking efficiency of data interrogation or when serializing data to a specific format.
+The Synapse Controller /part interface is designed to allow selection of one or more individual Plan elements, serialized into a specific format.  This is useful when seeking efficiency of data interrogation or when serializing data to a specific format.  This capability is embedded in Synchronous Plan execution and is the method by which data is returned.
 
-Selecting Plan elements requires a rooted path, expressed as shown below.  If an element is part of a list, use a index specifier.
+|Parameter|Type|Required|Default|Description
+|-|-|-|-|-
+|`path`|string|**yes**|`Actions[0]:Result:ExitData`|The subsection of the ResultPlan to return when the Plan completes.  See [Path Syntax](#path-syntax) for details.
+|`serializationType`|[SerializationType](#serializationtype-values)|no|`SerializationType.Json`|Takes the output from `path` above and validates it can be parsed according to the SerializationType and returns it as such.
+|`setContentType`|boolean|no|`true`|Optionally sets the HTTP Response header for `Content-Type` to match the SerializationType.
 
-- element:element:element:etc.
-- element[index]:element:element[index]:element:etc.
+### Example GET
 
-Examples:
+Notes:
+ - Parameters specified below for clarity, see above for required/default values.
+ - Unlike Synchronous Plan execution, Path is **required** in the /part interface.
 
-- Result:BranchStatus
-- Actions[0]:Result:ExitData
+`http://localhost:20000/synapse/execute/samplePs1/12341234/part?elementPath=Actions%5B0%5D%3AResult%3AExitData&serializationType=Json&setContentType=true`
 
-### Serialization Format
+### Example POST
 
-To return "native" data formats from the Synapse Controller API, specify the serialization format as:
+- URL: `http://localhost:20000/synapse/execute/samplePs1/12341234/part`
+- Body:
 
-- YAML
-- JSON
-- XML
-- Unspecified
-
-YAML/JSON/XML will attempt to parse the element data into the specified format before returning it.  "Unspecified" will return the data, as-is.
+```
+{
+  "Type": Json,
+  "ElementPaths": [
+    "Actions[0]:Result:ExitData",
+    "Result.Status"
+  ]
+}
+```
 
 ## Dynamic Parameters
 
@@ -179,6 +212,7 @@ Synapse Controller accepts dynamic Plan parameters in both GET and POST operatio
 The general URI signature for starting a Plan via GET is:
 
 - `http://host:port/synapse/execute/{planUniqueName}/start/?dryRun={true|false}&requestNumber={requestNumber}`
+- `http://host:port/synapse/execute/{planUniqueName}/start/sync/?dryRun={true|false}&requestNumber={requestNumber}`
 
 where `dryRun` and `requestNumber` are reserved by Synapse as built-in parameters.  Every other key/value pair on the URL is passed-through to the Plan as a custom/dynamic parameter.
 
@@ -191,6 +225,7 @@ where `dryRun` and `requestNumber` are reserved by Synapse as built-in parameter
 As with a GET, the URI for a POST remains:
 
 - `http://host:port/synapse/execute/{planUniqueName}/start/?dryRun={true|false}&requestNumber={requestNumber}`
+- `http://host:port/synapse/execute/{planUniqueName}/start/sync/?dryRun={true|false}&requestNumber={requestNumber}`
 
 but sending dynamic parameters is accomplished in the http request via the `DynamicParameters` key/value pair wrapper structure.
 
@@ -208,4 +243,3 @@ but sending dynamic parameters is accomplished in the http request via the `Dyna
   }
 }
 ```
-
