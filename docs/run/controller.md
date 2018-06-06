@@ -133,7 +133,7 @@ Notes:
  - Parameters specified below for clarity, see above for required/default values.
  - GET/POST URLs are the same, but Plan Dynamic Parameters are managed differently per method.  See [Dynamic Parameters](#dynamic-parameters) below for details.
 
-`http://localhost:20000/synapse/execute/samplePs1/start?dryRun=false&requestNumber=1234&`
+`http://localhost:20000/synapse/execute/samplePs1/start?dryRun=false&requestNumber=1234`
 
 
 ### Example Manual Poller
@@ -195,7 +195,7 @@ Notes:
 
 ```
 {
-  "Type": Json,
+  "Type": "Json",
   "ElementPaths": [
     "Actions[0]:Result:ExitData",
     "Result.Status"
