@@ -16,14 +16,14 @@ The Synapse Controller URI is: http://{host:port}/synapse/execute.  For detailed
 |get|/synapse/execute/{planUniqueName}|Returns a list of Plan Instance Ids.
 |get|/synapse/execute/{planUniqueName}/start|Execute a Plan using the URI querystring for dynamic parameters. Returns planInstanceId.
 |post|/synapse/execute/{planUniqueName}/start|Execute a Plan with an http post, where dynamic parameters are specified in the http body. Returns planInstanceId.
-|get|/synapse/execute/{planUniqueName}/start/sync|Execute a Plan using the URI querystring for dynamic parameters and polls for completion at the server.  Includes an embedded call to `/part/` and, by default, returns `Actions[0]:Result:ExitData`.  See [_Using the Part Interface_](#using-the-part-interface) below for more information.
-|post|/synapse/execute/{planUniqueName}/start/sync|Execute a Plan with an http post, where dynamic parameters  are specified in the http body and polls for completion at the server.  Includes an embedded call to `/part/` and, by default, returns `Actions[0]:Result:ExitData`.  See [_Using the Part Interface_](#using-the-part-interface) below for more information.
+|get|/synapse/execute/{planUniqueName}/start/sync|Execute a Plan using the URI querystring for dynamic parameters and polls for completion at the server.  Includes an embedded call to `/part/` and, by default, returns `Actions[0]:Result:ExitData`.  See [_Synchronous Execution_](#synchronous-execution) below for more information.
+|post|/synapse/execute/{planUniqueName}/start/sync|Execute a Plan with an http post, where dynamic parameters  are specified in the http body and polls for completion at the server.  Includes an embedded call to `/part/` and, by default, returns `Actions[0]:Result:ExitData`.  See [_Synchronous Execution_](#synchronous-execution) below for more information.
 |delete|/synapse/execute/{planUniqueName}/{planInstanceId}|Cancel a Plan by planInstanceId.
 |get|/synapse/execute/{planUniqueName}/{planInstanceId}|Get the status of a Plan by planInstanceId.
 |post|/synapse/execute/{planUniqueName}/{planInstanceId}|Update the status of the entire Plan, by planInstanceId.
 |post|/synapse/execute/{planUniqueName}/{planInstanceId}/action|Update the status of an individual Action within a Plan, by planInstanceId.
-|get|/synapse/execute/{planUniqueName}/{planInstanceId}/part|Select an individual element from within a Plan, specifying the desired return data serialization format.  See [Using the Part Interface] below for details.
-|post|/synapse/execute/{planUniqueName}/{planInstanceId}/part|Select one or more individual elements from within a Plan, specifying the desired return data serialization format.  See [Part] below for details.
+|get|/synapse/execute/{planUniqueName}/{planInstanceId}/part|Select an individual element from within a Plan, specifying the desired return data serialization format.  See details on the [Part Interface](#getting-subsections-of-the-resultplan-with-the-part-interface) below.
+|post|/synapse/execute/{planUniqueName}/{planInstanceId}/part|Select one or more individual elements from within a Plan, specifying the desired return data serialization format.  See details on the [Part Interface](#getting-subsections-of-the-resultplan-with-the-part-interface) below.
 
 # Synchronous and Asynchronous Execution Models
 
