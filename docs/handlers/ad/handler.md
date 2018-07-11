@@ -496,12 +496,15 @@ The "MoveTo" element must be the identity of an Organizational Unit.
       SearchRequests:
       - Filter: (objectClass=User)
         SearchBase: ou=Synapse,dc=sandbox,dc=local
+        ResultsFile: C:\\Temp\\MyResults.json
         ReturnAttributes:
         - Name
         - objectGUID
 ````
 
 The "Search" action doesn't apply to any single object, rather it takes a [Search Filter](https://msdn.microsoft.com/en-us/library/aa746475(v=vs.85).aspx) and a SearchBase and returns the defined "ReturnAttributes" for each DirectoryEntry that matches the filter.
+
+The "ResultsFile" parameter saves the search results to an external file.  The location specified here must be accessible by the account under which the Synapse node is running.  This feature was provided to return large search results which exceed the allowed max length of a string.  If the size of your results throw an "OutOfMemory" error, use this field and set the "ReturnObjects" flag in Config to "false".
 
 # Important Notes
 
@@ -524,7 +527,11 @@ The "managedBy" property must be the DistinguishedName of a User or Group.  Prop
 
 ## Appendix A: Object Properties
 
-A more "exhaustive" list of available properties for each object type can be found at the links below : 
+The object "Properties" section refers to the ActiveDirectory "Attributes" on each object.   Since there is not a finite set of attributes that are allowed and custom attributes can be added at any time to any object type, this is represented in the handler as a list of key value pairs.
+
+The "key" represents the ldapDisplayName of an attribute, and the "value" is an array of strings, representing the one or more values the attribute can have.
+
+A list of default available properties for each object type can be found at the links below : 
 
 Object Type|Reference URLs
 -----------|--------------

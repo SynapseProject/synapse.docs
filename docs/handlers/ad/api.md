@@ -41,6 +41,7 @@ The query string is used to control how the output from the rest call will be fo
 |returnobjects|boolean|true|Returns the object along with the status of the action.
 |returnobjectproperties|boolean|true|Returns the raw DirectoryEntry properties associated with the object.
 |returnaccessrules|boolean|false|Returns all the access rules associated with the object.
+|objecttype|"Yaml"<br/>"Json"<br/>"Xml"|"Json"|Indicates the format the result should be returned in.
 
 <!--
 |outputtype|"Json"<br>"Yaml"<br>"Xml"|Json|Specifies the output type of the adapter.
@@ -1317,3 +1318,81 @@ The details of how this is accomplished is detailed in the RoleManager implement
 {{protocol}}://{{host}}:{{controllerPort}}/myriad/computer/<identity>/role/<principalDomain>/<principal>/<role>
 ````
 
+## Custom Plan Execution
+
+If you want to provide custom functionality not explicitly provided above, but still want to front it through the "myriad" url structure, the API provides a way to create your own custom plans and execute them.
+
+````
+{{protocol}}://{{host}}:{{controllerPort}}/myriad/<planname>
+````
+
+The plan can be any Synapse plan and is not limited to only calling the ActiveDiretory handler.  By default, the API passes in the following dynamic parameters to the plan, which you are able to use as you wish.
+
+|Parameter Name|Description
+|--------------|-----------
+|url|The entire url string string after the plan name, but terminating at the query string.<br/><br/>http://myserver:20000/MyPlan/<b>My/Long/Url/String</b>?query1=One&query2=Two<br/><br/>url = "My/Long/Url/String"
+|url_1, url_2, ...|The parts of the URL split by slashes.<br/><br/>http://myserver:20000/MyPlan/<b>My</b>/<b>Long</b>/<b>Url</b>/<b>String</b>?query1=One&query2=Two<br/><br/>url_1 = "My", url_2 = "Long", url_3 = "Url", url_4 = "String"
+|body|The entire contents of the POST or PUT body as a string
+|method|The method used to call the API.   Currently the following methods are supported : <b>GET, POST, PUT, DELETE</b> and <b>PATCH</b>
+|requesturi|The entire uri (without query string variables)<br/><br/><b>http://myserver:20000/MyPlan/My/Long/Url/String</b>?query1=One&query2=Two<br/><br/>requesturi = "http://myserver:20000/MyPlan/My/Long/Url/String"
+|query|The entire query string<br/><br/>http://myserver:20000/MyPlan/My/Long/Url/String?<b>query1=One&query2=Two</b><br/><br/>query="query1=One&query2=Two"
+|user|The requesting user (if available)
+|<i>query variables</I>|The query string split into name/value pairs<br/><br/>http://myserver:20000/MyPlan/My/Long/Url/String?<b>query1=One</b>&<b>query2=Two</b><br/><br/>query1 = "One", query2 = "Two"
+
+
+### Example
+
+So lets assume you want to allow users to disable a user via the MyriAD Api.   This would be accomplished by calling "Modify" on a user and setting the "Enabled" flag to false.   
+
+Rather than have the user format a post, passing in the correct pamameters in the body, you can give them a much simpler URL like this :
+
+````
+http://myserver:20000/DisableUser/MyDomain\MyUserName
+
+(Assumes the plan is called "DisableUser")
+````
+
+The API would pass to the value "MyDomain/MyUserName" in the "url" parameter to the plan.  The plan then replaces the "Identity" section with that value and hard-codes "Enabled" to false.
+
+````yaml
+Name: DisableUser
+Description: Disable Ldap User
+IsActive: true
+Actions:
+- Name: DisableUser
+  Handler:
+    Type: Synapse.Handlers.ActiveDirectory:ActiveDirectoryHandler
+    Config:
+      Type: Yaml
+      Values:
+        Action: Modify
+        RunSequential: false
+        ReturnGroupMembership: false
+        OutputType: Json
+        PrettyPrint: false
+        ReturnObjects: true
+        ReturnObjectProperties: true
+        ReturnAccessRules: false
+        UseUpsert: false
+        SuppressOutput: false
+      Dynamic:
+      - Source: returngroupmembership
+        Target: ReturnGroupMembership
+      - Source: returnobjects
+        Target: ReturnObjects
+      - Source: outputtype
+        Target: OutputType
+      - Source: returnobjectproperties
+        Target: ReturnObjectProperties
+      - Source: returnaccessrules
+        Target: ReturnAccessRules
+  Parameters:
+    Type: Yaml
+    Values:
+      Users:
+      - Identity: 
+        Enabled: false
+    Dynamic:
+    - Source: url
+      Target: Users[0]:Identity
+````
