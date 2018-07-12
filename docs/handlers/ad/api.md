@@ -1338,7 +1338,7 @@ The plan can be any Synapse plan and is not limited to only calling the ActiveDi
 |query|The entire query string<br/><br/>http://myserver:20000/MyPlan/My/Long/Url/String?<b>query1=One&query2=Two</b><br/><br/>query="query1=One&query2=Two"
 |user|The requesting user (if available)
 |<i>query variables</I>|The query string split into name/value pairs<br/><br/>http://myserver:20000/MyPlan/My/Long/Url/String?<b>query1=One</b>&<b>query2=Two</b><br/><br/>query1 = "One", query2 = "Two"
-
+|<i>body key/value pairs</i>|If the body of a PUT or POST can be parsed into a set of KeyValue pairs (Dictionary<string, string>) then each key and value will be passed into dynamic parameters in much the same way the query string is parsed<br/><br/>Example Json : { "age" : "42", "name" : "John Q. Public", "sex" : "Male" }<br/>age = "42", name = "John Q. Public", sex = "Male"
 
 ### Example
 
