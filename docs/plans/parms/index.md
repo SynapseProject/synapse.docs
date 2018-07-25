@@ -180,25 +180,42 @@ Dynamic suppors values which are provided dynamically at runtime, such as throug
 
 ```yaml
   Dynamic:
-  - Source: URI parameter name
+  - Description: 
+    Source: URI parameter name
     Target: Element:IndexedElement[0]:Element
     Parse: true|false
-    Replace: Regex expression
+    Replace: Regex expressionA human-friendly description.
     Encode: None|Base64
+    DataType: String
+    Validation: Regex Expression
+    RestrictToOptions: true|false
     Options:
     - Key: key
       Value: value
+      Description: A human-friendly description.
+      IsDefault: true
     - Key: key
       Value: value
+      Description: A human-friendly description.
+      IsDefault: false
 ```
 
 |Name|Type/Value|Required|Description
 |-|-|-|-
+|Description|String|No|A human-friendly description for the Dynamic Parameter.
 |Source|String|Yes|The key name of the value in the dynamic values key-value pair collection.
 |Target|String|Yes|The path the target location to add/update the value/structure. If the target path does not exist, it will be created and seeded.
 |Parse|Boolean|No|Tries to parse the Source value as YAML/JSON and integrate the result into the Parameters Values structure.  This setting does not apply to XML data structures.
 |Replace|String|No|Performs a Regular Expression replacement of the Target value with the value from Source, subject to the Regex pattern.
-|Encoding|Enum|No|Specifies how to encode the value before replacement.  Options are _**None**_ and *Base64*.
+|Encode|Enum|No|Specifies how to encode the value before replacement.  Options are _**None**_ and *Base64*.
+|DataType|String|No|If specified, validates the value is of the given type.  See <a href="https://msdn.microsoft.com/en-us/library/system.typecode(v=vs.110).aspx" target="_blank">MSDN</a> for details.  If the value fails the DataType evaluator, an exception is thrown.
+|Validation|String|No|Optional Regex expression to evaluate the value, using Regex.Match.  If the value fails the Match evaluator, an exception is thrown.
+|RestrictToOptions|Boolean|No|If `true` and Options.Count > 0, then validates the value is contained within the Options->Values (Value property) list.
+|Options|list|No|A list of available choices for a given Dynamic parameter.
+|- Key|String|Yes|The business key for the Option.
+|- Value|String|Yes|The comparison or "display" value for the Option.
+|- Description|String|No|A human-friendly description for the Dynamic Parameter.
+|- IsDefault|String|No|If using the Plan to discover Dynamic Paramters and draw a UI, IsDefault could indicate the default selection in a dropdown, for example.
 
 
 
