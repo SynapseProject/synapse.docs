@@ -39,16 +39,24 @@ Actions:
     Uri: http://host/path
     Values: Custom values as defined by Handler/Provider
     Dynamic:
-    - Source: URI parameter name
+    - Description: 
+      Source: URI parameter name
       Target: Element:IndexedElement[0]:Element
-      Parse: true
-      Replace: Regex Expression
-      Encode: None | Base64
+      Parse: true|false
+      Replace: Regex expressionA human-friendly description.
+      Encode: None|Base64
+      DataType: String
+      Validation: Regex Expression
+      RestrictToOptions: true|false
       Options:
       - Key: key
         Value: value
+        Description: A human-friendly description.
+        IsDefault: true
       - Key: key
         Value: value
+        Description: A human-friendly description.
+        IsDefault: false
     ParentExitData:
     - TransformInPlace:
         Source: Element:IndexedElement[0]:Element
