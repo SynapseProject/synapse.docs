@@ -22,7 +22,7 @@ Actions:
 |-|-
 |`Name`|The name of the Config/Parameters block.  If supplied, the block will stored as a global variable.
 |`Type`|The serialization format of the `Values` section.
-|`InheritFrom`|References the `Name` of another, previously stored Config/Paramters block.  The inherited values are propagated to the current block.
+|`InheritFrom`|References the `Name` of another, previously stored Config/Parameters block.  The inherited values are propagated to the current block.
 |`Uri`|Retrieves data from a URI; propagates values to `Parameters`->`Values`.
 |`Values`|A custom data structure as defined by the Handler.  All the other sections of a ParameterInfo block exist to define or modify the `Values` section, which is ultimately passed to the Handler->Execute method as runtime invocation data.
 |`Dynamic`|Retrieves named values (`Source`) from the cmdline or URL and substitutes them into `Values` at the `Target` location.  Use `Options` to provide a predetermined set of values.
@@ -184,7 +184,7 @@ Locally declared values within a Plan.  Local `Values` are suitable for Plan-lev
 ```
 
 ### Dynamic
-Dynamic suppors values which are provided dynamically at runtime, such as through CLI or URL parameters, which can then be mapped to Parameters->Values via Source/Target pairs.  Sources are declared in XPath for XML serialization and colon-separated lists (root:node0:node1:...) for YAML/JSON.  If the target path exists in the child data, the value updated.  If the target path does not exist, it will be created and seeded.  Of particular interest, YAML/JSON structures arriving as strings may optionally be Parsed and integrated into the Parameters Values structure iteslf.
+Dynamic supports values which are provided dynamically at runtime, such as through CLI or URL parameters, which can then be mapped to Parameters->Values via Source/Target pairs.  Sources are declared in XPath for XML serialization and colon-separated lists (root:node0:node1:...) for YAML/JSON.  If the target path exists in the child data, the value updated.  If the target path does not exist, it will be created and seeded.  Of particular interest, YAML/JSON structures arriving as strings may optionally be Parsed and integrated into the Parameters Values structure itself.
 
 ```yaml
   Dynamic:
@@ -223,7 +223,7 @@ Dynamic suppors values which are provided dynamically at runtime, such as throug
 |- Key|String|Yes|The business key for the Option.
 |- Value|String|Yes|The comparison or "display" value for the Option.
 |- Description|String|No|A human-friendly description for the Dynamic Parameter.
-|- IsDefault|String|No|If using the Plan to discover Dynamic Paramters and draw a UI, IsDefault could indicate the default selection in a dropdown, for example.
+|- IsDefault|String|No|If using the Plan to discover Dynamic Parameters and draw a UI, IsDefault could indicate the default selection in a dropdown, for example.
 
 
 
@@ -297,7 +297,7 @@ Dynamic suppors values which are provided dynamically at runtime, such as throug
 ```
 
 ### ParentExitData
-Passing data from a parent Action to its children it accomplished with the ParentExitData section, which is an array of Source/Target pairs (see detail below).  If the Target path exists in the child data, the value updated.  If the Target path does not exist, it will be created and seeded.  As with Dynamic values, YAML/JSON structures arriving as strings may optionally be Parsed and integrated into the Parameters Values structure iteslf.
+Passing data from a parent Action to its children it accomplished with the ParentExitData section, which is an array of Source/Target pairs (see detail below).  If the Target path exists in the child data, the value updated.  If the Target path does not exist, it will be created and seeded.  As with Dynamic values, YAML/JSON structures arriving as strings may optionally be Parsed and integrated into the Parameters Values structure itself.
 
 ```yaml
   ParentExitData:
@@ -331,7 +331,7 @@ The CopyToValues section copies values from ParentExitData to Parameters->Values
 
 |Name|Type/Value|Required|Description
 |-|-|-|-
-|Source|String|Yes*|The path to value/structure from the parent Action's ExitData. -Note: When specifying TransformaInPlace->Source/Target, you may omit this Source setting if it is the same as TransformaInPlace->Target; Source will default to the TransformaInPlace->Target.
+|Source|String|Yes*|The path to value/structure from the parent Action's ExitData. -Note: When specifying TransformInPlace->Source/Target, you may omit this Source setting if it is the same as TransformInPlace->Target; Source will default to the TransformInPlace->Target.
 |Target|String|Yes|The path to the target location to add/update the value/structure in the current Action's Parameters Values.  If the target path does not exist, it will be created and seeded.
 
 #### Settings with common definitions:
@@ -422,7 +422,7 @@ Actions:
 
 
 ### ForEach
-ForEach blocks calculate the Cartesian product of the declared Target/Values and expands the Action into a set of Actions for each result item. ActionGroup and child Actions relationships are maintained and will be executed per result item, as well. Of note, as both Action.Handler.Config and Action.Parameters can be declared with ForEach blocks, the total execution iterations for an Action is the carstesian product of the expanded Config and expanded Parameters.
+ForEach blocks calculate the Cartesian product of the declared Target/Values and expands the Action into a set of Actions for each result item. ActionGroup and child Actions relationships are maintained and will be executed per result item, as well. Of note, as both Action.Handler.Config and Action.Parameters can be declared with ForEach blocks, the total execution iterations for an Action is the cartesian product of the expanded Config and expanded Parameters.
 
 ```yaml
   ForEach:
@@ -467,7 +467,7 @@ ForEach blocks calculate the Cartesian product of the declared Target/Values and
     - PValue2_2_foreach_0
     - PValue2_2_foreach_1
 ```
- - The block above is processed like a nested for loop (psuedocode):
+ - The block above is processed like a nested for loop (pseudo-code):
 
 ```cs
 foreach( string value0 in valueSet0 )
