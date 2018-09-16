@@ -39,15 +39,18 @@ Actions:
     Uri: http://host/path
     Values: Custom values as defined by Handler/Provider
     Dynamic:
-    - Description: 
-      Source: URI parameter name
+    - Source: URI parameter name
       Target: Element:IndexedElement[0]:Element
-      Parse: true|false
-      Replace: Regex expressionA human-friendly description.
-      Encode: None|Base64
+      Parse: true
+      Replace: Regex Expression
+      Encode: Base64
+      Description: A human-friendly description.
       DataType: String
       Validation: Regex Expression
-      RestrictToOptions: true|false
+      RestrictToOptions: true
+      Default:
+        Value: Simple value or YAML/JSON/XML structure
+        AllowNull: true|false
       Options:
       - Key: key
         Value: value
@@ -188,15 +191,18 @@ Dynamic supports values which are provided dynamically at runtime, such as throu
 
 ```yaml
   Dynamic:
-  - Description: 
-    Source: URI parameter name
+  - Source: URI parameter name
     Target: Element:IndexedElement[0]:Element
-    Parse: true|false
-    Replace: Regex expressionA human-friendly description.
-    Encode: None|Base64
+    Parse: true
+    Replace: Regex Expression
+    Encode: Base64
+    Description: A human-friendly description.
     DataType: String
     Validation: Regex Expression
-    RestrictToOptions: true|false
+    RestrictToOptions: true
+    Default:
+      Value: Simple value or YAML/JSON/XML structure
+      AllowNull: true|false
     Options:
     - Key: key
       Value: value
@@ -210,24 +216,50 @@ Dynamic supports values which are provided dynamically at runtime, such as throu
 
 |Name|Type/Value|Required|Description
 |-|-|-|-
-|Description|String|No|A human-friendly description for the Dynamic Parameter.
 |Source|String|Yes|The key name of the value in the dynamic values key-value pair collection.
 |Target|String|Yes|The path the target location to add/update the value/structure. If the target path does not exist, it will be created and seeded.
 |Parse|Boolean|No|Tries to parse the Source value as YAML/JSON and integrate the result into the Parameters Values structure.  This setting does not apply to XML data structures.
 |Replace|String|No|Performs a Regular Expression replacement of the Target value with the value from Source, subject to the Regex pattern.
 |Encode|Enum|No|Specifies how to encode the value before replacement.  Options are _**None**_ and *Base64*.
+|Description|String|No|A human-friendly description for the Dynamic Parameter.
 |DataType|String|No|If specified, validates the value is of the given type.  See <a href="https://msdn.microsoft.com/en-us/library/system.typecode(v=vs.110).aspx" target="_blank">MSDN</a> for details.  If the value fails the DataType evaluator, an exception is thrown.
 |Validation|String|No|Optional Regex expression to evaluate the value, using Regex.Match.  If the value fails the Match evaluator, an exception is thrown.
 |RestrictToOptions|Boolean|No|If `true` and Options.Count > 0, then validates the value is contained within the Options->Values (Value property) list.
+|Default|structure|No|Specifies options for a default value if a dynamic value is not provided at runtime.
+|- Value|Object|No|A simple value or YAML/JSON/XML structure.  The value type must match the Target value type.  **Note:** Default value substitution is executed _before_ Parse, Replace, Encode, DataType, and Validation evaluation, so Value must comply to any specified conditions.
+|- AllowNull|Boolean|No|Indicates whether Value, if null/empty, can be used to replace the Target value.  Default is **false.**
 |Options|list|No|A list of available choices for a given Dynamic parameter.
 |- Key|String|Yes|The business key for the Option.
 |- Value|String|Yes|The comparison or "display" value for the Option.
 |- Description|String|No|A human-friendly description for the Dynamic Parameter.
 |- IsDefault|String|No|If using the Plan to discover Dynamic Parameters and draw a UI, IsDefault could indicate the default selection in a dropdown, for example.
 
+#### Automatically available Dynamic values
+
+Certain PlanStartInfo values are automatically gathered and populated at runtime, for convenience.
+
+|Name|Value
+|-|-
+|PlanStartInfo_Name|The Plan Name.
+|PlanStartInfo_UniqueName|The Plan UniqueName.
+|PlanStartInfo_IsActive|The Plan IsActive value (boolean).
+|PlanStartInfo_InstanceId|The Plan execution InstanceId (long).
+|PlanStartInfo_RequestNumber|If provided at execution, the RequestNumber value.
+|PlanStartInfo_RequestUser|The security context value at execution time.
+
+Each of these values is available from a Dynamic structure using the name as shown in table, as follows:
+
+```yaml
+  Dynamic:
+  - Source: PlanStartInfo_Name
+    Target: ...
+  - Source: PlanStartInfo_InstanceId
+    Target: ...
+  ...
+```
 
 
-- **YAML Example:**
+- **YAML Example 1:**
     - A variable named `pnode0Dynamic` will replace the existing value for `PNode0`
     - A variable named `pnode3_1Dynamic` will replace the existing value for `PNode3` --> `PNode3_1`
 
@@ -247,7 +279,7 @@ Dynamic supports values which are provided dynamically at runtime, such as throu
     Target: PNode3:PNode3_1
 ```
 
-  - Assuming: `pnode0Dynamic = 'new PNode0 value'` and `pnode3_1Dynamic = 'new PNode3_1 value'`, the resulting Values will be:
+Assuming: `pnode0Dynamic = 'new PNode0 value'` and `pnode3_1Dynamic = 'new PNode3_1 value'`, the resulting Values will be:
 
 ```yaml
   Values:
@@ -256,6 +288,98 @@ Dynamic supports values which are provided dynamically at runtime, such as throu
     PNode3:
       PNode3_1: new PNode3_1 value
       PNode3_2: PValue3_2_inline
+```
+
+- **YAML Example 2:**
+
+Take the following example Plan, showing an example of **Parse** and **Default** for list (indexed) and dictionary structures.
+
+```yaml
+Name: sampleDefaultValues
+Description: Parameter Substitution
+Actions:
+- Name: a0
+  Handler:
+    Type: Synapse.Core:EmptyHandler
+  Parameters:
+    Values:
+      SleepMilliseconds: 0
+      ReturnStatus: Complete
+      Case0.0:
+      - Identity: 
+        Properties: foo bar moo
+      Case0.1:
+      - Identity: 
+        Properties:
+      Case1.0:
+        Identity:
+        Properties:
+          dummyvalue:
+      Case1.1:
+        Identity:
+        Properties:
+    Dynamic:
+    - Source: simple
+      Target: Case0.0[0]:Properties
+      Replace: bar
+      Default:
+        Value: sss
+        AllowNull: true
+      Encode: Base64
+      Parse: true
+    - Source: properties
+      Target: Case0.1[0]:Properties
+      Parse: true
+    - Source: properties
+      Target: Case1.0:Properties
+      Parse: true
+    - Source: properties
+      Target: Case1.1:Properties
+      Parse: true
+```
+
+Assume the DynamicParameters runtime values are a JSON structure for `properties` and *null* for `simple`:
+
+```yaml
+DynamicParameters:
+  properties: "{\r\n  \"xyz\": \"foo\",\r\n  \"abc\": \"bar\"\r\n}"
+  simple:
+```
+
+The result Plan Parameters structure will result with:
+
+  - Case 0.0: *bar* replaced by *sss* (default value) and Base64 encoded in the Target
+  - Case 0.1: the JSON structure merged into the `Properties` at index 0.
+  - Case 1.0, 1.1: the JSON structure merged into the `Properties` structure with/without existing values present.
+
+```yaml
+  Parameters:
+    Name: 
+    Type: Yaml
+    InheritFrom: 
+    Uri: 
+    Values:
+      SleepMilliseconds: 0
+      ReturnStatus: Complete
+      Case0.0:
+      - Identity: 
+        Properties: foo c3NzDQouLi4NCg== moo
+      Case0.1:
+      - Identity: 
+        Properties:
+          xyz: foo
+          abc: bar
+      Case1.0:
+        Identity: 
+        Properties:
+          dummyvalue: 
+          xyz: foo
+          abc: bar
+      Case1.1:
+        Identity: 
+        Properties:
+          xyz: foo
+          abc: bar
 ```
 
 - **XML Example:**
@@ -282,7 +406,7 @@ Dynamic supports values which are provided dynamically at runtime, such as throu
     Target: /CXmlDoc[1]/CNode3[1]/CNode3_1[1]/@CAttr3_1
 ```
 
-- Assuming: `cnode0Dynamic = 'new CNode0 value'` and `cnode3_1Dynamic = 'new CNode3_1 attr'`, the resulting Values will be:
+Assuming: `cnode0Dynamic = 'new CNode0 value'` and `cnode3_1Dynamic = 'new CNode3_1 attr'`, the resulting Values will be:
 
 ```xml
   Values:
