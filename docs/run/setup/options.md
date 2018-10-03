@@ -63,9 +63,9 @@ For reference, the install action results in a Windows Service runtime similar t
 
 **Note:** It is typically fine to use a _relative path_ to a custom synapseConfig when _running_ the server from the cli.
 
-## Relocating the Assemblies, Authorization, Dal, and Handlers Folders
+## Relocating the Assemblies, Auth (Authentication/Authorization), Dal, and Handlers Folders
 
-To relocate the Assemblies, Authorization, Dal, or Handlers folders, open **each** of the exe .NET config files below and edit the `probing privatePath` setting, updating paths as desired.  The probing path setting only supports local, relative paths.  For absolute paths, use the `dependentAssembly` settings options.  See [MSDN](https://docs.microsoft.com/en-us/dotnet/framework/configure-apps/specify-assembly-location) for details.
+To relocate the Assemblies, Auth, Dal, or Handlers folders, open **each** of the exe .NET config files below and edit the `probing privatePath` setting, updating paths as desired.  The probing path setting only supports local, relative paths.  For absolute paths, use the `dependentAssembly` settings options.  See [MSDN](https://docs.microsoft.com/en-us/dotnet/framework/configure-apps/specify-assembly-location) for details.
 
 - **Important**: you must edit each file below and match the *probing privatePath* setting.
 
@@ -85,7 +85,7 @@ To relocate the Assemblies, Authorization, Dal, or Handlers folders, open **each
   ...
   <runtime>
     <assemblyBinding xmlns="urn:schemas-microsoft-com:asm.v1">
-      <probing privatePath="Dal;Handlers;Authentication;Assemblies" />
+      <probing privatePath="Dal;Handlers;Auth;Assemblies" />
     </assemblyBinding>
     ...
   </runtime>

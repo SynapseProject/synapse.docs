@@ -175,6 +175,7 @@ namespace Synapse.Core
         Running = 4,
         Waiting = 8,
         Cancelling = 16,
+        Zombie = 32,
         Complete = 128,
         Success = 128,
         CompletedWithErrors = 256,
