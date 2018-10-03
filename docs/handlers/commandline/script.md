@@ -164,7 +164,7 @@ StatusType values are part of the Synapse Core project.   The values below are c
 but for the most recent values, please check the [SynapseProject GitHub page](https://github.com/SynapseProject/synapse.core.net).
 (synapse.net > Synapse.Core > Classes > Enums > StatusType.cs)
 
-````
+```java
 namespace Synapse.Core
 {
     public enum StatusType
@@ -186,7 +186,7 @@ namespace Synapse.Core
         Any = 16383
     }
 }
-````
+```
 
 ### Regex Arguments
 A detailed description of the Regex variable replacement object used in the Parameters section of the CommandHandler.

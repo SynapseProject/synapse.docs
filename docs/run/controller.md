@@ -60,6 +60,7 @@ Notes:
 #### StatusType Values
 StatusType values are part of the Synapse Core project.   The values below are current as of the last update to this documentation,
 but for the most recent values, please check the [SynapseProject GitHub page](https://github.com/SynapseProject/synapse.core.net/blob/master/Synapse.Core/Classes/Enums/StatusType.cs).
+
 ```java
 namespace Synapse.Core
 {
@@ -71,6 +72,7 @@ namespace Synapse.Core
         Running = 4,
         Waiting = 8,
         Cancelling = 16,
+        Zombie = 32,
         Complete = 128,
         Success = 128,
         CompletedWithErrors = 256,
