@@ -140,7 +140,7 @@ Notes:
 `http://localhost:20000/synapse/execute/samplePs1/start?dryRun=false&requestNumber=1234`
 
 
-### Example Manual Poller, c#
+### Example Manual Poller, c-sharp
 ```java
 public static StatusType GetStatus(string planName, long id, int pollingIntervalSeconds = 1, int timeoutSeconds = 120)
 {
