@@ -140,7 +140,7 @@ Notes:
 `http://localhost:20000/synapse/execute/samplePs1/start?dryRun=false&requestNumber=1234`
 
 
-### Example Manual Poller
+### Example Manual Poller, c#
 ```java
 public static StatusType GetStatus(string planName, long id, int pollingIntervalSeconds = 1, int timeoutSeconds = 120)
 {
@@ -160,6 +160,9 @@ public static StatusType GetStatus(string planName, long id, int pollingInterval
     return status;
 }
 ```
+
+### Example Manual Poller, PowerShell
+<script src="https://gist.github.com/SynapseGists/b56950f7adbc3d808a6b6d7859a3364c.js"></script>
 
 ### Getting Plan Status with PlanInstanceId
 
