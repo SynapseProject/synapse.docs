@@ -91,7 +91,7 @@ Controller:
 |DefaultBucketName|The base S3 Bucket path used in relative-paths for Plans, History, and Security.  If each of those paths are specified as absolute paths, then this setting may be omitted.
 |PlanFolderPath|The folder where Plan YAML files are stored.  This path is assumed to be relative unless specified as a rooted, absolute path. 
 |HistoryFolderPath|The folder where ResultPlan YAML/JSON files are stored, post-execution.  This path is assumed to be relative unless specified as a rooted, absolute path. 
-|WriteHistoryAs|Yaml (default) | FormattedJson | CompressedJson.  Enum to control output serialization format.  Some tools, such as AWS Athena, consume CompressedJson by default.
+|WriteHistoryAs|Yaml (default), FormattedJson, or CompressedJson.  Enum to control output serialization format.  Some tools, such as AWS Athena, consume CompressedJson by default.
 |ProcessPlansOnSingleton|Controls the multithreading access to ResultPlan files for complete-Plan updates.
 |ProcessActionsOnSingleton|Controls the multithreading access to ResultPlan files for partial-Plan updates.
 |Security.FilePath|The folder where RBAC files are stored.  This path is assumed to be relative unless specified as a rooted, absolute path.
