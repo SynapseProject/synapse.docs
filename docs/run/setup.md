@@ -2,7 +2,7 @@
 
 ## Installation
 
-Installing and configuring Synapse.Server is accompished via the CLI ([Controller](/cli/controller/ "Controller command-line"), [Node](/cli/node/ "Node command-line"), [Server](/cli/server/ "Server command-line")).  In all cases, the code distribution is the same - you're simply choosing to run either as a Controller, Node, or both.  The important settings for determining role are in `Synapse.Server.config.yaml`.  When extracting Synapse Server for setup, no Synapse.Server.config.yaml is present by default.  Synapse will generate a new, complete Synapse.Server.config.yaml when you install the service, or by running the Controller/Node/Server CLIs.
+Installing and configuring Synapse.Server is accomplished via the CLI ([Controller](/cli/controller/ "Controller command-line"), [Node](/cli/node/ "Node command-line"), [Server](/cli/server/ "Server command-line")).  In all cases, the code distribution is the same - you're simply choosing to run either as a Controller, Node, or both.  The important settings for determining role are in `Synapse.Server.config.yaml`.  When extracting Synapse Server for setup, no Synapse.Server.config.yaml is present by default.  Synapse will generate a new, complete Synapse.Server.config.yaml when you install the service, or by running the Controller/Node/Server CLIs.
 
 ### To install Synapse.Server:
 
@@ -11,7 +11,7 @@ Installing and configuring Synapse.Server is accompished via the CLI ([Controlle
 3. Run `synapse.server install [run:true|false]` in the single folder, or `synapse.controller.cli install [run:true|false]` and `synapse.node.cli install [run:true|false]` in the separate folders.
 
 ### Notes:
-* Optionally, you may execute `Synapse.Controller.setup.cmd`/`Synapse.Node.setup.cmd`.  These run the install commands as shown above, and also delete unnecessary files/folders in a split deployment.
+* Optionally, you may execute `_setup.ControllerOnly.cmd`/`_setup.NodeOnly.cmd`.  These run the install commands as shown above, and also delete unnecessary files/folders in a split deployment.
 * **Important**: Each CLI above will generate a Synapse.Server.config.yaml file if none is present, pre-configured for the installation option of choice.  However, if a Synapse.Server.config.yaml is already present, the installation will use the existing file, as-is, to install/execute the service.
 
 ## Configuration
@@ -43,7 +43,7 @@ Signature:
 |-|-
 |Service:Name & :DisplayName|These values are only used when installing Synapse.Server as a Windows Service.  Provide uniquely named values to run multiple instances of the services side-by-side.  The default values shown in the examples below will be modified to reflect Synapse.Controller or Synapse.Node (depending on role) under a default installation.  Alternatively, you may specify values directly.   **Note:** Each unique instance of Synapse.Server should be distributed to an independent folder.  **Note:** Do not modify these values _after_ installation.  You must first _uninstall_ the service, then modify and re-install.
 |Service:Role|`Controller` or `Node` or `Server`
-|Web:ApiPort|Select a port value.
+|WebApi:Port|Select a port value.
 |WebApi:IsSecure|Indicates if service is configured for SSL/TLS.
 |Authentication:Scheme|Authentication  options.  See <a href="https://msdn.microsoft.com/en-us/library/system.net.authenticationschemes(v=vs.110).aspx" target="_blank">MSDN</a> for details.
 |Authentication:Config|Proprietary configuration for specific authentication providers.  See [Configuring Basic Authentication] below.
@@ -68,7 +68,7 @@ Signature:
 
 #### Authentication Subfolder
 
-Binaries to support extended authentication paradigms are in the [controller-folder]/Authentication subfolder.
+Binaries to support extended authentication paradigms are in the [controller-folder]/Auth subfolder.
 
 ### Controller Settings
 
