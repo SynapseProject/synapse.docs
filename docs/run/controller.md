@@ -238,7 +238,7 @@ As with a GET, the URI for a POST remains:
 
 but sending dynamic parameters is accomplished in the http request via the `DynamicParameters` key/value pair wrapper structure.
 
-#### POST Example
+#### POST Examples
 
 - Content-Type = application/json
 - Request Body (raw):
@@ -251,4 +251,17 @@ but sending dynamic parameters is accomplished in the http request via the `Dyna
     "key2": "value2"
   }
 }
+```
+
+- Content-Type = application/xml
+- Request Body (raw):
+
+```xml
+<StartPlanEnvelope>
+    <XmlDynamicParameters>
+        <Parm Name='key0'>value0</Parm>
+        <Parm Name='key1'>value1</Parm>
+        <Parm Name='key2'>value2</Parm>
+    </XmlDynamicParameters>
+</StartPlanEnvelope>
 ```
