@@ -1,4 +1,4 @@
-# Welcome to Synapse
+# Welcome to Synapse 🧠
 
 Synapse is a lightweight execution engine designed to take data from disparate, federated sources and connect it to a process.  Synapse is built to run as a local or remote process.
 
